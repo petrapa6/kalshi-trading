@@ -150,7 +150,6 @@ sequenceDiagram
 Outstanding issues, labelled by criticality. Earlier fixed items have been pruned — see `git log` for the history.
 
 - **[Medium] SQLite durability window.** Production `DATABASE_URL` is `/tmp/predictions.db` (ECS task-local, lost on restart). Durability comes from the 30 min S3 snapshot loop plus `_download_db()` in the API lifespan. Data-loss window up to 30 min on a crash. No EFS is mounted. Fix options: switch to a persistent volume, shorten the backup interval, or move to a managed DB.
-- **[Medium] Hypothetical stretch P&L assumes 5 contracts** (`scanner.check_stretch_settlements`, WS lifecycle stretch branch — `cost = stretch.yes_ask * 5`, `profit = (100 - stretch.yes_ask) * 5`). Real bets use `bet_percent`-of-balance sizing, so what-if P&L is a relative ranking signal between strategies, not an absolute dollar prediction. Fix: record the hypothetical `count` on `StretchOpportunity` at creation time using the then-current `bet_percent` and balance, then compute P&L from that at settlement. Schema migration required.
 - **[Refactor — large scope] `dashboard/app/page.tsx` is a 102 KB single `"use client"` component.** Does auth, all data fetching, charts, and tables in one file. Not a bug; a maintainability cliff. Best tackled as its own brainstorm → plan → execute cycle.
 
 ## External References
