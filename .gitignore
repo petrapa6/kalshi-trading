@@ -1,0 +1,52 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# --- Node / pnpm ---
+node_modules/
+
+# --- Build output ---
+dist/
+build/
+*.tsbuildinfo
+dashboard/.next/
+dashboard/.open-next/
+
+# --- SST ---
+.sst/
+sst-env.d.ts.backup
+
+# --- Local database & logs ---
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.log
+
+# --- Secrets & local env ---
+.env
+.env.*
+!.env.example
+.envrc
+
+# --- Editor / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Misc ---
+*.pem
+*.key
+secrets/
