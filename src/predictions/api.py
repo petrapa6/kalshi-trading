@@ -308,15 +308,10 @@ def get_stats():
         or 0
     )
 
-    # Old trades did not record fees, so their pnl missed the fee deduction.
-    # True net growth of the account = balance_cents - 20000.
-    # Therefore, historical unrecorded fees = total_pnl - (balance_cents - 20000).
+    # Trades placed before fee tracking landed have fee_cents=NULL and are
+    # not included here — total_fees reports only fees we can prove, rather
+    # than inferring them from a hardcoded starting balance.
     total_fees = recorded_fees
-    if balance_cents > 0:
-        true_pnl = balance_cents - 20000
-        unrecorded_fees = total_pnl - true_pnl
-        if unrecorded_fees > 0:
-            total_fees += unrecorded_fees
 
     # Open positions (active bets on the line)
     open_trades = (
