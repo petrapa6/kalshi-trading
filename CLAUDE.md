@@ -1,104 +1,128 @@
-# Predictions Project
+# Kalshi Trading Scanner — Claude guidance
 
-Kalshi sports prediction market scanner. Buys YES contracts at 88-99c on games that are nearly decided, collects $1 at settlement.
+Session rules for working in this repo. For architecture, data flow, and
+module-level structure, read [`docs/project.md`](docs/project.md) (imported
+below).
 
-## Stack
-- **Python**: FastAPI + SQLAlchemy + SQLite (api.py, scanner.py, espn.py, db.py)
-- **Dashboard**: Next.js 16 (dashboard/)
-- **Infra**: SST v3 on AWS (sst.config.ts) — ECS for API, Lambda/CloudFront for dashboard, EFS for SQLite
+## Quick commands
 
-## Tooling
-- **Python**: uv (not pip), ruff (not black), ty (not mypy)
-- **JS/TS**: pnpm, oxfmt (4 spaces), oxlint (not eslint)
-- **No dev server**: Use Docker for everything locally
-- **CLI first**: Use `pnpm cli` (react-ink TUI) for config changes, stats, and trades whenever possible instead of direct API calls or DB access
+```bash
+./install.sh                         # one-shot bootstrap (uv + pnpm + env + hook)
+pnpm dev:api                         # API + scanner on :8000 (needs .env)
+pnpm dev:dashboard                   # Dashboard on :3777
+pnpm cli config                      # TUI: show config (needs API_TOKEN env)
+uv run ruff check . && uv run ruff format --check . && uv run ty check
+(cd dashboard && pnpm lint && pnpm fmt:check && pnpm build)
+uv run python tests/test_sport_stats.py   # standalone tests (no pytest suite)
+pnpm sst:deploy                      # Production deploy (needs AWS + Cloudflare)
+```
+
+## Stack at a glance
+
+- **Backend**: Python 3.13, FastAPI, SQLAlchemy 2, SQLite, `asyncio`, `websockets`.
+- **Dashboard**: Next.js 16 + React 19 + Tailwind CSS 4 (read-only UI).
+- **CLI**: React-ink TUI under `cli/` (preferred over direct DB access).
+- **Infra**: SST v3 → AWS ECS Fargate + S3 + Cloudflare DNS.
+
+## Tooling conventions
+
+- **Python**: `uv` (not pip/poetry), `ruff` (not black/flake8/isort), `ty`
+  (not mypy/pyright). Run from the repo root — the `predictions` package is
+  installed editable via hatchling's src-layout.
+- **JS/TS**: `pnpm` (not npm/yarn), `oxfmt` + `oxlint` (not
+  prettier/eslint). Dashboard uses 4-space indent per `oxfmt.json`.
+- **No dev server in a CI sense**: local dev uses `pnpm dev:api` +
+  `pnpm dev:dashboard`, or full stack in Docker via `sst dev`.
+- **CLI first**: for config changes, stats, and trade inspection, prefer
+  `pnpm cli …` over hitting the API with curl or touching the DB.
+
+## Core invariants (do not violate)
+
+- **Internal prices are integer cents (0–100).** The single boundary where
+  Kalshi's dollar-string format enters is `src/predictions/kalshi_client.py`
+  — `extract_cents()` and `extract_volume()`. Everywhere else, prices are
+  integers. Do not introduce parallel converters.
+- **Order placement still takes integer cents** even though reads are
+  strings. `yes_price` / `no_price` in `POST /portfolio/orders` are ints.
+- **Runtime config lives in the SQLite `config` table**, read each scan
+  loop (~5 s). Defaults are in `src/predictions/db.py::_CONFIG_DEFAULTS`.
+  Call `get_config_int("key")` — never hardcode.
+- **`trading_paused == "true"`** is the kill switch. Check before any
+  order-placement code path you touch.
+- **`DRY_RUN` env var** is read at process start only. Real trades have
+  `dry_run=False`; dry runs have `status="dry_run"` and are excluded from
+  `/api/stats` counts.
+- **`DATABASE_URL` default** = `sqlite:///<repo-root>/predictions.db`
+  (computed from `__file__` in `db.py`, so it always lands at the repo
+  root regardless of CWD). Production overrides to `/tmp/predictions.db`
+  in the Docker container, with durability via S3 snapshots every 30 min.
+- **CLI auth**: `pnpm cli …` requires `API_TOKEN` in env (or `--token`).
+  Point it at a non-default backend with `GETRICH_API_URL` or `--api-url`.
 
 ## Security
-- **NEVER commit secrets**: API tokens, Kalshi keys, Cloudflare tokens, passwords, private keys must never appear in code or config files. Use `$API_TOKEN`, `$KALSHI_API_KEY` placeholders in docs.
-- **Before every commit**: Scan staged changes for secrets (API keys, tokens, passwords, private keys). If found, abort and fix.
-- **Secrets live in**: SST secrets (`npx sst secret set`) and `.envrc` (gitignored). Never in code.
 
-## Deploy
-```bash
-# Deploy to AWS (requires `assume smooai.dev` for AWS auth)
-pnpm sst:deploy
+- **Never commit secrets.** API tokens, Kalshi keys, Cloudflare tokens,
+  passwords, and `*.pem` files must never appear in tracked files.
+  Use `$API_TOKEN`, `$KALSHI_API_KEY` placeholders in docs.
+- **Secrets sources**: SST secrets (`npx sst secret set …`) for
+  production; `.env` (gitignored) for local. The canonical schema is
+  [`.env.example`](.env.example).
+- **Before every commit**: scan staged changes for secrets (API keys,
+  tokens, `BEGIN * PRIVATE KEY`, passwords). If found, abort and fix.
+- The pre-commit hook (`scripts/pre-commit-check.sh`) does formatting and
+  type-checking but does NOT scan for secrets — do the scan yourself.
 
-# Or manually:
-rm -rf dashboard/.open-next dashboard/.next && AWS_PROFILE=smooai.dev npx sst deploy
-```
+## Working relationship
 
-## Runtime Config (Tunable Parameters)
+- Be direct and concise. No sycophancy. Challenge assumptions.
+- Always prefer the correct fix over the quick one.
+- Don't add features, refactoring, or new abstractions beyond what the
+  task requires. Don't design for hypothetical future requirements.
+- Don't add error handling, fallbacks, or validation for cases that can't
+  happen. Trust framework guarantees; validate only at system boundaries.
+- Default to writing no comments. Only add one when the WHY is non-obvious.
+- When touching shared interfaces (Trade/Opportunity schemas, config keys,
+  API endpoints), flag the blast radius and ask before restructuring.
 
-Config is stored in SQLite (`config` table) and read by the scanner every loop iteration. Changes take effect within 5 seconds without redeploying.
+## Autonomy bounds
 
-### View current config
-```bash
-uv run python config_cli.py
-```
+- Act without asking when the change is reversible, contained to existing
+  files, no external side effects, clearly within the current task.
+- Ask before: creating new files, adding/removing dependencies, changing
+  shared interfaces, touching CI or infra (`sst.config.ts`, `Dockerfile`).
+- When unsure, state the action + intent in one line before doing it.
 
-### Update config via CLI (local — requires DB access)
-```bash
-uv run python config_cli.py set KEY VALUE
-uv run python config_cli.py delete KEY     # revert to default
-uv run python config_cli.py reset          # reset all configs to default
-```
+## Git + commits
 
-### Update config via API (remote — works from anywhere)
-```bash
-curl -X PUT https://getrich-api.rager.tech/api/config \
-  -H "Authorization: Bearer $API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"key": "min_yes_price", "value": "88"}'
-```
+- Ask before committing unless the user says otherwise.
+- Write clear summary commit messages; prefer multiple logical commits
+  over one giant one.
+- Never amend pushed commits. Never `--no-verify` hooks unless explicitly
+  asked.
+- Never commit `.env`, `.env.local`, `predictions.db`, `scanner.log`, or
+  anything under `__pycache__/` / `node_modules/` / `.next/` / `.sst/`.
 
-### Available config keys
+## Verification before claiming done
 
-**Trading parameters:**
-| Key                 | Default | Description                                     |
-|---------------------|---------|-------------------------------------------------|
-| `min_yes_price`     | 92      | Minimum YES ask price in cents to place a bet   |
-| `bet_percent`       | 5       | Percentage of available cash to bet per match   |
-| `max_positions`     | 20      | Maximum concurrent open positions               |
-| `min_volume`        | 50      | Minimum market volume for liquidity             |
-| `stretch_price_min` | 85      | Minimum YES price for stretch (shadow) tracking |
+- Python: `uv run ruff check . && uv run ruff format --check . && uv run ty check`.
+- Dashboard: `cd dashboard && pnpm lint && pnpm fmt:check && pnpm build`.
+- For backend behaviour changes, start the API locally (`pnpm dev:api`)
+  and hit the affected endpoint. `curl http://localhost:8000/` returns
+  `{"status": "ok"}` when healthy.
+- Don't claim a UI change works without loading the dashboard in a
+  browser — type checking isn't feature checking.
 
-**Per-sport score leads** (`lead:{sport_path}`):
-| Key                                       | Default | Description               |
-|-------------------------------------------|---------|---------------------------|
-| `lead:basketball/nba`                     | 8       | Min point lead for NBA    |
-| `lead:basketball/mens-college-basketball` | 8       | Min point lead for NCAAMB |
-| `lead:hockey/nhl`                         | 2       | Min goal lead for NHL     |
-| `lead:football/nfl`                       | 10      | Min point lead for NFL    |
-| `lead:football/college-football`          | 10      | Min point lead for NCAAFB |
-| `lead:baseball/mlb`                       | 3       | Min run lead for MLB      |
-| `lead:soccer/eng.1`                       | 2       | Min goal lead for EPL     |
-| `lead:soccer/esp.1`                       | 2       | Min goal lead for La Liga |
-| `lead:soccer/usa.1`                       | 2       | Min goal lead for MLS     |
-| `lead:mma/ufc`                            | 0       | Min score lead for UFC    |
+## Code Intelligence
 
-**Per-sport end-of-game timing** (`final_seconds:{sport_path}`):
-| Key                            | Default | Description                    |
-|--------------------------------|---------|--------------------------------|
-| `final_seconds:basketball/nba` | 300     | Clock <= 5:00 in final quarter |
-| `final_seconds:hockey/nhl`     | 300     | Clock <= 5:00 in final period  |
-| `final_seconds:football/nfl`   | 300     | Clock <= 5:00 in 4th quarter   |
-| `final_seconds:soccer/eng.1`   | 4500    | Clock >= 75th minute           |
-| `final_seconds:soccer/esp.1`   | 4500    | Clock >= 75th minute           |
-| `final_seconds:soccer/usa.1`   | 4500    | Clock >= 75th minute           |
+Prefer LSP over Grep/Glob/Read for navigation:
+- `goToDefinition` / `goToImplementation` to jump to source.
+- `findReferences` before renaming or changing a signature.
+- `workspaceSymbol` / `documentSymbol` / `hover` for discovery.
+- Grep/Glob only for text/pattern searches where LSP doesn't help.
 
-Note: For countdown sports (NBA, NHL, NFL, etc.) the value means "clock must be <= X seconds". For count-up sports (soccer) it means "clock must be >= X seconds".
+After writing or editing code, pause briefly for LSP, then check
+diagnostics. Fix type errors and missing imports immediately.
 
-## Key Files
-- `sst.config.ts` — SST infra (VPC, ECS, EFS, S3, secrets)
-- `scanner.py` — Main scanner with WebSocket + ESPN integration
-- `api.py` — FastAPI backend serving dashboard + config endpoints
-- `db.py` — SQLAlchemy models + config helpers
-- `espn.py` — ESPN live game data
-- `kalshi_client.py` — Kalshi REST + WebSocket client
-- `config_cli.py` — CLI to view/update runtime config
-- `dashboard/` — Next.js app (read-only display)
+---
 
-## Architecture
-- Scanner runs 4 concurrent async loops: ESPN poll (10s), Kalshi API scan (5s), WebSocket listener (real-time prices + settlements), DB backup (30m)
-- Config stored in SQLite `config` table, read each scan loop — changes take effect immediately
-- Dashboard is read-only, all config changes go through CLI or Bearer-protected PUT endpoint
+@docs/project.md
