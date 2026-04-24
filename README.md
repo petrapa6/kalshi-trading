@@ -228,12 +228,18 @@ uv run ruff format .
 uv run ruff check . --fix
 uv run ty check
 
+# Run the pytest suite (async tests via pytest-asyncio)
+uv run pytest tests/
+
 # Format + lint dashboard
 (cd dashboard && pnpm fmt && pnpm lint)
 
 # Run the pre-commit hook manually against staged changes
 bash scripts/pre-commit-check.sh
 ```
+
+The WebSocket test auto-skips when `KALSHI_API_KEY` is not set, so the
+suite runs cleanly in any dev environment without live credentials.
 
 The pre-commit hook (installed by `install.sh` or manually symlinked to `.git/hooks/pre-commit`) runs `ruff format` + `ruff check --fix` + `ty check` on staged `src/` and `tests/` Python files, and `oxfmt` on staged dashboard TS/TSX.
 

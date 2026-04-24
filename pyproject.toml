@@ -35,8 +35,14 @@ python-version = "3.13"
 python-platform = "linux"
 root = ["src"]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
 [dependency-groups]
 dev = [
     "ruff>=0.15.5",
     "ty>=0.0.21",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
 ]

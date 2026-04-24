@@ -3,123 +3,86 @@
 import asyncio
 import os
 
+import pytest
 from dotenv import load_dotenv
-
-load_dotenv()
 
 from predictions.kalshi_client import KalshiClient, KalshiWebSocket
 
+load_dotenv()
 
-async def test_ws():
+
+def _load_client() -> KalshiClient | None:
     key_id = os.environ.get("KALSHI_API_KEY")
     key_pem = os.environ.get("KALSHI_PRIVATE_KEY")
     key_path = os.environ.get("KALSHI_PRIVATE_KEY_PATH")
-
     if not key_id:
-        print("SKIP: KALSHI_API_KEY not set")
-        return
-
+        return None
     if key_pem:
-        client = KalshiClient.from_key_string(key_id, key_pem)
-    elif key_path:
-        client = KalshiClient.from_key_file(key_id, key_path)
-    else:
-        print("SKIP: no private key configured")
-        return
+        return KalshiClient.from_key_string(key_id, key_pem)
+    if key_path:
+        return KalshiClient.from_key_file(key_id, key_path)
+    return None
 
-    # 1. Verify REST API still works
-    print("1. Testing REST API...")
+
+@pytest.mark.skipif(
+    not os.environ.get("KALSHI_API_KEY"),
+    reason="Needs live Kalshi credentials (KALSHI_API_KEY + key)",
+)
+async def test_ws_connects_and_receives():
+    client = _load_client()
+    if client is None:
+        pytest.skip("no Kalshi private key configured")
+
     balance = await client.get_balance()
-    print(f"   Balance: ${balance.get('balance', 0) / 100:.2f}")
-    assert "balance" in balance, "REST API failed: no balance field"
-    print("   OK")
+    assert "balance" in balance
 
-    # 2. Find an active market to subscribe to
-    print("2. Finding active markets...")
     test_series = ["KXNBAGAME", "KXNHLGAME", "KXMLBGAME", "KXMLSGAME", "KXEPLGAME"]
-    test_tickers = []
+    test_tickers: list[str] = []
     for series in test_series:
         try:
             data = await client.get_events(
-                status="open", series_ticker=series, with_nested_markets=True, limit=5
+                status="open",
+                series_ticker=series,
+                with_nested_markets=True,
+                limit=5,
             )
-            for event in data.get("events", []):
-                for market in event.get("markets", []):
-                    if market.get("status") in ("active", "open"):
-                        test_tickers.append(market["ticker"])
-                        if len(test_tickers) >= 3:
-                            break
-                if len(test_tickers) >= 3:
-                    break
         except Exception:
             continue
+        for event in data.get("events", []):
+            for market in event.get("markets", []):
+                if market.get("status") in ("active", "open"):
+                    test_tickers.append(market["ticker"])
+                    if len(test_tickers) >= 3:
+                        break
+            if len(test_tickers) >= 3:
+                break
         if len(test_tickers) >= 3:
             break
 
     if not test_tickers:
-        print("   No active markets found — WS test skipped (markets may be closed)")
-        print("   REST API OK — WebSocket auth will work when markets are active")
-        return
+        pytest.skip("no active markets right now — WS subscription untestable")
 
-    print(f"   Found {len(test_tickers)} active markets: {test_tickers[:3]}")
-
-    # 3. Connect WebSocket
-    print("3. Connecting WebSocket...")
     ws = KalshiWebSocket(client)
     await ws.connect()
-    print("   Connected OK")
 
-    # 4. Subscribe to ticker channel
-    print("4. Subscribing to ticker channel...")
-    received_messages = []
+    received: list[dict] = []
 
-    def on_any(msg):
-        received_messages.append(msg)
-        msg_type = msg.get("type", "unknown")
-        ticker = msg.get("msg", {}).get("market_ticker", "")
-        print(f"   Received: type={msg_type} ticker={ticker}")
+    def on_any(msg: dict) -> None:
+        received.append(msg)
 
     ws.on("ticker", on_any)
     ws.on("subscribed", on_any)
 
-    sid = await ws.subscribe(["ticker"], test_tickers)
-    print(f"   Subscribe cmd sent, id={sid}")
+    await ws.subscribe(["ticker"], test_tickers)
 
-    # 5. Listen for messages (with timeout)
-    print("5. Listening for messages (10s timeout)...")
+    try:
+        await asyncio.wait_for(ws.listen(), timeout=10)
+    except asyncio.TimeoutError:
+        pass
+    finally:
+        await ws.close()
 
-    async def listen_with_timeout():
-        try:
-            await asyncio.wait_for(ws.listen(), timeout=10)
-        except asyncio.TimeoutError:
-            pass
-
-    await listen_with_timeout()
-
-    # 6. Verify
-    print(f"\n6. Results: received {len(received_messages)} messages")
-    got_subscribed = any(m.get("type") == "subscribed" for m in received_messages)
-    got_ticker = any(m.get("type") == "ticker" for m in received_messages)
-
-    if got_subscribed:
-        print("   Subscription confirmed")
-    else:
-        print("   WARNING: no subscription confirmation received")
-
-    if got_ticker:
-        print("   Ticker data received")
-    else:
-        print("   No ticker updates yet (normal if market is quiet)")
-
-    await ws.close()
-
-    # At minimum, the connection + subscription should work
-    assert got_subscribed or len(received_messages) > 0, (
+    got_subscribed = any(m.get("type") == "subscribed" for m in received)
+    assert got_subscribed or received, (
         "WebSocket connected but received no messages at all"
     )
-
-    print("\nAll tests passed!")
-
-
-if __name__ == "__main__":
-    asyncio.run(test_ws())

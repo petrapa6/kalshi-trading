@@ -11,7 +11,7 @@ pnpm dev:dashboard                   # Dashboard on :3777
 pnpm cli config                      # TUI: show config (needs API_TOKEN env)
 uv run ruff check . && uv run ruff format --check . && uv run ty check
 (cd dashboard && pnpm lint && pnpm fmt:check && pnpm build)
-uv run python tests/test_sport_stats.py   # standalone tests (no pytest suite)
+uv run pytest tests/                 # pytest suite (async via pytest-asyncio)
 pnpm sst:deploy                      # Production deploy (needs AWS + Cloudflare)
 ```
 
