@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime, timezone
+from typing import Protocol
 
 import httpx
 from dotenv import load_dotenv
@@ -133,3 +134,127 @@ class FootballDataClient:
             raise RateLimitedError("football-data.org rate limit hit on get_match_goals")
         resp.raise_for_status()
         return resp.json()
+
+
+from dataclasses import dataclass
+
+
+class _FootballClientLike(Protocol):
+    async def list_matches(self, league: str, date_from: str, date_to: str) -> dict: ...
+    async def get_match_goals(self, match_id: int) -> dict: ...
+
+
+@dataclass
+class EnsureResult:
+    matches: list[SoccerMatch]
+    partial: bool
+    missing_count: int
+
+
+def _parse_iso_utc(s: str) -> datetime:
+    """Parse ISO-8601 (football-data.org uses trailing 'Z')."""
+    return datetime.fromisoformat(s.replace("Z", "+00:00"))
+
+
+def _ingest_goals(session, match_id_str: str, home_team_id: int, raw_goals: list[dict]) -> None:
+    """Insert SoccerGoal rows, flipping own-goal scorer to beneficiary side."""
+    for seq, g in enumerate(raw_goals, start=1):
+        minute = int(g.get("minute") or 0)
+        stoppage = int(g.get("injuryTime") or 0)
+        scorer_team_id = (g.get("team") or {}).get("id")
+        gtype = (g.get("type") or "REGULAR").upper()
+        scoring_side = "home" if scorer_team_id == home_team_id else "away"
+        # Own-goal: "team.id" is the conceder in football-data.org's payload.
+        # The beneficiary — and hence the side that counts on the scoreboard —
+        # is the OPPOSITE side.
+        if gtype == "OWN":
+            scoring_side = "away" if scoring_side == "home" else "home"
+        session.add(
+            SoccerGoal(
+                match_id=match_id_str,
+                sequence=seq,
+                minute=minute,
+                stoppage=stoppage,
+                side=scoring_side,
+                is_own_goal=1 if gtype == "OWN" else 0,
+            )
+        )
+
+
+async def ensure_matches_cached(
+    league: str,
+    date_from: str,
+    date_to: str,
+    *,
+    client: _FootballClientLike | None = None,
+) -> EnsureResult:
+    """Fetch any missing FINISHED matches in the range and persist them.
+
+    Returns all FINISHED matches currently in the cache for (league, range),
+    plus a partial flag + missing_count on rate-limit mid-fetch.
+    """
+    if client is None:
+        api_key = os.getenv("FOOTBALL_DATA_API_KEY", "")
+        if not api_key:
+            raise RuntimeError("FOOTBALL_DATA_API_KEY is not set")
+        client = FootballDataClient(api_key=api_key)
+
+    list_body = await client.list_matches(league, date_from, date_to)
+    raw_matches = [m for m in list_body.get("matches", []) if m.get("status") == "FINISHED"]
+
+    partial = False
+    missing = 0
+    session = SessionLocal()
+    try:
+        existing_ids = {
+            row[0]
+            for row in session.query(SoccerMatch.id).filter(SoccerMatch.competition == league).all()
+        }
+        for i, m in enumerate(raw_matches):
+            match_id_str = f"fd:{m['id']}"
+            if match_id_str in existing_ids:
+                continue
+            try:
+                detail = await client.get_match_goals(m["id"])
+            except RateLimitedError:
+                partial = True
+                missing = len(raw_matches) - i
+                break
+
+            home_team_id = m["homeTeam"]["id"]
+            full_time = (m.get("score") or {}).get("fullTime") or {}
+            match_row = SoccerMatch(
+                id=match_id_str,
+                competition=league,
+                kickoff_at=_parse_iso_utc(m["utcDate"]),
+                home_team=m["homeTeam"]["name"],
+                away_team=m["awayTeam"]["name"],
+                home_score=int(full_time.get("home") or 0),
+                away_score=int(full_time.get("away") or 0),
+                status="FINISHED",
+                fetched_at=datetime.now(timezone.utc),
+            )
+            session.add(match_row)
+            _ingest_goals(session, match_id_str, home_team_id, detail.get("goals") or [])
+            session.commit()
+
+        # Return all currently-cached matches for the range.
+        start = _parse_iso_utc(f"{date_from}T00:00:00Z")
+        end = _parse_iso_utc(f"{date_to}T23:59:59Z")
+        cached = (
+            session.query(SoccerMatch)
+            .filter(
+                SoccerMatch.competition == league,
+                SoccerMatch.kickoff_at >= start,
+                SoccerMatch.kickoff_at <= end,
+            )
+            .order_by(SoccerMatch.kickoff_at)
+            .all()
+        )
+        # Detach from session so the caller can read attributes after .close().
+        for m in cached:
+            session.expunge(m)
+    finally:
+        session.close()
+
+    return EnsureResult(matches=cached, partial=partial, missing_count=missing)
