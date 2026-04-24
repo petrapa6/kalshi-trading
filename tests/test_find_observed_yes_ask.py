@@ -31,3 +31,22 @@ def test_market_title_via_alias():
     assert _market_mentions_both_teams(
         "Man Utd vs Tottenham", "Manchester United", "Tottenham Hotspur"
     )
+
+
+def test_shared_prefix_teams_do_not_collide():
+    """Regression: "real" alias for Real Madrid must NOT absorb the "real" in
+    "real sociedad". Tokenizer-based canonicalization prevents the false
+    negative on shared-prefix La Liga fixtures."""
+    from predictions.backtest import _market_mentions_both_teams
+
+    assert _market_mentions_both_teams(
+        "Real Madrid vs Real Sociedad", "Real Madrid", "Real Sociedad"
+    )
+
+
+def test_bundesliga_dotted_prefix_strips_correctly():
+    """Regression: "1. FC Köln" must strip the "1. " prefix even though the
+    literal dot is later removed by alphanumeric filtering."""
+    from predictions.backtest import _normalize_team
+
+    assert _normalize_team("1. FC Köln") == "koln"

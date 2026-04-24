@@ -150,6 +150,7 @@ _TEAM_ALIASES: dict[str, str] = {
     "atletico": "atletico madrid",
     "atleti": "atletico madrid",
     "real": "real madrid",
+    "real madrid": "real madrid",
     "barca": "barcelona",
     "barça": "barcelona",
     "fc barcelona": "barcelona",
@@ -158,6 +159,7 @@ _TEAM_ALIASES: dict[str, str] = {
     # Bundesliga
     "bayern": "bayern munchen",
     "bayern munich": "bayern munchen",
+    "bayern munchen": "bayern munchen",
     "fc bayern munchen": "bayern munchen",
     "dortmund": "borussia dortmund",
     "bvb": "borussia dortmund",
@@ -174,7 +176,7 @@ _TEAM_ALIASES: dict[str, str] = {
     "stuttgart": "vfb stuttgart",
 }
 
-_NOISE_PREFIXES = ("fc ", "afc ", "1. ")
+_NOISE_PREFIXES = ("1. ", "fc ", "afc ")
 _NOISE_SUFFIXES = (" fc", " cf", " sc", " ac", " afc", " cfc")
 
 
@@ -182,11 +184,13 @@ def _normalize_team(name: str) -> str:
     """Lower-case, strip accents + leading/trailing club suffixes, collapse whitespace."""
     s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
     s = s.lower().strip()
-    s = re.sub(r"[^a-z0-9\s]", " ", s)
-    s = re.sub(r"\s+", " ", s).strip()
+    # Strip noise prefixes BEFORE alphanumeric filtering so patterns like
+    # "1. " (with a literal dot) can still match before the dot is normalized away.
     for pref in _NOISE_PREFIXES:
         if s.startswith(pref):
             s = s[len(pref) :].strip()
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
     for suf in _NOISE_SUFFIXES:
         if s.endswith(suf):
             s = s[: -len(suf)].strip()
@@ -200,14 +204,35 @@ def _canonical_team(name: str) -> str:
 
 
 def _canonicalize_title(market_title: str) -> str:
-    """Normalize a market title and replace alias phrases with canonical forms.
+    """Tokenize a normalized title and rewrite alias phrases to canonical forms.
 
-    Longer aliases are substituted first so 'manchester utd' wins over 'man utd'.
+    Walks tokens left-to-right; at each position tries the longest matching
+    alias-phrase and advances past the consumed tokens. Once an alias is
+    consumed, shorter aliases cannot re-enter the same span — this prevents
+    "real" → "real madrid" from firing on the "real" in "real sociedad".
     """
-    title_norm = _normalize_team(market_title)
-    for alias, canon in sorted(_TEAM_ALIASES.items(), key=lambda kv: len(kv[0]), reverse=True):
-        title_norm = re.sub(rf"\b{re.escape(alias)}\b", canon, title_norm)
-    return title_norm
+    tokens = _normalize_team(market_title).split()
+    # Pre-split aliases into token tuples so membership comparison is token-level.
+    alias_items = sorted(
+        ((alias.split(), canon) for alias, canon in _TEAM_ALIASES.items()),
+        key=lambda item: -len(item[0]),
+    )
+    out: list[str] = []
+    i = 0
+    n = len(tokens)
+    while i < n:
+        matched = False
+        for alias_tokens, canon in alias_items:
+            k = len(alias_tokens)
+            if k <= n - i and tokens[i : i + k] == alias_tokens:
+                out.append(canon)
+                i += k
+                matched = True
+                break
+        if not matched:
+            out.append(tokens[i])
+            i += 1
+    return " ".join(out)
 
 
 def _market_mentions_both_teams(market_title: str, team_a: str, team_b: str) -> bool:
