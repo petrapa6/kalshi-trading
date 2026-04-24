@@ -112,6 +112,11 @@ class StretchOpportunity(Base):
     # Hypothetical bet side — always "yes" today, but stored so future
     # NO strategies settle correctly against market.result.
     side = Column(String, default="yes")
+    # Number of contracts we would have bought at the time this
+    # opportunity was recorded, derived from the then-current balance
+    # and bet_percent. Used to compute comparable hypothetical P&L
+    # instead of the old "assume 5 contracts" constant.
+    hypothetical_count = Column(Integer, nullable=True)
     # Settlement tracking
     status = Column(String, default="open")  # open, settled_win, settled_loss
     pnl_cents = Column(Integer, nullable=True)  # hypothetical P&L

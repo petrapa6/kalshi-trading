@@ -541,6 +541,7 @@ async def scan_kalshi_with_espn(
             strategy = s.get("strategy_set", "default")
             if (s["ticker"], strategy) in existing_stretch:
                 continue
+            hyp_count = max_bet_cents // s["yes_ask"] if s["yes_ask"] else 0
             session.add(
                 StretchOpportunity(
                     ticker=s["ticker"],
@@ -558,6 +559,7 @@ async def scan_kalshi_with_espn(
                     reason=s["reason"],
                     strategy_set=strategy,
                     side="yes",
+                    hypothetical_count=hyp_count,
                 )
             )
             existing_stretch.add((s["ticker"], strategy))
@@ -569,12 +571,12 @@ async def scan_kalshi_with_espn(
     # --- What-If strategy evaluation ---
     # Evaluate all final-period games against each what-if strategy
     if espn_final_period:
-        _evaluate_what_if_strategies(session, espn_final_period)
+        _evaluate_what_if_strategies(session, espn_final_period, max_bet_cents)
 
     session.close()
 
 
-def _evaluate_what_if_strategies(session, espn_final_period: dict):
+def _evaluate_what_if_strategies(session, espn_final_period: dict, max_bet_cents: int):
     """Shadow-evaluate markets against each what-if strategy set."""
     # Pre-load existing open what-if tickers to dedupe
     existing = {
@@ -673,6 +675,7 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict):
                         else ticker
                     )
 
+                    hyp_count = max_bet_cents // yes_ask if yes_ask else 0
                     session.add(
                         StretchOpportunity(
                             ticker=ticker,
@@ -690,6 +693,7 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict):
                             reason=",".join(reasons) if reasons else "strategy",
                             strategy_set=strategy_name,
                             side="yes",
+                            hypothetical_count=hyp_count,
                         )
                     )
                     existing.add((ticker, strategy_name))
@@ -714,8 +718,9 @@ async def check_stretch_settlements(client: KalshiClient):
 
             if status in ("finalized", "settled"):
                 # Hypothetical: if we'd bought `stretch.side` at the ask price
-                cost = stretch.yes_ask * 5  # assume 5 contracts like real bets
-                profit = (100 - stretch.yes_ask) * 5
+                count = stretch.hypothetical_count or 0
+                cost = stretch.yes_ask * count
+                profit = (100 - stretch.yes_ask) * count
                 if result == (stretch.side or "yes"):
                     stretch.status = "settled_win"
                     stretch.pnl_cents = profit
@@ -855,8 +860,9 @@ async def run_scanner(
                 .all()
             )
             for stretch in open_stretches:
-                cost = stretch.yes_ask * 5
-                profit = (100 - stretch.yes_ask) * 5
+                count = stretch.hypothetical_count or 0
+                cost = stretch.yes_ask * count
+                profit = (100 - stretch.yes_ask) * count
                 if result == (stretch.side or "yes"):
                     stretch.status = "settled_win"
                     stretch.pnl_cents = profit
