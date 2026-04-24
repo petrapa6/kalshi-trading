@@ -154,7 +154,7 @@ These are documented here rather than fixed so follow-up sessions can pick them 
 - **EFS doc drift.** The README + CLAUDE.md historically mentioned EFS for SQLite durability, but `sst.config.ts` does not mount EFS. Durability is actually "S3 snapshot every 30 min + `_download_db()` in lifespan startup". Data loss window up to 30 min on a crash.
 - **`dashboard/app/page.tsx` is a single 102 KB `"use client"` component.** Does auth, all fetching, charts, tables, and UI in one file. Worth breaking up in a dedicated session.
 - **No pytest suite.** `tests/test_sport_stats.py` and `tests/test_ws.py` are standalone `asyncio.run(...)` scripts. A real pytest harness would let the pre-commit hook actually prove things.
-- **`market_prices` dict is mutated by WS handler, read by scan loop, without a lock.** Individual dict ops are GIL-safe but multi-step reads can see partial updates. Low impact at the 5 s cadence.
+- ~~`market_prices` dict race~~ — retracted. On review the iteration site (`scanner.py` inside `_evaluate_what_if_strategies`) already takes a `list(market_prices.items())` snapshot before looping, and the WS handler replaces inner dicts wholesale rather than mutating in place. Combined with asyncio's single-threaded execution, there is no torn-read window.
 - **`kalshi_client._rate_limit` imports `asyncio` inside the function** (copy-paste artefact). Cosmetic.
 - **Hypothetical stretch P&L assumes 5 contracts** (`scanner.check_stretch_settlements`, WS lifecycle). Doesn't reflect the real `bet_percent`-of-balance sizing, so what-if P&L isn't directly comparable to realised P&L.
 - **`trade.side` hardcoded to "yes" in stretch settlement.** All strategies currently bet YES, but any future NO strategy would mis-settle.
