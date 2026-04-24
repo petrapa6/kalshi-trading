@@ -1,5 +1,5 @@
 import os
-from db import init_db, get_session, Trade, StretchOpportunity
+from predictions.db import init_db, get_session, Trade, StretchOpportunity
 
 def run_test():
     # Setup test DB
@@ -45,7 +45,7 @@ def run_test():
     ))
     session.commit()
     
-    from api import get_total_sport_stats
+    from predictions.api import get_total_sport_stats
     stats = get_total_sport_stats()["stats"]
     
     mlb_stats = stats.get("MLB")

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from kalshi_client import KalshiClient, KalshiWebSocket
+from predictions.kalshi_client import KalshiClient, KalshiWebSocket
 
 
 async def test_ws():

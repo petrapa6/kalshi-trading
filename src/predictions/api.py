@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import desc, func
 
-from db import (
+from predictions.db import (
     BalanceSnapshot,
     Opportunity,
     Scan,
@@ -23,9 +23,14 @@ from db import (
     init_db,
     set_config,
 )
-from espn import KALSHI_TO_ESPN, SPORT_FINAL_PERIOD, get_scoreboard, match_kalshi_to_espn
-from kalshi_client import KalshiClient, extract_cents, extract_volume
-from scanner import MIN_SCORE_LEAD
+from predictions.espn import (
+    KALSHI_TO_ESPN,
+    SPORT_FINAL_PERIOD,
+    get_scoreboard,
+    match_kalshi_to_espn,
+)
+from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
+from predictions.scanner import MIN_SCORE_LEAD
 
 # --- Pydantic response models ---
 
@@ -147,7 +152,7 @@ _kalshi_client: KalshiClient | None = None
 
 async def _run_scanner_loop():
     """Run the scanner in the background as a native async task."""
-    from scanner import run_scanner
+    from predictions.scanner import run_scanner
 
     min_price = int(os.getenv("MIN_YES_PRICE", "88"))
     bet_percent = float(os.getenv("BET_PERCENT", "5.0"))
@@ -711,7 +716,7 @@ async def _get_live_games() -> list[dict]:
                         matched = match_kalshi_to_espn(ticker, title, [g])
                         if matched:
                             kalshi_code = ticker.split("-")[-1].upper() if "-" in ticker else ""
-                            from espn import _espn_to_kalshi_codes
+                            from predictions.espn import _espn_to_kalshi_codes
 
                             espn_team = ""
                             for team in (g.home_team, g.away_team):
@@ -777,7 +782,7 @@ def _compute_stretch_stats(stretches: list) -> dict:
     "/api/stretch-stats", response_model=StretchStatsResponse, dependencies=[Depends(_check_token)]
 )
 def get_stretch_stats():
-    from scanner import WHAT_IF_STRATEGIES
+    from predictions.scanner import WHAT_IF_STRATEGIES
 
     session = get_session()
     # Query specific columns only to avoid loading 10K+ full ORM objects
@@ -848,7 +853,7 @@ def clear_stretch_opportunities():
 @app.delete("/api/config", dependencies=[Depends(_check_token)])
 def reset_config_endpoint():
     """Wipe all DB config overrides remotely, reverting to db.py defaults."""
-    from db import reset_all_config
+    from predictions.db import reset_all_config
 
     reset_all_config()
     log.info("All config overrides wiped remotely via API.")

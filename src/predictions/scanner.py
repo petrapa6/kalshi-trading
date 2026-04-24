@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from db import (
+from predictions.db import (
     BalanceSnapshot,
     Opportunity,
     Scan,
@@ -35,12 +35,12 @@ from db import (
     get_session,
     init_db,
 )
-from espn import (
+from predictions.espn import (
     game_meets_timing,
     get_categorized_games,
     match_kalshi_to_espn,
 )
-from kalshi_client import KalshiClient, KalshiWebSocket, extract_cents, extract_volume
+from predictions.kalshi_client import KalshiClient, KalshiWebSocket, extract_cents, extract_volume
 
 logging.basicConfig(
     level=logging.INFO,
@@ -643,7 +643,7 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict):
 
                 # This game meets the strategy's filters — check market prices
                 # We use market_prices dict if available (populated by WS/API)
-                from espn import _espn_to_kalshi_codes
+                from predictions.espn import _espn_to_kalshi_codes
 
                 home_codes = _espn_to_kalshi_codes(game.home_team)
                 away_codes = _espn_to_kalshi_codes(game.away_team)

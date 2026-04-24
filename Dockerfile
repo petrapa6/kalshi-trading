@@ -5,12 +5,15 @@ WORKDIR /app
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Install dependencies
+# Install third-party dependencies only (cached layer — busts on lockfile change)
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Copy app code (bust cache via ARG)
 ARG CACHE_BUST=0
-COPY kalshi_client.py scanner.py api.py db.py espn.py ./
+COPY src/ ./src/
 
-CMD ["uv", "run", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Install the predictions package itself now that src/ is present
+RUN uv sync --frozen --no-dev
+
+CMD ["uv", "run", "uvicorn", "predictions.api:app", "--host", "0.0.0.0", "--port", "8000"]

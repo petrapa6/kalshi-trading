@@ -80,7 +80,7 @@ class GameState:
         # Baseball has no clock — being in the final period is enough
         if "baseball" in self.sport_path:
             return True
-        from db import get_config_int
+        from predictions.db import get_config_int
 
         final_secs = get_config_int(f"final_seconds:{self.sport_path}")
         # Soccer clock counts UP — require >= threshold

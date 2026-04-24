@@ -8,7 +8,11 @@ load_dotenv()
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-_default_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "predictions.db")
+# Default SQLite path at the repo root (src/predictions/db.py → repo/predictions.db)
+_repo_root = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+_default_db = os.path.join(_repo_root, "predictions.db")
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     f"sqlite:///{_default_db}",

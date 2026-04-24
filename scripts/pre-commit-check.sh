@@ -4,7 +4,7 @@ set -e
 ROOT=$(git rev-parse --show-toplevel)
 
 # Format and lint staged Python files
-PYTHON_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.py')
+PYTHON_FILES=$(git diff --cached --name-only --diff-filter=ACM -- 'src/**/*.py' 'tests/**/*.py')
 if [ -n "$PYTHON_FILES" ]; then
     echo "Formatting Python files..."
     echo "$PYTHON_FILES" | xargs uv run ruff format

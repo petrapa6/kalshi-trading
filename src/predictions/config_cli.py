@@ -1,18 +1,18 @@
 """CLI to view and update scanner config stored in SQLite.
 
-Usage:
-    python config_cli.py                     # show all config
-    python config_cli.py set KEY VALUE       # set a config value
-    python config_cli.py set min_yes_price 88
-    python config_cli.py set bet_percent 5
-    python config_cli.py set max_positions 20
-    python config_cli.py set min_volume 50
-    python config_cli.py set stretch_price_min 85
-    python config_cli.py set lead:basketball/nba 8
-    python config_cli.py set lead:hockey/nhl 2
-    python config_cli.py set final_seconds:soccer/eng.1 4800
-    python config_cli.py delete KEY          # remove override (revert to default)
-    python config_cli.py reset               # reset all overrides to defaults
+Usage (run from the repo root):
+    uv run python -m predictions.config_cli                     # show all config
+    uv run python -m predictions.config_cli set KEY VALUE       # set a config value
+    uv run python -m predictions.config_cli set min_yes_price 88
+    uv run python -m predictions.config_cli set bet_percent 5
+    uv run python -m predictions.config_cli set max_positions 20
+    uv run python -m predictions.config_cli set min_volume 50
+    uv run python -m predictions.config_cli set stretch_price_min 85
+    uv run python -m predictions.config_cli set lead:basketball/nba 8
+    uv run python -m predictions.config_cli set lead:hockey/nhl 2
+    uv run python -m predictions.config_cli set final_seconds:soccer/eng.1 4800
+    uv run python -m predictions.config_cli delete KEY          # remove override (revert to default)
+    uv run python -m predictions.config_cli reset               # reset all overrides to defaults
 """
 
 import sys
@@ -21,7 +21,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from db import ConfigEntry, get_all_config, get_session, init_db, set_config, reset_all_config
+from predictions.db import (
+    ConfigEntry,
+    get_all_config,
+    get_session,
+    init_db,
+    reset_all_config,
+    set_config,
+)
 
 
 def show_config():

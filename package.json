@@ -4,7 +4,7 @@
     "packageManager": "pnpm@10.8.1",
     "scripts": {
         "dev": "sst dev",
-        "dev:api": "uv run uvicorn api:app --host 0.0.0.0 --port 8000 --reload",
+        "dev:api": "uv run uvicorn predictions.api:app --host 0.0.0.0 --port 8000 --reload",
         "dev:dashboard": "cd dashboard && pnpm dev",
         "sst:deploy": "assume smooai.dev && eval \"$(direnv export zsh 2>/dev/null)\" && npx sst deploy",
         "sst:remove": "assume smooai.dev && eval \"$(direnv export zsh 2>/dev/null)\" && npx sst remove",
