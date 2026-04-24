@@ -3,6 +3,7 @@
 import os
 from datetime import datetime, timezone
 
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -81,3 +82,55 @@ def _migrate_add_columns() -> None:
 
 def get_session():
     return SessionLocal()
+
+
+FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4"
+
+
+class RateLimitedError(Exception):
+    """Raised when football-data.org returns HTTP 429."""
+
+
+class FootballDataClient:
+    """Thin async wrapper over football-data.org v4.
+
+    Does not retry. On HTTP 429 raises RateLimitedError so the caller can
+    surface partial results to the user. Other non-2xx responses raise
+    httpx.HTTPStatusError via raise_for_status.
+    """
+
+    def __init__(
+        self,
+        api_key: str,
+        *,
+        base_url: str = FOOTBALL_DATA_BASE_URL,
+        transport: httpx.AsyncBaseTransport | None = None,
+        timeout: float = 30.0,
+    ) -> None:
+        self._api_key = api_key
+        self._client = httpx.AsyncClient(
+            base_url=base_url,
+            headers={"X-Auth-Token": api_key},
+            timeout=timeout,
+            transport=transport,
+        )
+
+    async def aclose(self) -> None:
+        await self._client.aclose()
+
+    async def list_matches(self, league: str, date_from: str, date_to: str) -> dict:
+        resp = await self._client.get(
+            f"/competitions/{league}/matches",
+            params={"dateFrom": date_from, "dateTo": date_to},
+        )
+        if resp.status_code == 429:
+            raise RateLimitedError("football-data.org rate limit hit on list_matches")
+        resp.raise_for_status()
+        return resp.json()
+
+    async def get_match_goals(self, match_id: int) -> dict:
+        resp = await self._client.get(f"/matches/{match_id}")
+        if resp.status_code == 429:
+            raise RateLimitedError("football-data.org rate limit hit on get_match_goals")
+        resp.raise_for_status()
+        return resp.json()
