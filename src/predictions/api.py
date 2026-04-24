@@ -233,12 +233,13 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="Predictions Dashboard API", lifespan=lifespan)
+_cors_extra = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,  # type: ignore[arg-type]  # starlette typing issue
     allow_origins=[
-        "https://matej-kalshi.pp.ua",
         "http://localhost:3777",
         "http://localhost:3000",
+        *_cors_extra,
     ],
     allow_methods=["*"],
     allow_headers=["*"],

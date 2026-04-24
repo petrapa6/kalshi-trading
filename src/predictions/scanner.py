@@ -55,11 +55,6 @@ log = logging.getLogger(__name__)
 # Module-level market prices dict, populated by WS/API in run_scanner
 market_prices: dict[str, dict] = {}
 
-# Only bet on games expiring within this many minutes.
-# Games typically last 2-3 hours. If expected expiry is 15 min away,
-# we're in the final stretch - 4th quarter, 9th inning, etc.
-MAX_MINUTES_TO_EXPIRY = 15
-
 # Minimum volume on the market to ensure there's liquidity
 MIN_VOLUME = 50
 
@@ -119,32 +114,6 @@ async def find_sports_game_series(client: KalshiClient) -> list[str]:
         ):
             game_tickers.append(ticker)
     return game_tickers
-
-
-def is_game_nearly_over(market: dict, max_minutes: float = MAX_MINUTES_TO_EXPIRY) -> bool:
-    """
-    Check if a game is in its final stretch.
-
-    Uses expected_expiration_time (when Kalshi expects the game to end).
-    We only buy when the game is within max_minutes of ending,
-    meaning we're in the last quarter/period/set where the outcome
-    is essentially locked in.
-    """
-    exp_str = market.get("expected_expiration_time", "")
-    if not exp_str:
-        return False
-
-    try:
-        exp_time = datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
-    except (ValueError, TypeError):
-        return False
-
-    now = datetime.now(timezone.utc)
-    time_until_expiry = exp_time - now
-
-    # Game must expire in the future (not settled yet)
-    # AND within our tight window (game is nearly over)
-    return timedelta(0) < time_until_expiry <= timedelta(minutes=max_minutes)
 
 
 def has_liquidity(market: dict, min_volume: int = MIN_VOLUME) -> bool:
@@ -286,14 +255,6 @@ async def record_balance(client: KalshiClient):
     except Exception as e:
         log.warning(f"Failed to record balance: {e}")
 
-    # Stretch thresholds: looser filters for shadow-tracking
-
-
-STRETCH_PRICE_MIN = 85  # vs current 92c
-STRETCH_SCORE_LEAD = {
-    k: max(1, v - (v * 4 // 10))  # ~40% lower lead requirement
-    for k, v in MIN_SCORE_LEAD.items()
-}
 
 # What-If strategy sets: each defines a different parameter combination
 # to shadow-track alongside real bets. Results show which tuning works best.
@@ -407,8 +368,8 @@ async def scan_kalshi_with_espn(
                         yes_ask = extract_cents(market, "yes_ask")
                         ticker = market.get("ticker", "")
 
-                        # Need at least stretch-level price
-                        stretch_min = get_config_int("stretch_price_min") or STRETCH_PRICE_MIN
+                        # Need at least stretch-level price (DB default is 85)
+                        stretch_min = get_config_int("stretch_price_min") or 85
                         if not (yes_ask and yes_ask >= stretch_min and yes_ask <= 99):
                             continue
 

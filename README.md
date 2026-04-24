@@ -1,49 +1,22 @@
-<p align="center">
-  <img src="https://getrich.rager.tech/opengraph-image" alt="Rager's Get Rich Slow Scheme" width="600" />
-</p>
+# Kalshi Trading Scanner
 
-<h1 align="center">Rager's Get Rich Slow Scheme</h1>
+Automated scanner that watches live sports games across multiple leagues, cross-references ESPN scores with Kalshi YES contract prices, and buys YES at 88–99¢ on games that are already effectively decided. Settled contracts pay $1; the edge comes from Kalshi's market lag behind live game state.
 
-<p align="center">
-  <strong>Automated Kalshi sports prediction market scanner</strong><br>
-  <sub>Buy YES contracts at 88–99¢ on games that are already decided. Collect $1 at settlement.</sub>
-</p>
-
-<p align="center">
-  <a href="https://getrich.rager.tech"><img src="https://img.shields.io/badge/Live_Dashboard-getrich.rager.tech-F59E0B?style=for-the-badge&logoColor=white" alt="Live Dashboard" /></a>
-  <a href="https://github.com/brentrager/get-rich-slow/actions"><img src="https://img.shields.io/github/actions/workflow/status/brentrager/get-rich-slow/ci.yml?style=for-the-badge&label=CI&color=22c55e" alt="CI" /></a>
-</p>
-
-<table align="center"><tr><td align="center">
-  <a href="https://smoo.ai"><img src="images/smoo-logo.png" alt="Smoo AI" width="60" /></a><br>
-  <sub><em>A project by <a href="https://rager.tech">Brent Rager</a> — founder of <a href="https://smoo.ai">Smoo AI</a></em></sub><br>
-  <sub>AI agents, dev tools, CRM, support &amp; campaigns that integrate with everything you build.<br><a href="https://smoo.ai/work-with-us">Let's talk.</a></sub>
-</td></tr></table>
+**Disclaimer.** This software is provided as-is. Prediction markets involve real financial risk and regulatory constraints that vary by jurisdiction. Run with `DRY_RUN=true` first, review every trade placed, and do not deploy with real funds unless you understand the strategy, the risks, and your local regulations.
 
 ---
-
-## How It Works
-
-The scanner watches live sports games across **NBA, NHL, MLB, NFL, MLS, Premier League, La Liga, NCAA, and UFC** — and buys YES contracts on Kalshi when:
-
-1. **ESPN confirms the game is in its final minutes** — 4th quarter <5min, 9th inning, final period, etc.
-2. **The leading team has a comfortable margin** — 8+ pts NBA, 2+ goals NHL/soccer, 10+ pts NFL, etc.
-3. **Kalshi YES price is 88–99¢** — market already expects this outcome
-4. **Sufficient liquidity** — 50+ volume, active bid
-
-> **The edge:** Kalshi prices lag behind live game state. A team up 15 points with 2 minutes left in the 4th quarter is a near-certainty, but the YES contract might still be at 92¢. We buy at 92¢, collect $1 at settlement. Small margins, high win rate.
 
 ## Architecture
 
 ```mermaid
 graph TD
-    ESPN["🏈 ESPN API<br/>scores, periods, clocks · 10s poll"]
-    KWS["⚡ Kalshi WebSocket<br/>real-time prices + settlements"]
-    KREST["📡 Kalshi REST API<br/>discover markets, place orders · 5s"]
-    SCANNER["🐍 Scanner<br/>Python / asyncio"]
-    DB["🗄️ SQLite on EFS<br/>trades, balance, opportunities"]
-    API["🚀 FastAPI<br/>/api/*"]
-    DASH["🖥️ Next.js Dashboard<br/>getrich.rager.tech"]
+    ESPN["ESPN API<br/>scores, periods, clocks · 10s poll"]
+    KWS["Kalshi WebSocket<br/>real-time prices + settlements"]
+    KREST["Kalshi REST API<br/>discover markets, place orders · 5s"]
+    SCANNER["Scanner<br/>Python / asyncio"]
+    DB["SQLite (local) or EFS-backed<br/>trades, balance, opportunities"]
+    API["FastAPI<br/>/api/*"]
+    DASH["Next.js dashboard"]
 
     ESPN --> SCANNER
     KWS --> SCANNER
@@ -51,167 +24,221 @@ graph TD
     SCANNER --> KREST
     DB --> API
     API --> DASH
-
-    style ESPN fill:#1a1a2e,stroke:#FF0000,color:#fff
-    style KWS fill:#1a1a2e,stroke:#64748b,color:#fff
-    style KREST fill:#1a1a2e,stroke:#64748b,color:#fff
-    style SCANNER fill:#1a1a2e,stroke:#F59E0B,color:#fff
-    style DB fill:#1a1a2e,stroke:#003B57,color:#fff
-    style API fill:#1a1a2e,stroke:#009688,color:#fff
-    style DASH fill:#1a1a2e,stroke:#fff,color:#fff
 ```
 
-### Real-Time Data Pipeline
+The scanner runs four concurrent async loops inside a single FastAPI process:
 
-| Layer | Source | Method | Purpose |
-|:------|:-------|:-------|:--------|
-| **Prices** | Kalshi WebSocket | `ticker` channel, real-time | Live YES/NO bid-ask streaming |
-| **Settlements** | Kalshi WebSocket | `market_lifecycle_v2` | Instant win/loss detection |
-| **Markets** | Kalshi REST API | Poll every 5s | Discover new markets, place orders |
-| **Game State** | ESPN API | Poll every 10s | Score, period, clock verification |
-| **Dashboard** | FastAPI → Next.js | REST | P&L tracking, live games, analytics |
+| Loop | Source | Cadence | Purpose |
+|---|---|---|---|
+| ESPN poll | ESPN REST | 10 s | Live game state (score, period, clock) |
+| Kalshi API scan | Kalshi REST | 5 s | Discover markets, evaluate filters, place orders |
+| WebSocket listener | Kalshi WS | real-time | Streaming price ticks + settlement events |
+| DB backup | S3 | 30 min | SQLite snapshot upload |
 
-### What-If Strategy Tracking
+See [`docs/project.md`](docs/project.md) for the full architecture + trading data flow.
 
-Five shadow strategies run in parallel — evaluating every market against different price thresholds, timing windows, and lead requirements. Each tracks hypothetical P&L so we can backtest parameter changes before risking real capital.
+---
 
 ## Tech Stack
 
-<table>
-  <tr>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/python/3776AB" width="32" /><br><sub>Python 3.12</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/fastapi/009688" width="32" /><br><sub>FastAPI</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/sqlite/003B57" width="32" /><br><sub>SQLite</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/next.js/000000" width="32" /><br><sub>Next.js 16</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/react/61DAFB" width="32" /><br><sub>React 19</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="32" /><br><sub>Tailwind CSS</sub></td>
-  </tr>
-  <tr>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/docker/2496ED" width="32" /><br><sub>Docker</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/amazonecs/FF9900" width="32" /><br><sub>AWS ECS</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/sst/E27152" width="32" /><br><sub>SST v3</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/cloudflare/F38020" width="32" /><br><sub>Cloudflare</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/socketdotio/010101" width="32" /><br><sub>WebSockets</sub></td>
-    <td align="center" width="96"><img src="https://cdn.simpleicons.org/espn/FF0000" width="32" /><br><sub>ESPN API</sub></td>
-  </tr>
-</table>
+| Layer | Tools |
+|---|---|
+| Backend | Python 3.13, FastAPI, SQLAlchemy 2, SQLite, `asyncio`, `websockets` |
+| Dashboard | Next.js 16, React 19, Tailwind CSS 4 |
+| CLI | React-ink TUI (`cli/`) |
+| Tooling | `uv`, `ruff`, `ty`, `pnpm`, `oxfmt`, `oxlint` |
+| Infra | SST v3, AWS ECS, S3, OpenNext, Cloudflare DNS |
 
-## Dashboard
+---
 
-The dashboard at [getrich.rager.tech](https://getrich.rager.tech) shows:
+## Prerequisites
 
-- **Account Value** — step chart tracking balance over time with each win/loss
-- **Live Games** — real-time ESPN game state with Kalshi market prices, color-coded by betting criteria
-- **Scanner Config** — live view of all trading parameters and per-sport rules
-- **Trade History** — every bet placed with P&L
-- **Strategy Comparison** — side-by-side what-if analysis across 5 parameter sets
-- **Stats** — win rate, realized P&L, open positions
+- [`uv`](https://docs.astral.sh/uv/) (Python package manager — replaces pip)
+- [`pnpm`](https://pnpm.io) ≥ 10 (JS package manager)
+- Node.js ≥ 20 (required by Next.js 16)
+- Docker (optional — for local container builds)
+- A [Kalshi API key + RSA private key](https://kalshi.com/sign-up/api)
+- For deployment only: AWS account in `us-east-2` and a Cloudflare account with API token
 
-## Deployment
+---
 
-### Prerequisites
+## Install
 
-- [SST v3](https://sst.dev) + [pnpm](https://pnpm.io)
-- [uv](https://docs.astral.sh/uv/) (Python package manager)
-- AWS account (us-east-2)
-- Cloudflare account (DNS)
-- [Kalshi API keys](https://kalshi.com/sign-up/api)
-
-### Secrets
-
-SST secrets must be set before first deploy:
+### Automatic
 
 ```bash
-npx sst secret set KalshiApiKey "your-kalshi-api-key-id"
-npx sst secret set KalshiPrivateKey "-----BEGIN RSA PRIVATE KEY-----\n..."
-npx sst secret set DashboardPassword "your-dashboard-password"
-npx sst secret set ApiToken "your-api-bearer-token"
+./install.sh
 ```
 
-### Infrastructure
+The script:
 
-SST provisions everything in `sst.config.ts`:
+1. Checks for `uv`, `pnpm`, Node ≥ 20 (warns if `docker` is missing).
+2. Runs `uv sync` to create `.venv` and install Python deps + the `predictions` package.
+3. Runs `pnpm install` at the root, in `dashboard/`, and in `cli/`.
+4. Copies `.env.example` → `.env` if `.env` does not already exist.
+5. Installs `scripts/pre-commit-check.sh` as the git pre-commit hook (skipped if no `.git`).
+6. Prints a "next steps" block.
 
-| Resource | What | Notes |
-|:---------|:-----|:------|
-| **VPC** | Networking with NAT | EC2-based NAT to save cost |
-| **ECS Cluster** | Container orchestration | Single service runs API + Scanner |
-| **EFS** | Persistent storage | SQLite database lives here |
-| **S3 Bucket** | DB backups | Periodic SQLite snapshots |
-| **Next.js (SST)** | Dashboard | Lambda + CloudFront via OpenNext |
-| **Cloudflare DNS** | Domain routing | `getrich.rager.tech` + `getrich-api.rager.tech` |
+Safe to re-run: each step is idempotent.
 
-### Commands
+### Manual
+
+If you prefer to run the steps yourself:
 
 ```bash
-# Deploy to AWS (requires AWS creds + Cloudflare token in .envrc)
-pnpm sst:deploy
+uv sync
+pnpm install
+(cd dashboard && pnpm install)
+(cd cli && pnpm install)
+cp .env.example .env  # then edit .env
+ln -sf ../../scripts/pre-commit-check.sh .git/hooks/pre-commit  # if git repo
+```
 
-# Local development (Docker Compose)
-pnpm dev
+---
 
-# Run API locally (without Docker)
-pnpm dev:api
+## Configuration
 
-# Tear down all infrastructure
-pnpm sst:remove
+All runtime configuration is read from environment variables. See [`.env.example`](.env.example) for the canonical list; copy it to `.env` and fill in the values.
+
+Scanner tuning (min YES price, bet percentage, per-sport score leads, etc.) lives in the SQLite `config` table and is re-read by the scanner every loop (≈ 5 s). Initial values come from `src/predictions/db.py::_CONFIG_DEFAULTS`.
+
+### Runtime config keys
+
+**Trading parameters**
+
+| Key | Default | Description |
+|---|---|---|
+| `min_yes_price` | 91 | Minimum YES ask price in cents to place a bet |
+| `bet_percent` | 10 | Percentage of available cash to bet per match |
+| `max_positions` | 20 | Maximum concurrent open positions |
+| `min_volume` | 50 | Minimum market volume for liquidity |
+| `stretch_price_min` | 85 | Minimum YES price for stretch (shadow) tracking |
+| `trading_paused` | false | If `"true"`, the scanner stops placing real bets |
+
+**Per-sport minimum score lead** — keys like `lead:basketball/nba`, `lead:hockey/nhl`. Current defaults live in `db.py`; the NBA/NCAAMB defaults are `12`, NFL/NCAAFB `10`, MLB `3`, NHL/soccer `2`, UFC `0`.
+
+**Per-sport end-of-game timing** — keys like `final_seconds:basketball/nba` (countdown sports: clock ≤ value) or `final_seconds:soccer/eng.1` (count-up sports: clock ≥ value). See `db.py` for defaults.
+
+---
+
+## Usage
+
+### Local development
+
+Start the API + scanner (runs four async loops inside uvicorn):
+
+```bash
+pnpm dev:api     # equivalent to `uv run uvicorn predictions.api:app --host 0.0.0.0 --port 8000 --reload`
+```
+
+Start the dashboard (separate terminal):
+
+```bash
+pnpm dev:dashboard   # Next.js on http://localhost:3777
 ```
 
 ### CLI
 
-A react-ink TUI for managing the scanner from the terminal:
+A React-ink TUI that talks to the API over HTTPS with a Bearer token:
 
 ```bash
-# View current config (interactive TUI)
-pnpm cli config
+pnpm cli config                      # show current config (TUI)
+pnpm cli config set min_yes_price 90 # update a config key
+pnpm cli stats                       # summary stats
+pnpm cli trades                      # recent trades
 
-# Update a config value
-pnpm cli config set trading.min_yes_price 90
-
-# View stats / trades
-pnpm cli stats
-pnpm cli trades
-
-# JSON output for piping / automation
+# JSON output for scripting
 pnpm cli stats --json
 pnpm cli trades --json | jq '.trades[0]'
 ```
 
-Requires `API_TOKEN` env var (or `--token` flag). Set `GETRICH_API_URL` to override the default API endpoint.
+The CLI reads `API_TOKEN` and `GETRICH_API_URL` from the environment (or `--token` / `--api-url` flags).
 
-### Runtime Configuration (API)
+### Direct Python invocation
 
-The scanner reads config from the database at startup. Update settings via the CLI above or the API directly:
+Local DB access (no API round-trip):
 
 ```bash
-# Update a config value (requires API_TOKEN)
-curl -X PUT https://getrich-api.rager.tech/api/config \
+uv run python -m predictions.config_cli                    # show all config
+uv run python -m predictions.config_cli set bet_percent 5
+uv run python -m predictions.config_cli delete bet_percent  # revert to default
+uv run python -m predictions.config_cli reset               # reset all overrides
+```
+
+Run the API without Docker:
+
+```bash
+uv run uvicorn predictions.api:app --reload
+```
+
+### Docker
+
+```bash
+docker build -t kalshi-trading .
+docker run --rm -p 8000:8000 --env-file .env kalshi-trading
+```
+
+### Updating runtime config remotely
+
+```bash
+curl -X PUT https://your-api-domain.example/api/config \
   -H "Authorization: Bearer $API_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"key": "trading.min_yes_price", "value": "92"}'
-
-# View current config
-curl https://getrich-api.rager.tech/api/config \
-  -H "Authorization: Bearer $API_TOKEN"
+  -d '{"key": "min_yes_price", "value": "92"}'
 ```
+
+---
+
+## Deployment
+
+SST v3 provisions the full AWS stack from [`sst.config.ts`](sst.config.ts):
+
+- VPC with EC2-based NAT (to keep cost low).
+- ECS Fargate service running the API + scanner in a single container.
+- S3 bucket for periodic DB snapshots.
+- Next.js dashboard via OpenNext (Lambda + CloudFront).
+- Cloudflare DNS records for both the API and the dashboard.
+
+### First-time setup
+
+```bash
+# Set SST secrets (not env vars — these are encrypted at rest in AWS)
+npx sst secret set KalshiApiKey "your-kalshi-api-key-id"
+npx sst secret set KalshiPrivateKey "-----BEGIN RSA PRIVATE KEY-----\n…"
+npx sst secret set DashboardPassword "your-dashboard-password"
+npx sst secret set ApiToken "your-api-bearer-token"
+```
+
+Update the `domain.name` fields in `sst.config.ts` to your own domain before deploying.
+
+### Deploy
+
+```bash
+pnpm sst:deploy       # assumes direnv + `assume` for AWS SSO; adjust to your setup
+pnpm sst:remove       # tear down
+```
+
+---
 
 ## Development
 
 ```bash
 # Format + lint Python
-uv run ruff format . && uv run ruff check . && uv run ty check
+uv run ruff format .
+uv run ruff check . --fix
+uv run ty check
 
-# Format + lint TypeScript
-cd dashboard && pnpm oxfmt . && pnpm oxlint
+# Format + lint dashboard
+(cd dashboard && pnpm fmt && pnpm lint)
 
-# Build dashboard
-cd dashboard && pnpm build
+# Run the pre-commit hook manually against staged changes
+bash scripts/pre-commit-check.sh
 ```
 
-A pre-commit hook runs automatically: formats Python (ruff) and TypeScript (oxfmt), then type-checks with ty.
+The pre-commit hook (installed by `install.sh` or manually symlinked to `.git/hooks/pre-commit`) runs `ruff format` + `ruff check --fix` + `ty check` on staged `src/` and `tests/` Python files, and `oxfmt` on staged dashboard TS/TSX.
 
 ---
 
-<p align="center">
-  <sub>Built by <a href="https://rager.tech">Brent Rager</a> at <a href="https://smoo.ai">Smoo AI</a> with <a href="https://claude.ai/claude-code">Claude Code</a></sub>
-</p>
+## License
+
+See [`LICENSE`](LICENSE).

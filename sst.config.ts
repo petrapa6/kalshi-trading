@@ -60,12 +60,13 @@ export default $config({
           DRY_RUN: $dev ? "true" : "false",
           API_TOKEN: apiToken.value,
           DB_BACKUP_BUCKET: backupBucket.name,
+          CORS_ORIGINS: "https://your-domain.example",
       },
 
       public: {
         ports: [{ listen: "443/https", forward: "8000/http" }],
         domain: {
-          name: "api.matej-kalshi.pp.ua",
+          name: "api.your-domain.example",
           dns: sst.cloudflare.dns(),
         },
       },
@@ -79,7 +80,7 @@ export default $config({
     const dashboard = new sst.aws.Nextjs("Dashboard", {
       path: "dashboard",
       domain: {
-        name: "matej-kalshi.pp.ua",
+        name: "your-domain.example",
         dns: sst.cloudflare.dns(),
       },
       environment: {
