@@ -1,5 +1,7 @@
 """Soccer backtest: simulate trigger-based trading strategies on historical matches."""
 
+import re
+import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
@@ -121,3 +123,98 @@ def simulate_match(match, req: BacktestRequest) -> Trigger | None:
                 leading_side="home" if diff > 0 else "away",
             )
     return None
+
+
+# Canonical team-name aliases. Each entry maps an alias to its canonical
+# display name. Lookup is case-insensitive after _normalize_team. This is
+# the systematic-correction surface — grow lazily as Kalshi/football-data
+# mismatches are observed.
+_TEAM_ALIASES: dict[str, str] = {
+    # Premier League
+    "man utd": "manchester united",
+    "man united": "manchester united",
+    "manchester utd": "manchester united",
+    "man city": "manchester city",
+    "spurs": "tottenham hotspur",
+    "tottenham": "tottenham hotspur",
+    "wolves": "wolverhampton wanderers",
+    "brighton": "brighton hove albion",
+    "brighton and hove albion": "brighton hove albion",
+    "brighton & hove albion": "brighton hove albion",
+    "newcastle": "newcastle united",
+    "nott'm forest": "nottingham forest",
+    "leeds": "leeds united",
+    "west ham": "west ham united",
+    # La Liga
+    "atletico madrid": "atletico madrid",
+    "atletico": "atletico madrid",
+    "atleti": "atletico madrid",
+    "real": "real madrid",
+    "barca": "barcelona",
+    "barça": "barcelona",
+    "fc barcelona": "barcelona",
+    "athletic bilbao": "athletic club",
+    "real sociedad": "real sociedad",
+    # Bundesliga
+    "bayern": "bayern munchen",
+    "bayern munich": "bayern munchen",
+    "fc bayern munchen": "bayern munchen",
+    "dortmund": "borussia dortmund",
+    "bvb": "borussia dortmund",
+    "leverkusen": "bayer leverkusen",
+    "gladbach": "borussia monchengladbach",
+    "monchengladbach": "borussia monchengladbach",
+    "rb leipzig": "rb leipzig",
+    "leipzig": "rb leipzig",
+    "schalke": "schalke 04",
+    "union berlin": "union berlin",
+    "eintracht frankfurt": "eintracht frankfurt",
+    "frankfurt": "eintracht frankfurt",
+    "freiburg": "sc freiburg",
+    "stuttgart": "vfb stuttgart",
+}
+
+_NOISE_PREFIXES = ("fc ", "afc ", "1. ")
+_NOISE_SUFFIXES = (" fc", " cf", " sc", " ac", " afc", " cfc")
+
+
+def _normalize_team(name: str) -> str:
+    """Lower-case, strip accents + leading/trailing club suffixes, collapse whitespace."""
+    s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    s = s.lower().strip()
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    for pref in _NOISE_PREFIXES:
+        if s.startswith(pref):
+            s = s[len(pref) :].strip()
+    for suf in _NOISE_SUFFIXES:
+        if s.endswith(suf):
+            s = s[: -len(suf)].strip()
+    return s
+
+
+def _canonical_team(name: str) -> str:
+    """Return the canonical (alias-resolved) form of a team name."""
+    norm = _normalize_team(name)
+    return _TEAM_ALIASES.get(norm, norm)
+
+
+def _canonicalize_title(market_title: str) -> str:
+    """Normalize a market title and replace alias phrases with canonical forms.
+
+    Longer aliases are substituted first so 'manchester utd' wins over 'man utd'.
+    """
+    title_norm = _normalize_team(market_title)
+    for alias, canon in sorted(_TEAM_ALIASES.items(), key=lambda kv: len(kv[0]), reverse=True):
+        title_norm = re.sub(rf"\b{re.escape(alias)}\b", canon, title_norm)
+    return title_norm
+
+
+def _market_mentions_both_teams(market_title: str, team_a: str, team_b: str) -> bool:
+    """Conservative containment check: the title must contain both canonical
+    forms as substrings. Prefers a non-match over a wrong match.
+    """
+    title_canon = _canonicalize_title(market_title)
+    a = _canonical_team(team_a)
+    b = _canonical_team(team_b)
+    return a in title_canon and b in title_canon
