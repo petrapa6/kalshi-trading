@@ -97,6 +97,8 @@ def simulate_match(match, req: BacktestRequest) -> Trigger | None:
     goals_by_minute: dict[int, list] = defaultdict(list)
     for g in match.goals:
         goals_by_minute[g.minute].append(g)
+    # sequence is chronological by construction in soccer_cache._ingest_goals,
+    # so sorting by it orders same-minute goals in real scoring order.
     for minute, gs in goals_by_minute.items():
         gs.sort(key=lambda x: x.sequence)
 
