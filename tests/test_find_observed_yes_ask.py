@@ -50,3 +50,121 @@ def test_bundesliga_dotted_prefix_strips_correctly():
     from predictions.backtest import _normalize_team
 
     assert _normalize_team("1. FC Köln") == "koln"
+
+
+from datetime import datetime, timedelta, timezone
+
+
+def _seed_opportunity(**kwargs):
+    from predictions.db import Opportunity, get_session
+
+    session = get_session()
+    session.add(Opportunity(**kwargs))
+    session.commit()
+    session.close()
+
+
+def _fake_match(kickoff: datetime, home: str, away: str):
+    from types import SimpleNamespace
+
+    return SimpleNamespace(
+        id="fd:x",
+        kickoff_at=kickoff,
+        home_team=home,
+        away_team=away,
+        home_score=0,
+        away_score=0,
+        goals=[],
+    )
+
+
+def test_returns_none_when_no_matching_opportunity():
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    m = _fake_match(kickoff, "Arsenal", "Chelsea")
+    assert find_observed_yes_ask(m, fire_minute=80, leading_side="home") is None
+
+
+def test_picks_closest_opportunity_to_fire_time():
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    target = kickoff + timedelta(minutes=80)
+    _seed_opportunity(
+        ticker="KXEPLGAME-001",
+        series_ticker="KXEPLGAME",
+        title="Arsenal vs Chelsea — Arsenal to win",
+        yes_ask=85,
+        yes_bid=80,
+        spread=5,
+        volume=100,
+        found_at=target - timedelta(minutes=20),
+    )
+    _seed_opportunity(
+        ticker="KXEPLGAME-001",
+        series_ticker="KXEPLGAME",
+        title="Arsenal vs Chelsea — Arsenal to win",
+        yes_ask=94,
+        yes_bid=90,
+        spread=4,
+        volume=100,
+        found_at=target - timedelta(minutes=5),
+    )
+    m = _fake_match(kickoff, "Arsenal", "Chelsea")
+    price = find_observed_yes_ask(m, fire_minute=80, leading_side="home")
+    assert price == 94
+
+
+def test_ignores_rows_outside_window():
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    _seed_opportunity(
+        ticker="KXEPLGAME-001",
+        series_ticker="KXEPLGAME",
+        title="Arsenal vs Chelsea — Arsenal to win",
+        yes_ask=94,
+        yes_bid=90,
+        spread=4,
+        volume=100,
+        found_at=kickoff - timedelta(minutes=40),
+    )
+    m = _fake_match(kickoff, "Arsenal", "Chelsea")
+    assert find_observed_yes_ask(m, fire_minute=80, leading_side="home") is None
+
+
+def test_alias_match_resolves_manchester_united():
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    _seed_opportunity(
+        ticker="KXEPLGAME-001",
+        series_ticker="KXEPLGAME",
+        title="Man Utd vs Chelsea — Man Utd to win",
+        yes_ask=92,
+        yes_bid=88,
+        spread=4,
+        volume=100,
+        found_at=kickoff + timedelta(minutes=75),
+    )
+    m = _fake_match(kickoff, "Manchester United", "Chelsea")
+    assert find_observed_yes_ask(m, fire_minute=75, leading_side="home") == 92
+
+
+def test_requires_leading_team_in_title():
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    _seed_opportunity(
+        ticker="KXEPLGAME-002",
+        series_ticker="KXEPLGAME",
+        title="Arsenal vs Chelsea — Chelsea to win",
+        yes_ask=20,
+        yes_bid=18,
+        spread=2,
+        volume=100,
+        found_at=kickoff + timedelta(minutes=75),
+    )
+    m = _fake_match(kickoff, "Arsenal", "Chelsea")
+    assert find_observed_yes_ask(m, fire_minute=75, leading_side="home") is None

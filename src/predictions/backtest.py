@@ -4,7 +4,7 @@ import re
 import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -243,3 +243,56 @@ def _market_mentions_both_teams(market_title: str, team_a: str, team_b: str) -> 
     a = _canonical_team(team_a)
     b = _canonical_team(team_b)
     return a in title_canon and b in title_canon
+
+
+def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | None:
+    """Best-effort lookup of the Kalshi YES ask observed by the live scanner
+    closest to `kickoff + fire_minute × 60s`.
+
+    Returns None when no market can be confidently matched. Deliberately
+    conservative: requires both team names to appear in the market title
+    after alias normalization, AND the leading team must be the one the
+    market resolves YES on (identified by a `"{team} to win"` phrase in
+    the canonicalized title). Prefers a None over a wrong price.
+    """
+    from predictions.db import Opportunity, get_session
+
+    # SQLAlchemy + SQLite stores DateTime tz-naive. Compare against tz-naive
+    # UTC instants so the `>=`/`<=` predicates work both in Python and SQL.
+    kickoff_naive = match.kickoff_at.replace(tzinfo=None)
+    window_start = kickoff_naive - timedelta(minutes=30)
+    window_end = kickoff_naive + timedelta(minutes=150)
+    target = kickoff_naive + timedelta(minutes=fire_minute)
+
+    leading_team = match.home_team if leading_side == "home" else match.away_team
+    leading_canon = _canonical_team(leading_team)
+    leading_win_phrase = f"{leading_canon} to win"
+
+    session = get_session()
+    try:
+        rows = (
+            session.query(Opportunity)
+            .filter(
+                Opportunity.found_at >= window_start,
+                Opportunity.found_at <= window_end,
+            )
+            .all()
+        )
+        best = None
+        best_delta = None
+        for row in rows:
+            title = row.title or ""
+            if not _market_mentions_both_teams(title, match.home_team, match.away_team):
+                continue
+            if leading_win_phrase not in _canonicalize_title(title):
+                continue
+            found_at = row.found_at
+            if found_at is not None and found_at.tzinfo is not None:
+                found_at = found_at.replace(tzinfo=None)
+            delta = abs((found_at - target).total_seconds())
+            if best_delta is None or delta < best_delta:
+                best = row
+                best_delta = delta
+        return None if best is None else int(best.yes_ask)
+    finally:
+        session.close()
