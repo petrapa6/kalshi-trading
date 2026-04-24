@@ -147,17 +147,11 @@ sequenceDiagram
 
 ## Known Issues
 
-These are documented here rather than fixed so follow-up sessions can pick them up:
+Outstanding issues, labelled by criticality. Earlier fixed items have been pruned — see `git log` for the history.
 
-- **Fee-accounting mismatch between settlement paths.** `scanner.check_settlements` subtracts `fee_cents` from P&L on win; the WebSocket lifecycle handler (`on_lifecycle` in `run_scanner`) sets `pnl_cents = potential_profit_cents` without subtracting the fee. WS fires first in production, so real-trade P&L is systematically overstated by the fee amount.
-- **$200 hardcoded starting-balance assumption in `/api/stats`.** `api.get_stats` computes historical unrecorded fees as `total_pnl - (balance_cents - 20000)`, baking in a $200 starting balance. Breaks for any other starting balance or if deposits/withdrawals occurred.
-- **SQLite durability window** — production DATABASE_URL is `/tmp/predictions.db` (ECS task-local, lost on restart). Durability is actually "S3 snapshot every 30 min + `_download_db()` in lifespan startup". Data loss window up to 30 min on a crash. No EFS is mounted despite older docs claiming otherwise.
-- **`dashboard/app/page.tsx` is a single 102 KB `"use client"` component.** Does auth, all fetching, charts, tables, and UI in one file. Worth breaking up in a dedicated session.
-- **No pytest suite.** `tests/test_sport_stats.py` and `tests/test_ws.py` are standalone `asyncio.run(...)` scripts. A real pytest harness would let the pre-commit hook actually prove things.
-- ~~`market_prices` dict race~~ — retracted. On review the iteration site (`scanner.py` inside `_evaluate_what_if_strategies`) already takes a `list(market_prices.items())` snapshot before looping, and the WS handler replaces inner dicts wholesale rather than mutating in place. Combined with asyncio's single-threaded execution, there is no torn-read window.
-- **`kalshi_client._rate_limit` imports `asyncio` inside the function** (copy-paste artefact). Cosmetic.
-- **Hypothetical stretch P&L assumes 5 contracts** (`scanner.check_stretch_settlements`, WS lifecycle). Doesn't reflect the real `bet_percent`-of-balance sizing, so what-if P&L isn't directly comparable to realised P&L.
-- **`trade.side` hardcoded to "yes" in stretch settlement.** All strategies currently bet YES, but any future NO strategy would mis-settle.
+- **[Medium] SQLite durability window.** Production `DATABASE_URL` is `/tmp/predictions.db` (ECS task-local, lost on restart). Durability comes from the 30 min S3 snapshot loop plus `_download_db()` in the API lifespan. Data-loss window up to 30 min on a crash. No EFS is mounted. Fix options: switch to a persistent volume, shorten the backup interval, or move to a managed DB.
+- **[Medium] Hypothetical stretch P&L assumes 5 contracts** (`scanner.check_stretch_settlements`, WS lifecycle stretch branch — `cost = stretch.yes_ask * 5`, `profit = (100 - stretch.yes_ask) * 5`). Real bets use `bet_percent`-of-balance sizing, so what-if P&L is a relative ranking signal between strategies, not an absolute dollar prediction. Fix: record the hypothetical `count` on `StretchOpportunity` at creation time using the then-current `bet_percent` and balance, then compute P&L from that at settlement. Schema migration required.
+- **[Refactor — large scope] `dashboard/app/page.tsx` is a 102 KB single `"use client"` component.** Does auth, all data fetching, charts, and tables in one file. Not a bug; a maintainability cliff. Best tackled as its own brainstorm → plan → execute cycle.
 
 ## External References
 
