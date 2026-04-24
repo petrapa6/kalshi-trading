@@ -1,6 +1,7 @@
 """Soccer historical-match cache, backed by its own SQLite DB and fed by football-data.org."""
 
 import os
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Protocol
 
@@ -136,9 +137,6 @@ class FootballDataClient:
         return resp.json()
 
 
-from dataclasses import dataclass
-
-
 class _FootballClientLike(Protocol):
     async def list_matches(self, league: str, date_from: str, date_to: str) -> dict: ...
     async def get_match_goals(self, match_id: int) -> dict: ...
@@ -218,7 +216,9 @@ async def ensure_matches_cached(
                 detail = await client.get_match_goals(m["id"])
             except RateLimitedError:
                 partial = True
-                missing = len(raw_matches) - i
+                missing = sum(
+                    1 for later in raw_matches[i:] if f"fd:{later['id']}" not in existing_ids
+                )
                 break
 
             home_team_id = m["homeTeam"]["id"]
