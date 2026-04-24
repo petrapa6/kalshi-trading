@@ -93,8 +93,6 @@ class KalshiClient:
     async def _rate_limit(self):
         now = datetime.now()
         if now - self.last_api_call < timedelta(milliseconds=100):
-            import asyncio
-
             await asyncio.sleep(0.1)
         self.last_api_call = datetime.now()
 

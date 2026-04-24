@@ -14,7 +14,7 @@ graph TD
     KWS["Kalshi WebSocket<br/>real-time prices + settlements"]
     KREST["Kalshi REST API<br/>discover markets, place orders · 5s"]
     SCANNER["Scanner<br/>Python / asyncio"]
-    DB["SQLite (local) or EFS-backed<br/>trades, balance, opportunities"]
+    DB["SQLite on /tmp (prod)<br/>S3 snapshots every 30 min<br/>trades, balance, opportunities"]
     API["FastAPI<br/>/api/*"]
     DASH["Next.js dashboard"]
 
