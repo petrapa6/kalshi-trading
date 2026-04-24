@@ -9,9 +9,7 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Default SQLite path at the repo root (src/predictions/db.py → repo/predictions.db)
-_repo_root = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
+_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _default_db = os.path.join(_repo_root, "predictions.db")
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -111,6 +109,9 @@ class StretchOpportunity(Base):
     reason = Column(String)  # "price", "score_lead", "time"
     # Which what-if strategy set this belongs to
     strategy_set = Column(String, default="default", index=True)
+    # Hypothetical bet side — always "yes" today, but stored so future
+    # NO strategies settle correctly against market.result.
+    side = Column(String, default="yes")
     # Settlement tracking
     status = Column(String, default="open")  # open, settled_win, settled_loss
     pnl_cents = Column(Integer, nullable=True)  # hypothetical P&L
@@ -163,6 +164,11 @@ def _migrate_add_columns():
                         "ALTER TABLE stretch_opportunities "
                         "ADD COLUMN strategy_set VARCHAR DEFAULT 'default'"
                     )
+                )
+        if "side" not in cols:
+            with engine.begin() as conn:
+                conn.execute(
+                    text("ALTER TABLE stretch_opportunities ADD COLUMN side VARCHAR DEFAULT 'yes'")
                 )
 
     if "opportunities" in inspector.get_table_names():

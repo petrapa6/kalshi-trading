@@ -557,6 +557,7 @@ async def scan_kalshi_with_espn(
                     espn_clock=s["espn_clock"],
                     reason=s["reason"],
                     strategy_set=strategy,
+                    side="yes",
                 )
             )
             existing_stretch.add((s["ticker"], strategy))
@@ -688,6 +689,7 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict):
                             espn_clock=game.display_clock,
                             reason=",".join(reasons) if reasons else "strategy",
                             strategy_set=strategy_name,
+                            side="yes",
                         )
                     )
                     existing.add((ticker, strategy_name))
@@ -711,10 +713,10 @@ async def check_stretch_settlements(client: KalshiClient):
             result = market.get("result", "")
 
             if status in ("finalized", "settled"):
-                # Hypothetical: if we'd bought YES at the ask price
+                # Hypothetical: if we'd bought `stretch.side` at the ask price
                 cost = stretch.yes_ask * 5  # assume 5 contracts like real bets
                 profit = (100 - stretch.yes_ask) * 5
-                if result == "yes":
+                if result == (stretch.side or "yes"):
                     stretch.status = "settled_win"
                     stretch.pnl_cents = profit
                     log.info(
@@ -855,7 +857,7 @@ async def run_scanner(
             for stretch in open_stretches:
                 cost = stretch.yes_ask * 5
                 profit = (100 - stretch.yes_ask) * 5
-                if result == "yes":
+                if result == (stretch.side or "yes"):
                     stretch.status = "settled_win"
                     stretch.pnl_cents = profit
                     log.info(f"  STRETCH WIN: {stretch.ticker} | +${profit / 100:.2f}")
