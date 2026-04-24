@@ -28,12 +28,12 @@ graph TD
 
 The scanner runs four concurrent async loops inside a single FastAPI process:
 
-| Loop | Source | Cadence | Purpose |
-|---|---|---|---|
-| ESPN poll | ESPN REST | 10 s | Live game state (score, period, clock) |
-| Kalshi API scan | Kalshi REST | 5 s | Discover markets, evaluate filters, place orders |
-| WebSocket listener | Kalshi WS | real-time | Streaming price ticks + settlement events |
-| DB backup | S3 | 30 min | SQLite snapshot upload |
+| Loop               | Source      | Cadence   | Purpose                                          |
+|--------------------|-------------|-----------|--------------------------------------------------|
+| ESPN poll          | ESPN REST   | 10 s      | Live game state (score, period, clock)           |
+| Kalshi API scan    | Kalshi REST | 5 s       | Discover markets, evaluate filters, place orders |
+| WebSocket listener | Kalshi WS   | real-time | Streaming price ticks + settlement events        |
+| DB backup          | S3          | 30 min    | SQLite snapshot upload                           |
 
 See [`docs/project.md`](docs/project.md) for the full architecture + trading data flow.
 
@@ -41,13 +41,13 @@ See [`docs/project.md`](docs/project.md) for the full architecture + trading dat
 
 ## Tech Stack
 
-| Layer | Tools |
-|---|---|
-| Backend | Python 3.13, FastAPI, SQLAlchemy 2, SQLite, `asyncio`, `websockets` |
-| Dashboard | Next.js 16, React 19, Tailwind CSS 4 |
-| CLI | React-ink TUI (`cli/`) |
-| Tooling | `uv`, `ruff`, `ty`, `pnpm`, `oxfmt`, `oxlint` |
-| Infra | SST v3, AWS ECS, S3, OpenNext, Cloudflare DNS |
+| Layer     | Tools                                                               |
+|-----------|---------------------------------------------------------------------|
+| Backend   | Python 3.13, FastAPI, SQLAlchemy 2, SQLite, `asyncio`, `websockets` |
+| Dashboard | Next.js 16, React 19, Tailwind CSS 4                                |
+| CLI       | React-ink TUI (`cli/`)                                              |
+| Tooling   | `uv`, `ruff`, `ty`, `pnpm`, `oxfmt`, `oxlint`                       |
+| Infra     | SST v3, AWS ECS, S3, OpenNext, Cloudflare DNS                       |
 
 ---
 
@@ -106,14 +106,14 @@ Scanner tuning (min YES price, bet percentage, per-sport score leads, etc.) live
 
 **Trading parameters**
 
-| Key | Default | Description |
-|---|---|---|
-| `min_yes_price` | 91 | Minimum YES ask price in cents to place a bet |
-| `bet_percent` | 10 | Percentage of available cash to bet per match |
-| `max_positions` | 20 | Maximum concurrent open positions |
-| `min_volume` | 50 | Minimum market volume for liquidity |
-| `stretch_price_min` | 85 | Minimum YES price for stretch (shadow) tracking |
-| `trading_paused` | false | If `"true"`, the scanner stops placing real bets |
+| Key                 | Default | Description                                      |
+|---------------------|---------|--------------------------------------------------|
+| `min_yes_price`     | 91      | Minimum YES ask price in cents to place a bet    |
+| `bet_percent`       | 10      | Percentage of available cash to bet per match    |
+| `max_positions`     | 20      | Maximum concurrent open positions                |
+| `min_volume`        | 50      | Minimum market volume for liquidity              |
+| `stretch_price_min` | 85      | Minimum YES price for stretch (shadow) tracking  |
+| `trading_paused`    | false   | If `"true"`, the scanner stops placing real bets |
 
 **Per-sport minimum score lead** — keys like `lead:basketball/nba`, `lead:hockey/nhl`. Current defaults live in `db.py`; the NBA/NCAAMB defaults are `12`, NFL/NCAAFB `10`, MLB `3`, NHL/soccer `2`, UFC `0`.
 

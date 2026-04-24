@@ -836,14 +836,15 @@ async def run_scanner(
                 .all()
             )
             for trade in open_trades:
+                fee = trade.fee_cents or 0
                 if result == trade.side:
                     trade.status = "settled_win"
-                    trade.pnl_cents = trade.potential_profit_cents
+                    trade.pnl_cents = trade.potential_profit_cents - fee
                     log.info(f"  WIN: {trade.ticker} | P&L: +${trade.pnl_cents / 100:.2f}")
                 else:
                     trade.status = "settled_loss"
-                    trade.pnl_cents = -trade.cost_cents
-                    log.info(f"  LOSS: {trade.ticker} | P&L: -${trade.cost_cents / 100:.2f}")
+                    trade.pnl_cents = -trade.cost_cents - fee
+                    log.info(f"  LOSS: {trade.ticker} | P&L: ${trade.pnl_cents / 100:.2f}")
 
             # Update stretch opportunities
             open_stretches = (

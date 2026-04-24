@@ -1,8 +1,6 @@
 # Kalshi Trading Scanner — Claude guidance
 
-Session rules for working in this repo. For architecture, data flow, and
-module-level structure, read [`docs/project.md`](docs/project.md) (imported
-below).
+Session rules for working in this repo. For architecture, data flow, and module-level structure, read [`docs/project.md`](docs/project.md)
 
 ## Quick commands
 
