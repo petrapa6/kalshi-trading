@@ -107,7 +107,6 @@ class FootballDataClient:
         transport: httpx.AsyncBaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
-        self._api_key = api_key
         self._client = httpx.AsyncClient(
             base_url=base_url,
             headers={"X-Auth-Token": api_key},

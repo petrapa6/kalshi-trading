@@ -329,7 +329,7 @@ class FootballDataClient:
         api_key: str,
         *,
         base_url: str = FOOTBALL_DATA_BASE_URL,
-        transport: httpx.BaseTransport | None = None,
+        transport: httpx.AsyncBaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
         self._api_key = api_key

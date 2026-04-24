@@ -51,7 +51,7 @@ def _mock_transport(responses: list[tuple[int, dict]]) -> httpx.MockTransport:
     return httpx.MockTransport(handler)
 
 
-async def test_client_sends_auth_header(monkeypatch):
+async def test_client_sends_auth_header():
     from predictions.soccer_cache import FootballDataClient
 
     captured = {}
