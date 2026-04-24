@@ -1,6 +1,6 @@
 """Soccer backtest: simulate trigger-based trading strategies on historical matches."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -22,7 +22,7 @@ class BacktestRequest(BaseModel):
     def _date_range_valid(self):
         if self.date_from > self.date_to:
             raise ValueError("date_from must be <= date_to")
-        if self.date_to > date.today():
+        if self.date_to > datetime.now(timezone.utc).date():
             raise ValueError("date_to cannot be in the future")
         return self
 
