@@ -35,7 +35,10 @@ def test_backtest_returns_503_when_api_key_missing(client, monkeypatch):
     assert resp.status_code == 503
 
 
-def test_backtest_validation_400_on_bad_date_range(client, monkeypatch):
+def test_backtest_rejects_bad_date_range_with_422(client, monkeypatch):
+    """FastAPI catches Pydantic ValidationError before the handler body runs
+    and returns 422. The model_validator in BacktestRequest enforces
+    date_from <= date_to."""
     monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "k")
     body = {
         "league": "PL",
@@ -52,7 +55,7 @@ def test_backtest_validation_400_on_bad_date_range(client, monkeypatch):
         json=body,
         headers={"Authorization": "Bearer test-token"},
     )
-    assert resp.status_code in (400, 422)
+    assert resp.status_code == 422
 
 
 def test_backtest_200_happy_path(client, monkeypatch):

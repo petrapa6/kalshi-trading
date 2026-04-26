@@ -967,7 +967,4 @@ def update_config(body: ConfigUpdate):
 async def post_backtest_soccer(req: BacktestRequest):
     if not os.getenv("FOOTBALL_DATA_API_KEY"):
         raise HTTPException(503, "FOOTBALL_DATA_API_KEY is not configured")
-    try:
-        return await backtest_mod.run_backtest(req)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
+    return await backtest_mod.run_backtest(req)
