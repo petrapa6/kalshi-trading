@@ -250,10 +250,11 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
     closest to `kickoff + fire_minute × 60s`.
 
     Returns None when no market can be confidently matched. Deliberately
-    conservative: requires both team names to appear in the market title
-    after alias normalization, AND the leading team must be the one the
-    market resolves YES on (identified by a `"{team} to win"` phrase in
-    the canonicalized title). Prefers a None over a wrong price.
+    conservative: requires both team names to appear in the market `title`
+    (the matchup label), AND the leading team must be the YES side as
+    recorded in `yes_sub_title` (the team-specific outcome label populated
+    by scanner.py from Kalshi's market metadata). Prefers a None over a
+    wrong price.
     """
     from predictions.db import Opportunity, get_session
 
@@ -265,8 +266,7 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
     target = kickoff_naive + timedelta(minutes=fire_minute)
 
     leading_team = match.home_team if leading_side == "home" else match.away_team
-    leading_canon = _canonical_team(leading_team)
-    leading_win_phrase = f"{leading_canon} to win"
+    leading_canon_tokens = _canonical_team(leading_team).split()
 
     session = get_session()
     try:
@@ -284,7 +284,12 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
             title = row.title or ""
             if not _market_mentions_both_teams(title, match.home_team, match.away_team):
                 continue
-            if leading_win_phrase not in _canonicalize_title(title):
+            # The Kalshi YES side is identified by yes_sub_title, not title.
+            # Require all canonical tokens of the leading team to appear in
+            # the canonicalized yes_sub_title — token-level membership avoids
+            # "real" matching "real sociedad" via substring.
+            sub_tokens = set(_canonicalize_title(row.yes_sub_title or "").split())
+            if not all(tok in sub_tokens for tok in leading_canon_tokens):
                 continue
             found_at = row.found_at
             if found_at is not None and found_at.tzinfo is not None:

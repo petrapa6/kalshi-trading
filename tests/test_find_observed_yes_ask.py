@@ -94,7 +94,8 @@ def test_picks_closest_opportunity_to_fire_time():
     _seed_opportunity(
         ticker="KXEPLGAME-001",
         series_ticker="KXEPLGAME",
-        title="Arsenal vs Chelsea — Arsenal to win",
+        title="Arsenal vs Chelsea",
+        yes_sub_title="Arsenal",
         yes_ask=85,
         yes_bid=80,
         spread=5,
@@ -104,7 +105,8 @@ def test_picks_closest_opportunity_to_fire_time():
     _seed_opportunity(
         ticker="KXEPLGAME-001",
         series_ticker="KXEPLGAME",
-        title="Arsenal vs Chelsea — Arsenal to win",
+        title="Arsenal vs Chelsea",
+        yes_sub_title="Arsenal",
         yes_ask=94,
         yes_bid=90,
         spread=4,
@@ -123,7 +125,8 @@ def test_ignores_rows_outside_window():
     _seed_opportunity(
         ticker="KXEPLGAME-001",
         series_ticker="KXEPLGAME",
-        title="Arsenal vs Chelsea — Arsenal to win",
+        title="Arsenal vs Chelsea",
+        yes_sub_title="Arsenal",
         yes_ask=94,
         yes_bid=90,
         spread=4,
@@ -141,7 +144,8 @@ def test_alias_match_resolves_manchester_united():
     _seed_opportunity(
         ticker="KXEPLGAME-001",
         series_ticker="KXEPLGAME",
-        title="Man Utd vs Chelsea — Man Utd to win",
+        title="Man Utd vs Chelsea",
+        yes_sub_title="Man Utd",
         yes_ask=92,
         yes_bid=88,
         spread=4,
@@ -152,19 +156,61 @@ def test_alias_match_resolves_manchester_united():
     assert find_observed_yes_ask(m, fire_minute=75, leading_side="home") == 92
 
 
-def test_requires_leading_team_in_title():
+def test_requires_leading_team_in_yes_sub_title():
+    """When two markets exist on the same matchup (one for each team's YES),
+    only the one whose yes_sub_title matches the leading side is picked.
+    On real Kalshi data, `title` is the matchup label ('Arsenal vs Chelsea')
+    and `yes_sub_title` carries the team-specific YES outcome ('Arsenal' or
+    'Chelsea')."""
     from predictions.backtest import find_observed_yes_ask
 
     kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    # Wrong-side market for Chelsea-to-win — must be ignored when leading=home (Arsenal).
     _seed_opportunity(
         ticker="KXEPLGAME-002",
         series_ticker="KXEPLGAME",
-        title="Arsenal vs Chelsea — Chelsea to win",
+        title="Arsenal vs Chelsea",
+        yes_sub_title="Chelsea",
         yes_ask=20,
         yes_bid=18,
         spread=2,
         volume=100,
         found_at=kickoff + timedelta(minutes=75),
     )
+    # Right-side market for Arsenal-to-win — must be picked.
+    _seed_opportunity(
+        ticker="KXEPLGAME-001",
+        series_ticker="KXEPLGAME",
+        title="Arsenal vs Chelsea",
+        yes_sub_title="Arsenal",
+        yes_ask=88,
+        yes_bid=85,
+        spread=3,
+        volume=100,
+        found_at=kickoff + timedelta(minutes=75),
+    )
     m = _fake_match(kickoff, "Arsenal", "Chelsea")
+    assert find_observed_yes_ask(m, fire_minute=75, leading_side="home") == 88
+
+
+def test_shared_prefix_yes_sub_title_does_not_collide():
+    """Regression: 'Real' alone in yes_sub_title must not match when leading is
+    Real Sociedad (or Real Madrid). Token-membership prevents the substring
+    collision."""
+    from predictions.backtest import find_observed_yes_ask
+
+    kickoff = datetime(2026, 4, 1, 14, 0, tzinfo=timezone.utc)
+    # yes_sub_title="Real Sociedad" with leading=home=Real Madrid → must NOT match.
+    _seed_opportunity(
+        ticker="KXLALIGAGAME-001",
+        series_ticker="KXLALIGAGAME",
+        title="Real Madrid vs Real Sociedad",
+        yes_sub_title="Real Sociedad",
+        yes_ask=30,
+        yes_bid=28,
+        spread=2,
+        volume=100,
+        found_at=kickoff + timedelta(minutes=75),
+    )
+    m = _fake_match(kickoff, "Real Madrid", "Real Sociedad")
     assert find_observed_yes_ask(m, fire_minute=75, leading_side="home") is None
