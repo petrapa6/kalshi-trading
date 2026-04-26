@@ -12,6 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import desc, func
 
+from predictions import backtest as backtest_mod
+from predictions.backtest import BacktestRequest, BacktestResponse
 from predictions.db import (
     BalanceSnapshot,
     Opportunity,
@@ -955,3 +957,17 @@ class ConfigUpdate(BaseModel):
 def update_config(body: ConfigUpdate):
     set_config(body.key, body.value)
     return {"ok": True, "key": body.key, "value": body.value}
+
+
+@app.post(
+    "/api/backtest/soccer",
+    response_model=BacktestResponse,
+    dependencies=[Depends(_check_token)],
+)
+async def post_backtest_soccer(req: BacktestRequest):
+    if not os.getenv("FOOTBALL_DATA_API_KEY"):
+        raise HTTPException(503, "FOOTBALL_DATA_API_KEY is not configured")
+    try:
+        return await backtest_mod.run_backtest(req)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
