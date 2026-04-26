@@ -9,6 +9,9 @@ from typing import Literal, Optional, cast
 
 from pydantic import BaseModel, Field, model_validator
 
+from predictions import soccer_cache as _soccer_cache
+from predictions.soccer_cache import SoccerGoal, ensure_matches_cached
+
 LeagueCode = Literal["PL", "PD", "BL1"]
 
 
@@ -309,10 +312,6 @@ def _ensure_tz_utc(dt: datetime) -> datetime:
     return dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt
 
 
-from predictions import soccer_cache as _soccer_cache  # noqa: E402
-from predictions.soccer_cache import SoccerGoal, ensure_matches_cached  # noqa: E402
-
-
 async def run_backtest(req: BacktestRequest) -> BacktestResponse:
     """Top-level orchestrator: cache → simulate → price lookup → P&L."""
     cache_result = await ensure_matches_cached(
@@ -333,16 +332,26 @@ async def run_backtest(req: BacktestRequest) -> BacktestResponse:
     matches_bet_on = 0
     matches_with_price = 0
 
-    for match in cache_result.matches:
+    # Batch-load all goals in a single query — avoids opening one session per
+    # match (380+ matches per league-season).
+    goals_by_match: dict[str, list[SoccerGoal]] = defaultdict(list)
+    if cache_result.matches:
+        match_ids = [cast(str, m.id) for m in cache_result.matches]
         s = _soccer_cache.SessionLocal()
-        goals = (
-            s.query(SoccerGoal)
-            .filter(SoccerGoal.match_id == match.id)
-            .order_by(SoccerGoal.sequence)
-            .all()
-        )
-        s.close()
-        match.goals = goals
+        try:
+            all_goals = (
+                s.query(SoccerGoal)
+                .filter(SoccerGoal.match_id.in_(match_ids))
+                .order_by(SoccerGoal.match_id, SoccerGoal.sequence)
+                .all()
+            )
+        finally:
+            s.close()
+        for g in all_goals:
+            goals_by_match[cast(str, g.match_id)].append(g)
+
+    for match in cache_result.matches:
+        match.goals = goals_by_match[cast(str, match.id)]
 
         trigger = simulate_match(match, req)
         if trigger is None:
@@ -415,7 +424,7 @@ async def run_backtest(req: BacktestRequest) -> BacktestResponse:
     settled = wins + losses
     win_rate = wins / settled if settled else 0.0
     pnl_cents = bankroll - req.initial_balance_cents
-    pnl_pct = pnl_cents / req.initial_balance_cents if req.initial_balance_cents else 0.0
+    pnl_pct = pnl_cents / req.initial_balance_cents
 
     summary = BacktestSummary(
         matches_scanned=len(cache_result.matches),
