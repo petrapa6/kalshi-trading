@@ -4,8 +4,8 @@ import re
 import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
-from typing import Literal, Optional
+from datetime import date, datetime, time, timedelta, timezone
+from typing import Literal, Optional, cast
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -301,3 +301,139 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
         return None if best is None else int(best.yes_ask)
     finally:
         session.close()
+
+
+def _ensure_tz_utc(dt: datetime) -> datetime:
+    """Force tz-aware UTC. SQLite round-trips strip tzinfo; the API contract
+    returns tz-aware UTC for clients."""
+    return dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt
+
+
+from predictions import soccer_cache as _soccer_cache  # noqa: E402
+from predictions.soccer_cache import SoccerGoal, ensure_matches_cached  # noqa: E402
+
+
+async def run_backtest(req: BacktestRequest) -> BacktestResponse:
+    """Top-level orchestrator: cache → simulate → price lookup → P&L."""
+    cache_result = await ensure_matches_cached(
+        req.league, req.date_from.isoformat(), req.date_to.isoformat()
+    )
+
+    trades: list[BacktestTrade] = []
+    curve: list[BacktestCurvePoint] = [
+        BacktestCurvePoint(
+            t=datetime.combine(req.date_from, time.min, tzinfo=timezone.utc),
+            balance_cents=req.initial_balance_cents,
+        )
+    ]
+
+    bankroll = req.initial_balance_cents
+    wins = 0
+    losses = 0
+    matches_bet_on = 0
+    matches_with_price = 0
+
+    for match in cache_result.matches:
+        s = _soccer_cache.SessionLocal()
+        goals = (
+            s.query(SoccerGoal)
+            .filter(SoccerGoal.match_id == match.id)
+            .order_by(SoccerGoal.sequence)
+            .all()
+        )
+        s.close()
+        match.goals = goals
+
+        trigger = simulate_match(match, req)
+        if trigger is None:
+            continue
+
+        observed = find_observed_yes_ask(
+            match, fire_minute=trigger.fired_at_minute, leading_side=trigger.leading_side
+        )
+
+        if observed is not None and req.min_yes_price > 0 and observed < req.min_yes_price:
+            continue
+
+        # SQLAlchemy descriptors return Column[Unknown] in static analysis,
+        # but instance access yields plain Python values. cast() keeps ty
+        # happy without runtime overhead.
+        match_id = cast(str, match.id)
+        home_team = cast(str, match.home_team)
+        away_team = cast(str, match.away_team)
+        home_score = cast(int, match.home_score)
+        away_score = cast(int, match.away_score)
+        kickoff_utc = _ensure_tz_utc(cast(datetime, match.kickoff_at))
+
+        if trigger.leading_side == "home":
+            won = home_score > away_score
+        else:
+            won = away_score > home_score
+
+        count: int | None = None
+        cost_cents: int | None = None
+        pnl_cents: int | None = None
+        if observed is not None:
+            bet_cents = round(bankroll * req.bet_percent)
+            count = max(1, bet_cents // observed)
+            cost_cents = count * observed
+            pnl_cents = count * (100 - observed) if won else -cost_cents
+            bankroll += pnl_cents
+            matches_with_price += 1
+
+        matches_bet_on += 1
+        if won:
+            wins += 1
+        else:
+            losses += 1
+
+        trades.append(
+            BacktestTrade(
+                match_id=match_id,
+                kickoff_at=kickoff_utc,
+                league=req.league,
+                home_team=home_team,
+                away_team=away_team,
+                final_home=home_score,
+                final_away=away_score,
+                fired_at_minute=trigger.fired_at_minute,
+                score_at_fire_home=trigger.score_at_fire_home,
+                score_at_fire_away=trigger.score_at_fire_away,
+                leading_side=trigger.leading_side,
+                result="win" if won else "loss",
+                observed_yes_ask_cents=observed,
+                count=count,
+                cost_cents=cost_cents,
+                pnl_cents=pnl_cents,
+                bankroll_after_cents=bankroll,
+            )
+        )
+
+        if observed is not None:
+            curve.append(BacktestCurvePoint(t=kickoff_utc, balance_cents=bankroll))
+
+    settled = wins + losses
+    win_rate = wins / settled if settled else 0.0
+    pnl_cents = bankroll - req.initial_balance_cents
+    pnl_pct = pnl_cents / req.initial_balance_cents if req.initial_balance_cents else 0.0
+
+    summary = BacktestSummary(
+        matches_scanned=len(cache_result.matches),
+        matches_bet_on=matches_bet_on,
+        matches_with_price_data=matches_with_price,
+        wins=wins,
+        losses=losses,
+        win_rate=round(win_rate, 4),
+        initial_balance_cents=req.initial_balance_cents,
+        final_balance_cents=bankroll,
+        pnl_cents=pnl_cents,
+        pnl_pct=round(pnl_pct, 4),
+    )
+
+    return BacktestResponse(
+        summary=summary,
+        trades=trades,
+        bankroll_curve=curve,
+        partial=cache_result.partial,
+        missing_count=cache_result.missing_count,
+    )
