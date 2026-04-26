@@ -2335,6 +2335,12 @@ export default function Dashboard() {
               <h1 className="text-3xl md:text-4xl font-black gold-shimmer tracking-tight">
                 Kalshi Sports Market Scanner
               </h1>
+              <a
+                href="/backtest"
+                className="inline-block mt-1 text-sm text-blue-400 hover:text-blue-200 underline"
+              >
+                Strategy Backtest →
+              </a>
             </div>
             {config && (
               <button
