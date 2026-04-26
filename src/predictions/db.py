@@ -34,7 +34,10 @@ class Opportunity(Base):
 
     id = Column(Integer, primary_key=True)
     scan_id = Column(Integer, nullable=True)
-    found_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    # Indexed because backtest.find_observed_yes_ask scans by time-window per
+    # match. Without the index, each lookup is O(n) over a table that grows
+    # by ~12 rows/min from the live scanner.
+    found_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
     ticker = Column(String, index=True)
     event_ticker = Column(String)
     series_ticker = Column(String)
@@ -194,6 +197,14 @@ def _migrate_add_columns():
                     conn.execute(
                         text(f"ALTER TABLE opportunities ADD COLUMN {col_name} {col_type}")
                     )
+            # Backfill the found_at index on older DBs that pre-date the
+            # backtest feature. Idempotent thanks to IF NOT EXISTS.
+            conn.execute(
+                text(
+                    "CREATE INDEX IF NOT EXISTS ix_opportunities_found_at "
+                    "ON opportunities (found_at)"
+                )
+            )
 
 
 def get_session():

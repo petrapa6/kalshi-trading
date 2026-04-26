@@ -217,6 +217,13 @@ async def lifespan(_app: FastAPI):
     global _kalshi_client
     _download_db()
     init_db()
+    # Soccer cache is independent: own engine + DB, no S3 backup. The cache
+    # is ephemeral (rebuilds on each container start) per the spec's deferred
+    # "Persistent cache" follow-up. Without this init, /api/backtest/soccer
+    # crashes on first request.
+    from predictions.soccer_cache import init_soccer_db
+
+    init_soccer_db()
 
     if os.getenv("KALSHI_API_KEY"):
         key_id = os.environ["KALSHI_API_KEY"]
