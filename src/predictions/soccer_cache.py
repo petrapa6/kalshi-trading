@@ -1,4 +1,4 @@
-"""Soccer historical-match cache, backed by its own SQLite DB and fed by football-data.org."""
+"""Soccer historical-match cache, backed by its own SQLite DB and fed by API-Football v3."""
 
 import os
 from dataclasses import dataclass
@@ -36,7 +36,7 @@ Base = declarative_base()
 class SoccerMatch(Base):
     __tablename__ = "soccer_matches"
 
-    id = Column(String, primary_key=True)  # "fd:<football_data_id>"
+    id = Column(String, primary_key=True)  # "af:<api_football_fixture_id>"
     competition = Column(String, nullable=False)  # 'PL' | 'PD' | 'BL1'
     kickoff_at = Column(DateTime, nullable=False)
     home_team = Column(String, nullable=False)
@@ -86,32 +86,59 @@ def get_session():
     return SessionLocal()
 
 
-FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4"
+API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
+
+_LEAGUE_IDS: dict[str, int] = {"PL": 39, "PD": 140, "BL1": 78}
+
+_FINISHED_STATUSES = {"FT", "AET", "PEN"}
 
 
 class RateLimitedError(Exception):
-    """Raised when football-data.org returns HTTP 429."""
+    """Raised when API-Football returns HTTP 429."""
 
 
-class FootballDataClient:
-    """Thin async wrapper over football-data.org v4.
+def _season_for_date(date_str: str) -> int:
+    """Return the 4-digit European season start year for a YYYY-MM-DD date.
+
+    The European soccer season runs Aug–Jul. Jan–Jul dates belong to the
+    season that started the previous calendar year.
+    """
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    return dt.year if dt.month >= 8 else dt.year - 1
+
+
+def _synthesize_goals(events: list[dict]) -> list[dict]:
+    """Filter raw events to goal events and project to a stable shape."""
+    goals = []
+    for e in events:
+        if e.get("type") != "Goal":
+            continue
+        if e.get("detail") == "Missed Penalty":
+            continue
+        goals.append(e)
+    return goals
+
+
+class ApiFootballClient:
+    """Thin async wrapper over API-Football v3 (api-sports.io).
 
     Does not retry. On HTTP 429 raises RateLimitedError so the caller can
     surface partial results to the user. Other non-2xx responses raise
-    httpx.HTTPStatusError via raise_for_status.
+    httpx.HTTPStatusError via raise_for_status. A 200 response with a
+    non-empty errors array raises RuntimeError.
     """
 
     def __init__(
         self,
         api_key: str,
         *,
-        base_url: str = FOOTBALL_DATA_BASE_URL,
+        base_url: str = API_FOOTBALL_BASE_URL,
         transport: httpx.AsyncBaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
         self._client = httpx.AsyncClient(
             base_url=base_url,
-            headers={"X-Auth-Token": api_key},
+            headers={"x-apisports-key": api_key},
             timeout=timeout,
             transport=transport,
         )
@@ -119,27 +146,73 @@ class FootballDataClient:
     async def aclose(self) -> None:
         await self._client.aclose()
 
+    def _check_errors(self, body: dict) -> None:
+        errors = body.get("errors")
+        if errors:
+            raise RuntimeError(f"API-Football error: {errors}")
+
     async def list_matches(self, league: str, date_from: str, date_to: str) -> dict:
-        resp = await self._client.get(
-            f"/competitions/{league}/matches",
-            params={"dateFrom": date_from, "dateTo": date_to},
-        )
-        if resp.status_code == 429:
-            raise RateLimitedError("football-data.org rate limit hit on list_matches")
-        resp.raise_for_status()
-        return resp.json()
+        league_id = _LEAGUE_IDS[league]
+        season_from = _season_for_date(date_from)
+        season_to = _season_for_date(date_to)
+
+        all_responses: list[dict] = []
+        for season in range(season_from, season_to + 1):
+            resp = await self._client.get(
+                "/fixtures",
+                params={
+                    "league": league_id,
+                    "season": season,
+                    "from": date_from,
+                    "to": date_to,
+                    "status": "FT-AET-PEN",
+                },
+            )
+            if resp.status_code == 429:
+                raise RateLimitedError("API-Football rate limit hit on list_matches")
+            resp.raise_for_status()
+            body = resp.json()
+            self._check_errors(body)
+            all_responses.extend(body.get("response", []))
+
+        return {"errors": [], "response": all_responses}
 
     async def get_match_goals(self, match_id: int) -> dict:
-        resp = await self._client.get(f"/matches/{match_id}")
+        resp = await self._client.get("/fixtures", params={"ids": str(match_id)})
         if resp.status_code == 429:
-            raise RateLimitedError("football-data.org rate limit hit on get_match_goals")
+            raise RateLimitedError("API-Football rate limit hit on get_match_goals")
         resp.raise_for_status()
-        return resp.json()
+        body = resp.json()
+        self._check_errors(body)
+        items = body.get("response", [])
+        if not items:
+            return {}
+        item = items[0]
+        item = dict(item)
+        item["goals"] = _synthesize_goals(item.get("events", []))
+        return item
+
+    async def get_match_goals_batch(self, match_ids: list[int]) -> dict[int, dict]:
+        ids_str = "-".join(str(i) for i in match_ids)
+        resp = await self._client.get("/fixtures", params={"ids": ids_str})
+        if resp.status_code == 429:
+            raise RateLimitedError("API-Football rate limit hit on get_match_goals_batch")
+        resp.raise_for_status()
+        body = resp.json()
+        self._check_errors(body)
+        result: dict[int, dict] = {}
+        for item in body.get("response", []):
+            fixture_id = int(item["fixture"]["id"])
+            item = dict(item)
+            item["goals"] = _synthesize_goals(item.get("events", []))
+            result[fixture_id] = item
+        return result
 
 
-class _FootballClientLike(Protocol):
+class _SoccerClientLike(Protocol):
     async def list_matches(self, league: str, date_from: str, date_to: str) -> dict: ...
     async def get_match_goals(self, match_id: int) -> dict: ...
+    async def get_match_goals_batch(self, match_ids: list[int]) -> dict[int, dict]: ...
 
 
 @dataclass
@@ -150,22 +223,20 @@ class EnsureResult:
 
 
 def _parse_iso_utc(s: str) -> datetime:
-    """Parse ISO-8601 (football-data.org uses trailing 'Z')."""
+    """Parse ISO-8601 with optional trailing Z or offset."""
     return datetime.fromisoformat(s.replace("Z", "+00:00"))
 
 
 def _ingest_goals(session, match_id_str: str, home_team_id: int, raw_goals: list[dict]) -> None:
     """Insert SoccerGoal rows, flipping own-goal scorer to beneficiary side."""
     for seq, g in enumerate(raw_goals, start=1):
-        minute = int(g.get("minute") or 0)
-        stoppage = int(g.get("injuryTime") or 0)
+        minute = int((g.get("time") or {}).get("elapsed") or 0)
+        stoppage = int((g.get("time") or {}).get("extra") or 0)
         scorer_team_id = (g.get("team") or {}).get("id")
-        gtype = (g.get("type") or "REGULAR").upper()
+        is_own = g.get("detail") == "Own Goal"
         scoring_side = "home" if scorer_team_id == home_team_id else "away"
-        # Own-goal: "team.id" is the conceder in football-data.org's payload.
-        # The beneficiary — and hence the side that counts on the scoreboard —
-        # is the OPPOSITE side.
-        if gtype == "OWN":
+        # Own-goal: the listed team is the conceder; beneficiary is the opposite side.
+        if is_own:
             scoring_side = "away" if scoring_side == "home" else "home"
         session.add(
             SoccerGoal(
@@ -174,9 +245,12 @@ def _ingest_goals(session, match_id_str: str, home_team_id: int, raw_goals: list
                 minute=minute,
                 stoppage=stoppage,
                 side=scoring_side,
-                is_own_goal=1 if gtype == "OWN" else 0,
+                is_own_goal=1 if is_own else 0,
             )
         )
+
+
+_BATCH_SIZE = 20
 
 
 async def ensure_matches_cached(
@@ -184,7 +258,7 @@ async def ensure_matches_cached(
     date_from: str,
     date_to: str,
     *,
-    client: _FootballClientLike | None = None,
+    client: _SoccerClientLike | None = None,
 ) -> EnsureResult:
     """Fetch any missing FINISHED matches in the range and persist them.
 
@@ -192,13 +266,17 @@ async def ensure_matches_cached(
     plus a partial flag + missing_count on rate-limit mid-fetch.
     """
     if client is None:
-        api_key = os.getenv("FOOTBALL_DATA_API_KEY", "")
+        api_key = os.getenv("API_FOOTBALL_KEY", "")
         if not api_key:
-            raise RuntimeError("FOOTBALL_DATA_API_KEY is not set")
-        client = FootballDataClient(api_key=api_key)
+            raise RuntimeError("API_FOOTBALL_KEY is not set")
+        client = ApiFootballClient(api_key=api_key)
 
     list_body = await client.list_matches(league, date_from, date_to)
-    raw_matches = [m for m in list_body.get("matches", []) if m.get("status") == "FINISHED"]
+    raw_matches = [
+        m
+        for m in list_body.get("response", [])
+        if m.get("fixture", {}).get("status", {}).get("short") in _FINISHED_STATUSES
+    ]
 
     partial = False
     missing = 0
@@ -208,35 +286,42 @@ async def ensure_matches_cached(
             row[0]
             for row in session.query(SoccerMatch.id).filter(SoccerMatch.competition == league).all()
         }
-        for i, m in enumerate(raw_matches):
-            match_id_str = f"fd:{m['id']}"
-            if match_id_str in existing_ids:
-                continue
+
+        to_fetch = [m for m in raw_matches if f"af:{m['fixture']['id']}" not in existing_ids]
+
+        committed_count = 0
+        for chunk_start in range(0, len(to_fetch), _BATCH_SIZE):
+            chunk = to_fetch[chunk_start : chunk_start + _BATCH_SIZE]
+            chunk_ids = [int(m["fixture"]["id"]) for m in chunk]
+
             try:
-                detail = await client.get_match_goals(m["id"])
+                batch = await client.get_match_goals_batch(chunk_ids)
             except RateLimitedError:
                 partial = True
-                missing = sum(
-                    1 for later in raw_matches[i:] if f"fd:{later['id']}" not in existing_ids
-                )
+                missing = len(to_fetch) - committed_count
                 break
 
-            home_team_id = m["homeTeam"]["id"]
-            full_time = (m.get("score") or {}).get("fullTime") or {}
-            match_row = SoccerMatch(
-                id=match_id_str,
-                competition=league,
-                kickoff_at=_parse_iso_utc(m["utcDate"]),
-                home_team=m["homeTeam"]["name"],
-                away_team=m["awayTeam"]["name"],
-                home_score=int(full_time.get("home") or 0),
-                away_score=int(full_time.get("away") or 0),
-                status="FINISHED",
-                fetched_at=datetime.now(timezone.utc),
-            )
-            session.add(match_row)
-            _ingest_goals(session, match_id_str, home_team_id, detail.get("goals") or [])
-            session.commit()
+            for m in chunk:
+                fixture_id = int(m["fixture"]["id"])
+                match_id_str = f"af:{fixture_id}"
+                detail = batch.get(fixture_id, {})
+
+                home_team_id = m["teams"]["home"]["id"]
+                match_row = SoccerMatch(
+                    id=match_id_str,
+                    competition=league,
+                    kickoff_at=_parse_iso_utc(m["fixture"]["date"]),
+                    home_team=m["teams"]["home"]["name"],
+                    away_team=m["teams"]["away"]["name"],
+                    home_score=int(m["goals"].get("home") or 0),
+                    away_score=int(m["goals"].get("away") or 0),
+                    status="FINISHED",
+                    fetched_at=datetime.now(timezone.utc),
+                )
+                session.add(match_row)
+                _ingest_goals(session, match_id_str, home_team_id, detail.get("goals") or [])
+                session.commit()
+                committed_count += 1
 
         # Return all currently-cached matches for the range.
         start = _parse_iso_utc(f"{date_from}T00:00:00Z")
