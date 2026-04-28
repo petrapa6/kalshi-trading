@@ -16,7 +16,7 @@ def test_backtest_requires_bearer(client):
 
 
 def test_backtest_returns_503_when_api_key_missing(client, monkeypatch):
-    monkeypatch.delenv("FOOTBALL_DATA_API_KEY", raising=False)
+    monkeypatch.delenv("API_FOOTBALL_KEY", raising=False)
     body = {
         "league": "PL",
         "date_from": "2026-03-01",
@@ -39,7 +39,7 @@ def test_backtest_rejects_bad_date_range_with_422(client, monkeypatch):
     """FastAPI catches Pydantic ValidationError before the handler body runs
     and returns 422. The model_validator in BacktestRequest enforces
     date_from <= date_to."""
-    monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "k")
+    monkeypatch.setenv("API_FOOTBALL_KEY", "k")
     body = {
         "league": "PL",
         "date_from": "2026-05-01",
@@ -63,7 +63,7 @@ def test_backtest_200_happy_path(client, monkeypatch):
 
     from predictions.backtest import BacktestResponse, BacktestSummary
 
-    monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "k")
+    monkeypatch.setenv("API_FOOTBALL_KEY", "k")
     fake = BacktestResponse(
         summary=BacktestSummary(
             matches_scanned=0,
