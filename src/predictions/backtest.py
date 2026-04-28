@@ -130,7 +130,7 @@ def simulate_match(match, req: BacktestRequest) -> Trigger | None:
 
 # Canonical team-name aliases. Each entry maps an alias to its canonical
 # display name. Lookup is case-insensitive after _normalize_team. This is
-# the systematic-correction surface — grow lazily as Kalshi/football-data
+# the systematic-correction surface — grow lazily as Kalshi/API-Football
 # mismatches are observed.
 _TEAM_ALIASES: dict[str, str] = {
     # Premier League

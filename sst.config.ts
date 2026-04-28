@@ -19,7 +19,7 @@ export default $config({
     const kalshiApiKey = new sst.Secret("KalshiApiKey");
     const kalshiPrivateKey = new sst.Secret("KalshiPrivateKey");
     const apiToken = new sst.Secret("ApiToken");
-    const footballDataApiKey = new sst.Secret("FootballDataApiKey");
+    const apiFootballKey = new sst.Secret("ApiFootballKey");
 
     const backupBucket = new sst.aws.Bucket("DbBackups");
 
@@ -61,7 +61,7 @@ export default $config({
           DRY_RUN: $dev ? "true" : "false",
           API_TOKEN: apiToken.value,
           DB_BACKUP_BUCKET: backupBucket.name,
-          FOOTBALL_DATA_API_KEY: footballDataApiKey.value,
+          API_FOOTBALL_KEY: apiFootballKey.value,
           SOCCER_CACHE_DB_PATH: "/tmp/soccer-cache.db",
           CORS_ORIGINS: "https://your-domain.example",
       },
