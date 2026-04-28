@@ -108,15 +108,7 @@ def _season_for_date(date_str: str) -> int:
 
 
 def _synthesize_goals(events: list[dict]) -> list[dict]:
-    """Filter raw events to goal events and project to a stable shape."""
-    goals = []
-    for e in events:
-        if e.get("type") != "Goal":
-            continue
-        if e.get("detail") == "Missed Penalty":
-            continue
-        goals.append(e)
-    return goals
+    return [e for e in events if e.get("type") == "Goal" and e.get("detail") != "Missed Penalty"]
 
 
 class ApiFootballClient:
@@ -230,8 +222,9 @@ def _parse_iso_utc(s: str) -> datetime:
 def _ingest_goals(session, match_id_str: str, home_team_id: int, raw_goals: list[dict]) -> None:
     """Insert SoccerGoal rows, flipping own-goal scorer to beneficiary side."""
     for seq, g in enumerate(raw_goals, start=1):
-        minute = int((g.get("time") or {}).get("elapsed") or 0)
-        stoppage = int((g.get("time") or {}).get("extra") or 0)
+        time_obj = g.get("time") or {}
+        minute = int(time_obj.get("elapsed") or 0)
+        stoppage = int(time_obj.get("extra") or 0)
         scorer_team_id = (g.get("team") or {}).get("id")
         is_own = g.get("detail") == "Own Goal"
         scoring_side = "home" if scorer_team_id == home_team_id else "away"

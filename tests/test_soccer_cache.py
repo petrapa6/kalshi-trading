@@ -70,6 +70,7 @@ async def test_client_sends_auth_header():
     assert "league=39" in captured["url"]
     assert "season=" in captured["url"]
     assert "from=2026-03-01" in captured["url"]
+    assert "status=FT-AET-PEN" in captured["url"]
 
 
 async def test_client_raises_rate_limited_on_429():
@@ -205,15 +206,6 @@ def _af_detail(mid: int, events: list[dict] | None = None) -> dict:
         e for e in (events or []) if e.get("type") == "Goal" and e.get("detail") != "Missed Penalty"
     ]
     return item
-
-
-def _batch_bodies_for_ids(ids: list[int], events_map: dict[int, list[dict]] | None = None) -> dict:
-    """Build the batch_bodies dict keyed by frozenset(all_ids)."""
-    events_map = events_map or {}
-    result = {}
-    key = frozenset(ids)
-    result[key] = {mid: _af_detail(mid, events_map.get(mid)) for mid in ids}
-    return result
 
 
 async def test_ensure_matches_cached_inserts_all_on_cold_cache():
@@ -390,7 +382,6 @@ async def test_empty_event_list_zero_zero_game():
     zero_zero = dict(_af_fixture(99))
     zero_zero["goals"] = {"home": 0, "away": 0}
     zero_zero["events"] = []
-    zero_zero["goals_synthesized"] = []  # detail shape
     list_body = {"errors": [], "response": [zero_zero]}
 
     detail = dict(zero_zero)
@@ -432,3 +423,34 @@ async def test_batch_chunking_max_20():
     assert fake.batch_calls == 3
     assert len(result.matches) == 41
     assert result.partial is False
+
+
+async def test_cross_season_range_makes_two_list_calls():
+    """A date range straddling the Jul→Aug season boundary triggers two /fixtures
+    list calls (one per season). 2025-06-01 → season 2024; 2025-09-01 → season 2025."""
+    from predictions.soccer_cache import ApiFootballClient
+
+    call_count = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal call_count
+        call_count += 1
+        return httpx.Response(200, json={"errors": [], "response": []})
+
+    transport = httpx.MockTransport(handler)
+    client = ApiFootballClient(api_key="k", transport=transport)
+    await client.list_matches("PL", "2025-06-01", "2025-09-01")
+
+    assert call_count == 2
+
+
+async def test_non_empty_errors_array_raises_runtime_error():
+    """HTTP 200 with a non-empty errors[] field must raise RuntimeError, not silently
+    return empty results."""
+    from predictions.soccer_cache import ApiFootballClient
+
+    body = {"errors": ["Token is invalid"], "response": []}
+    client = ApiFootballClient(api_key="k", transport=_mock_transport([(200, body)]))
+
+    with pytest.raises(RuntimeError, match="API-Football error"):
+        await client.list_matches("PL", "2026-03-01", "2026-03-31")
