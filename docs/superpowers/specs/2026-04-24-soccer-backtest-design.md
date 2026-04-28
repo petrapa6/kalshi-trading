@@ -1,5 +1,7 @@
 # Soccer Strategy Backtest — Design Spec
 
+> **Provider swap note (2026-04-28):** Originally implemented against football-data.org; the provider was swapped to API-Football v3 (api-sports.io) before merge because football-data.org's free tier does not expose `goals[].minute` (that field is behind the €29/mo Tier One plan). The current implementation uses `ApiFootballClient` with auth header `x-apisports-key` and the env var `API_FOOTBALL_KEY`. See `src/predictions/soccer_cache.py` and the v3 swap commits for the current code shape.
+
 **Date:** 2026-04-24
 **Status:** Approved for implementation planning
 **Related code:** `src/predictions/scanner.py` (WHAT_IF_STRATEGIES — live-backtesting precedent)
@@ -16,7 +18,7 @@ The live scanner runs 5 hardcoded what-if strategies in parallel against live ma
 - Evaluate a strategy over historical matches the scanner didn't scan
 - Inspect the specific matches a strategy would have bet on (for failure-mode reasoning)
 
-This feature closes that gap for soccer first (EPL, La Liga, Bundesliga). It relies on football-data.org for historical match data and falls back to winrate-only when Kalshi prices aren't available in the main DB.
+This feature closes that gap for soccer first (EPL, La Liga, Bundesliga). It relies on API-Football v3 (api-sports.io) for historical match data and falls back to winrate-only when Kalshi prices aren't available in the main DB.
 
 ## Non-goals
 
@@ -25,14 +27,14 @@ This feature closes that gap for soccer first (EPL, La Liga, Bundesliga). It rel
 - **Not a strategy-optimization tool.** No auto-parameter-sweeping, no "best strategy" search. User manually picks params; the page shows the result.
 - **Not a perfect P&L simulator.** Price matching is best-effort fuzzy; matches without observed prices are winrate-only (no invented price).
 - **Not a saved-strategy feature.** Strategy params are transient UI state; no persistence across sessions.
-- **Not a migration of the live scanner.** ESPN remains the live data source; football-data.org is used only for historical backtest.
+- **Not a migration of the live scanner.** ESPN remains the live data source; API-Football v3 (api-sports.io) is used only for historical backtest.
 
 ## Scope
 
 ### In scope (v1)
 
-- Soccer only: `PL` (EPL), `PD` (La Liga), `BL1` (Bundesliga) — football-data.org competition codes.
-- Historical match data via football-data.org v4, authed with the user's existing API key.
+- Soccer only: `PL` (EPL), `PD` (La Liga), `BL1` (Bundesliga) — API-Football v3 league IDs: `PL → 39`, `PD → 140`, `BL1 → 78`.
+- Historical match data via API-Football v3 (api-sports.io), authed with the user's API key.
 - Ephemeral cache at `/tmp/soccer-cache.db` (prod) / `./soccer-cache.db` (dev) — gitignored.
 - Fire-once trigger on `(min_minute, min_lead)`.
 - Optional `min_yes_price` filter, active only when a price is observed.
@@ -117,14 +119,14 @@ If no observation exists → filter is **ignored**; the trade proceeds (avoids p
 
 ## Data sources
 
-### Match data (primary): football-data.org v4
+### Match data (primary): API-Football v3 (api-sports.io)
 
-- **Auth:** `FOOTBALL_DATA_API_KEY` env var. The user already has a key; it's added to `.env.example` and wired as an SST secret.
-- **Rate limit:** 10 requests / minute on the free tier. We stay within this by caching FINISHED matches permanently within the cache file's lifetime.
+- **Auth:** `API_FOOTBALL_KEY` env var; sent as `x-apisports-key` request header. The user's key is added to `.env.example` and wired as an SST secret (`ApiFootballKey`).
+- **Rate limit:** 100 requests / day + 30 requests / minute on the free tier. We stay within this by caching FINISHED matches permanently within the cache file's lifetime. A one-season three-league backfill (~1066 matches) costs ~57 calls; a typical weekend of new matches costs ~9 calls.
 - **Endpoints used:**
-  - `GET /v4/competitions/{code}/matches?dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD` — fixture list with final scores. One call covers the whole requested date range per league.
-  - `GET /v4/matches/{id}` — full match detail including `.goals[]` with `.minute`, `.injuryTime`, `.team.id`, `.type` (for own-goal detection).
-- **Competition codes:** `PL`, `PD`, `BL1`.
+  - `GET /fixtures?league={id}&season={year}` — fixture list with final scores. One call per league/season covers the whole requested date range (cross-season ranges make two list calls, concatenating `response`).
+  - `GET /fixtures?ids=ID1-ID2-...-ID20` — batched detail call returning embedded events (goals, cards) for up to 20 fixtures in a single quota request. One batched call per ≤20 missing fixtures.
+- **League ID mapping:** `PL → 39`, `PD → 140`, `BL1 → 78`.
 
 ### Kalshi prices (secondary, best-effort): existing `predictions.db`
 
@@ -162,12 +164,12 @@ Fuzzy matching: case-insensitive substring check after normalization, with alias
    │ src/predictions/backtest.py  │  │ src/predictions/             │
    │                              │  │   soccer_cache.py            │
    │ • simulate_match()           │  │                              │
-   │ • find_observed_yes_ask()    │  │ • FootballDataClient         │
+   │ • find_observed_yes_ask()    │  │ • ApiFootballClient          │
    │ • run_backtest()             │  │ • SoccerMatch / SoccerGoal   │
    │ • BacktestRequest/Response   │  │ • ensure_matches_cached()    │
    │                              │  │                              │
    │ Reads: predictions.db        │  │ Reads/Writes: soccer-cache.db│
-   │   (Opportunity)              │  │ Calls: football-data.org v4  │
+   │   (Opportunity)              │  │ Calls: API-Football v3       │
    └──────────────────────────────┘  └──────────────────────────────┘
 ```
 
@@ -175,9 +177,9 @@ Fuzzy matching: case-insensitive substring check after normalization, with alias
 
 #### `src/predictions/soccer_cache.py` (NEW, ~300 loc)
 
-- `FootballDataClient` — thin async HTTP client.
-  - Carries the API key in `X-Auth-Token` header.
-  - Exposes `list_matches(league, date_from, date_to)` and `get_match_goals(match_id)`.
+- `ApiFootballClient` — thin async HTTP client.
+  - Carries the API key in `x-apisports-key` header.
+  - Exposes `list_matches(league, date_from, date_to)` and `get_match_goals_batch(match_ids)`.
   - On HTTP 429 (rate-limited), raises `RateLimitedError`. No in-client retry — the orchestrator decides.
 - `SoccerMatch`, `SoccerGoal` SQLAlchemy ORM models.
 - `SoccerCacheEngine`-equivalent module-level setup:
@@ -227,7 +229,7 @@ Fuzzy matching: case-insensitive substring check after normalization, with alias
 
 ```sql
 CREATE TABLE soccer_matches (
-    id           TEXT     PRIMARY KEY,   -- "fd:<football_data_id>"
+    id           TEXT     PRIMARY KEY,   -- "af:<api_football_id>" (legacy rows prefixed "fd:")
     competition  TEXT     NOT NULL,      -- 'PL' | 'PD' | 'BL1'
     kickoff_at   DATETIME NOT NULL,
     home_team    TEXT     NOT NULL,
@@ -301,7 +303,7 @@ Content-Type: application/json
   },
   "trades": [
     {
-      "match_id": "fd:437893",
+      "match_id": "af:437893",
       "kickoff_at": "2026-04-22T19:00:00Z",
       "league": "PL",
       "home_team": "Arsenal",
@@ -341,11 +343,11 @@ First entry is always `{ t: date_from T00:00:00Z, balance_cents: initial_balance
 
 - `400 Bad Request` — validation failure: `date_from > date_to`, `date_to > today`, unknown league, out-of-range numeric param, etc.
 - `401 Unauthorized` — missing / invalid bearer token.
-- `503 Service Unavailable` — `FOOTBALL_DATA_API_KEY` env var is unset.
+- `503 Service Unavailable` — `API_FOOTBALL_KEY` env var is unset.
 
 ### Partial results
 
-When the football-data.org rate limit is hit mid-fetch:
+When the API-Football rate limit is hit mid-fetch:
 
 - Backend returns HTTP 200 with `partial: true` and `missing_count: N` (matches not yet cached).
 - `summary` and `trades` reflect only the successfully-cached matches.
@@ -423,14 +425,14 @@ Each card: label + value. P&L % and P&L $ are color-coded (green positive, red n
 Add to `.env.example`:
 
 ```
-FOOTBALL_DATA_API_KEY=your-key-here
+API_FOOTBALL_KEY=your-key-here
 SOCCER_CACHE_DB_PATH=./soccer-cache.db    # dev default; prod overrides to /tmp
 ```
 
 Add to `sst.config.ts`:
 
-- `FootballDataApiKey` SST secret.
-- Inject `FOOTBALL_DATA_API_KEY` into the ECS task environment.
+- `ApiFootballKey` SST secret.
+- Inject `API_FOOTBALL_KEY` into the ECS task environment.
 - Inject `SOCCER_CACHE_DB_PATH=/tmp/soccer-cache.db` into the ECS task environment.
 
 Add to `.gitignore`:
@@ -480,15 +482,15 @@ Minimum set before claiming done:
 ## Risks
 
 - **Team-name fuzzy matching may yield false positives** — attaching the wrong market's price to a match. Mitigation: conservative matching (require both team names present in the event title); every fuzzy match is logged for audit; the alias map is the systematic-correction surface.
-- **football-data.org API changes** could break the fetch flow. Mitigation: narrow client module; own only the fields we need; keep the raw JSON boundary small.
-- **Rate-limit pressure on first-run big ranges.** A full EPL season from scratch = ~380 matches × 1 detail call each = ~38 min of wall clock at 10 req/min. The partial-response UX mitigates UX-wise; the user simply retries.
+- **API-Football v3 API changes** could break the fetch flow. Mitigation: narrow client module; own only the fields we need; keep the raw JSON boundary small.
+- **Rate-limit pressure on first-run big ranges.** A full EPL season from scratch = ~380 matches; batched at 20 per call = ~20 detail calls + league list calls, well within the 100/day free-tier quota. The partial-response UX mitigates UX-wise on the rare day the quota is exhausted; the user simply retries.
 - **Conflating "no bet placed" with "no data"** in the UI is easy to get wrong. Summary labels ("Scanned", "Bet on", "w/ prices") are deliberately explicit to prevent this.
 - **Stoppage-time simplification** (goals collapsed to parent minute 90) produces a trigger timestamp that's off by 1–6 minutes from reality. Acceptable because a minute-90+ trigger is already untradeable in practice.
 
 ## Open questions / explicit follow-ups
 
 - **Persistent cache.** If `/tmp` rebuild time becomes a pain point in practice, wire soccer-cache.db into the existing 30-min S3 snapshot loop (`scanner.backup_loop`) following the same pattern as `predictions.db`.
-- **Team-alias map.** V1 ships with a hardcoded map of ~30 top teams across the three leagues. Growing it lazily by recording observed Kalshi-market ↔ football-data-match pairings (persisted in the cache DB) is deferred.
+- **Team-alias map.** V1 ships with a hardcoded map of ~30 top teams across the three leagues. Growing it lazily by recording observed Kalshi-market ↔ API-Football match pairings (persisted in the cache DB) is deferred.
 - **Other sports.** NBA, NFL, NHL, MLB, MLS, etc. — each needs its own historical data source. Out of v1 by design.
 - **Strategy persistence / sharing.** Not in v1. Would require a DB-backed strategy-record table.
 - **Async / progress streaming.** Synchronous request/response with partial-on-rate-limit is v1. If users run multi-season backtests where sync times exceed 30 s consistently, consider SSE / polling.

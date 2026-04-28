@@ -1,10 +1,12 @@
 # Soccer Strategy Backtest Implementation Plan
 
+> **Provider swap note (2026-04-28):** Originally implemented against football-data.org; the provider was swapped to API-Football v3 (api-sports.io) before merge because football-data.org's free tier does not expose `goals[].minute` (that field is behind the €29/mo Tier One plan). The current implementation uses `ApiFootballClient` with `x-apisports-key` auth and `API_FOOTBALL_KEY` env var. Task 2 code blocks below reflect the original football-data.org client; see `src/predictions/soccer_cache.py` for the current `ApiFootballClient` shape.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a "Strategy Backtest" page to the dashboard that simulates soccer (EPL / La Liga / Bundesliga) trigger-based trading strategies against historical football-data.org match data. Win-rate analytics are always shown; financial P&L is shown only for matches where Kalshi prices were observed by the live scanner.
+**Goal:** Add a "Strategy Backtest" page to the dashboard that simulates soccer (EPL / La Liga / Bundesliga) trigger-based trading strategies against historical match data via API-Football v3 (api-sports.io). Win-rate analytics are always shown; financial P&L is shown only for matches where Kalshi prices were observed by the live scanner.
 
-**Architecture:** Two new backend modules — `soccer_cache.py` (football-data.org client + its own SQLite DB) and `backtest.py` (simulation + orchestration). New `POST /api/backtest/soccer` endpoint on the existing FastAPI app. New `/backtest` page in the Next.js dashboard. The backtest is read-only, synchronous, returns partial results when football-data.org rate-limits mid-fetch.
+**Architecture:** Two new backend modules — `soccer_cache.py` (API-Football v3 client + its own SQLite DB) and `backtest.py` (simulation + orchestration). New `POST /api/backtest/soccer` endpoint on the existing FastAPI app. New `/backtest` page in the Next.js dashboard. The backtest is read-only, synchronous, returns partial results when the API-Football rate limit is hit mid-fetch.
 
 **Tech Stack:** Python 3.13 (FastAPI + SQLAlchemy 2 + httpx + Pydantic), Next.js 16 + React 19 + Tailwind + recharts (new frontend dep).
 
@@ -15,7 +17,7 @@
 ## File Structure
 
 ### New files
-- `src/predictions/soccer_cache.py` — football-data.org HTTP client, `SoccerMatch` / `SoccerGoal` ORM models, `init_soccer_db()`, `ensure_matches_cached()`. Owns its own `engine` + `SessionLocal` distinct from `db.py`.
+- `src/predictions/soccer_cache.py` — API-Football v3 HTTP client, `SoccerMatch` / `SoccerGoal` ORM models, `init_soccer_db()`, `ensure_matches_cached()`. Owns its own `engine` + `SessionLocal` distinct from `db.py`.
 - `src/predictions/backtest.py` — Pydantic request/response models, `simulate_match()` pure function, team-alias map + fuzzy matching, `find_observed_yes_ask()`, `run_backtest()` orchestrator.
 - `tests/test_soccer_cache.py`
 - `tests/test_simulate_match.py`
@@ -28,8 +30,8 @@
 - `src/predictions/api.py` — add `POST /api/backtest/soccer`.
 - `dashboard/app/page.tsx` — add "Strategy Backtest" link in the header.
 - `dashboard/package.json` — add `recharts` dep.
-- `.env.example` — `FOOTBALL_DATA_API_KEY`, `SOCCER_CACHE_DB_PATH`.
-- `sst.config.ts` — `FootballDataApiKey` secret + env wiring.
+- `.env.example` — `API_FOOTBALL_KEY`, `SOCCER_CACHE_DB_PATH`.
+- `sst.config.ts` — `ApiFootballKey` secret + env wiring.
 
 ### No changes needed
 - `.gitignore` — existing `*.db` / `*.db-journal` globs already cover `soccer-cache.db*`.
@@ -127,7 +129,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'predictions.soccer_ca
 - [ ] **Step 4: Create `src/predictions/soccer_cache.py` with ORM + init**
 
 ```python
-"""Soccer historical-match cache, backed by its own SQLite DB and fed by football-data.org."""
+"""Soccer historical-match cache, backed by its own SQLite DB and fed by API-Football v3."""
 
 import os
 from datetime import datetime, timezone
@@ -162,7 +164,7 @@ Base = declarative_base()
 class SoccerMatch(Base):
     __tablename__ = "soccer_matches"
 
-    id = Column(String, primary_key=True)  # "fd:<football_data_id>"
+    id = Column(String, primary_key=True)  # "af:<api_football_id>" (legacy rows prefixed "fd:")
     competition = Column(String, nullable=False)  # 'PL' | 'PD' | 'BL1'
     kickoff_at = Column(DateTime, nullable=False)
     home_team = Column(String, nullable=False)
@@ -222,7 +224,7 @@ git commit -m "feat(soccer): add SoccerMatch/SoccerGoal ORM + isolated cache eng
 
 ---
 
-## Task 2: `FootballDataClient` — HTTP client with rate-limit signalling
+## Task 2: `ApiFootballClient` — HTTP client with rate-limit signalling
 
 **Files:**
 - Modify: `src/predictions/soccer_cache.py`
@@ -249,7 +251,7 @@ def _mock_transport(responses: list[tuple[int, dict]]) -> httpx.MockTransport:
 
 
 async def test_client_sends_auth_header(monkeypatch):
-    from predictions.soccer_cache import FootballDataClient
+    from predictions.soccer_cache import ApiFootballClient
 
     captured = {}
 
@@ -259,19 +261,17 @@ async def test_client_sends_auth_header(monkeypatch):
         return httpx.Response(200, json={"matches": []})
 
     transport = httpx.MockTransport(handler)
-    client = FootballDataClient(api_key="secret-xyz", transport=transport)
+    client = ApiFootballClient(api_key="secret-xyz", transport=transport)
     await client.list_matches("PL", "2026-03-01", "2026-03-31")
 
-    assert captured["headers"]["x-auth-token"] == "secret-xyz"
-    assert "competitions/PL/matches" in captured["url"]
-    assert "dateFrom=2026-03-01" in captured["url"]
-    assert "dateTo=2026-03-31" in captured["url"]
+    assert captured["headers"]["x-apisports-key"] == "secret-xyz"
+    assert "fixtures" in captured["url"]
 
 
 async def test_client_raises_rate_limited_on_429():
-    from predictions.soccer_cache import FootballDataClient, RateLimitedError
+    from predictions.soccer_cache import ApiFootballClient, RateLimitedError
 
-    client = FootballDataClient(
+    client = ApiFootballClient(
         api_key="k", transport=_mock_transport([(429, {"message": "rate limited"})])
     )
 
@@ -280,7 +280,7 @@ async def test_client_raises_rate_limited_on_429():
 
 
 async def test_client_get_match_goals_shape():
-    from predictions.soccer_cache import FootballDataClient
+    from predictions.soccer_cache import ApiFootballClient
 
     body = {
         "id": 42,
@@ -291,7 +291,7 @@ async def test_client_get_match_goals_shape():
             {"minute": 90, "injuryTime": 3, "team": {"id": 2}, "type": "OWN"},
         ],
     }
-    client = FootballDataClient(api_key="k", transport=_mock_transport([(200, body)]))
+    client = ApiFootballClient(api_key="k", transport=_mock_transport([(200, body)]))
     detail = await client.get_match_goals(42)
     assert detail["goals"][0]["minute"] == 30
     assert detail["goals"][1]["type"] == "OWN"
@@ -300,7 +300,7 @@ async def test_client_get_match_goals_shape():
 - [ ] **Step 2: Run the failing tests**
 
 Run: `uv run pytest tests/test_soccer_cache.py -v`
-Expected: 3 FAIL (ImportError on `FootballDataClient` / `RateLimitedError`).
+Expected: 3 FAIL (ImportError on `ApiFootballClient` / `RateLimitedError`).
 
 - [ ] **Step 3: Implement the client**
 
@@ -309,15 +309,15 @@ Append to `src/predictions/soccer_cache.py`:
 ```python
 import httpx
 
-FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4"
+API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 
 
 class RateLimitedError(Exception):
-    """Raised when football-data.org returns HTTP 429."""
+    """Raised when API-Football returns HTTP 429."""
 
 
-class FootballDataClient:
-    """Thin async wrapper over football-data.org v4.
+class ApiFootballClient:
+    """Thin async wrapper over API-Football v3 (api-sports.io).
 
     Does not retry. On HTTP 429 raises RateLimitedError so the caller can
     surface partial results to the user. Other non-2xx responses raise
@@ -328,14 +328,14 @@ class FootballDataClient:
         self,
         api_key: str,
         *,
-        base_url: str = FOOTBALL_DATA_BASE_URL,
+        base_url: str = API_FOOTBALL_BASE_URL,
         transport: httpx.AsyncBaseTransport | None = None,
         timeout: float = 30.0,
     ) -> None:
         self._api_key = api_key
         self._client = httpx.AsyncClient(
             base_url=base_url,
-            headers={"X-Auth-Token": api_key},
+            headers={"x-apisports-key": api_key},
             timeout=timeout,
             transport=transport,
         )
@@ -349,14 +349,14 @@ class FootballDataClient:
             params={"dateFrom": date_from, "dateTo": date_to},
         )
         if resp.status_code == 429:
-            raise RateLimitedError("football-data.org rate limit hit on list_matches")
+            raise RateLimitedError("API-Football rate limit hit on list_matches")
         resp.raise_for_status()
         return resp.json()
 
     async def get_match_goals(self, match_id: int) -> dict:
         resp = await self._client.get(f"/matches/{match_id}")
         if resp.status_code == 429:
-            raise RateLimitedError("football-data.org rate limit hit on get_match_goals")
+            raise RateLimitedError("API-Football rate limit hit on get_match_goals")
         resp.raise_for_status()
         return resp.json()
 ```
@@ -370,7 +370,7 @@ Expected: 5 PASS.
 
 ```bash
 git add src/predictions/soccer_cache.py tests/test_soccer_cache.py
-git commit -m "feat(soccer): add FootballDataClient with rate-limit signalling"
+git commit -m "feat(soccer): add ApiFootballClient with rate-limit signalling"
 ```
 
 ---
@@ -572,7 +572,7 @@ class EnsureResult:
 
 
 def _parse_iso_utc(s: str) -> datetime:
-    """Parse ISO-8601 (football-data.org uses trailing 'Z')."""
+    """Parse ISO-8601 (API-Football uses trailing 'Z')."""
     return datetime.fromisoformat(s.replace("Z", "+00:00"))
 
 
@@ -584,7 +584,7 @@ def _ingest_goals(session, match_id_str: str, home_team_id: int, raw_goals: list
         scorer_team_id = (g.get("team") or {}).get("id")
         gtype = (g.get("type") or "REGULAR").upper()
         scoring_side = "home" if scorer_team_id == home_team_id else "away"
-        # Own-goal: "team.id" is the conceder in football-data.org's payload.
+        # Own-goal: "team.id" is the conceder in the API-Football payload.
         # The beneficiary — and hence the side that counts on the scoreboard —
         # is the OPPOSITE side.
         if gtype == "OWN":
@@ -604,7 +604,7 @@ async def ensure_matches_cached(
     date_from: str,
     date_to: str,
     *,
-    client: "FootballDataClient | _FakeFootballClient | None" = None,
+    client: "ApiFootballClient | _FakeFootballClient | None" = None,
 ) -> EnsureResult:
     """Fetch any missing FINISHED matches in the range and persist them.
 
@@ -612,10 +612,10 @@ async def ensure_matches_cached(
     plus a partial flag + missing_count on rate-limit mid-fetch.
     """
     if client is None:
-        api_key = os.getenv("FOOTBALL_DATA_API_KEY", "")
+        api_key = os.getenv("API_FOOTBALL_KEY", "")
         if not api_key:
-            raise RuntimeError("FOOTBALL_DATA_API_KEY is not set")
-        client = FootballDataClient(api_key=api_key)
+            raise RuntimeError("API_FOOTBALL_KEY is not set")
+        client = ApiFootballClient(api_key=api_key)
 
     list_body = await client.list_matches(league, date_from, date_to)
     raw_matches = [m for m in list_body.get("matches", []) if m.get("status") == "FINISHED"]
@@ -631,7 +631,7 @@ async def ensure_matches_cached(
             .all()
         }
         for i, m in enumerate(raw_matches):
-            match_id_str = f"fd:{m['id']}"
+            match_id_str = f"af:{m['id']}"
             if match_id_str in existing_ids:
                 continue
             try:
@@ -1180,7 +1180,7 @@ import unicodedata
 
 # Canonical team-name aliases. Each entry maps an alias to its canonical
 # display name. Lookup is case-insensitive after _normalize_team. This is
-# the systematic-correction surface — grow lazily as Kalshi/football-data
+# the systematic-correction surface — grow lazily as Kalshi/API-Football
 # mismatches are observed.
 _TEAM_ALIASES: dict[str, str] = {
     # Premier League
@@ -1871,7 +1871,7 @@ def test_backtest_requires_bearer(client):
 
 
 def test_backtest_returns_503_when_api_key_missing(client, monkeypatch):
-    monkeypatch.delenv("FOOTBALL_DATA_API_KEY", raising=False)
+    monkeypatch.delenv("API_FOOTBALL_KEY", raising=False)
     body = {
         "league": "PL", "date_from": "2026-03-01", "date_to": "2026-04-01",
         "min_minute": 75, "min_lead": 2, "min_yes_price": 0,
@@ -1886,7 +1886,7 @@ def test_backtest_returns_503_when_api_key_missing(client, monkeypatch):
 
 
 def test_backtest_validation_400_on_bad_date_range(client, monkeypatch):
-    monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "k")
+    monkeypatch.setenv("API_FOOTBALL_KEY", "k")
     body = {
         "league": "PL", "date_from": "2026-05-01", "date_to": "2026-03-01",
         "min_minute": 75, "min_lead": 2, "min_yes_price": 0,
@@ -1906,7 +1906,7 @@ def test_backtest_200_happy_path(client, monkeypatch):
 
     from predictions.backtest import BacktestResponse, BacktestSummary
 
-    monkeypatch.setenv("FOOTBALL_DATA_API_KEY", "k")
+    monkeypatch.setenv("API_FOOTBALL_KEY", "k")
     fake = BacktestResponse(
         summary=BacktestSummary(
             matches_scanned=0, matches_bet_on=0, matches_with_price_data=0,
@@ -1953,8 +1953,8 @@ Then append this handler near the other endpoints (e.g., after `update_config`):
     dependencies=[Depends(_check_token)],
 )
 async def post_backtest_soccer(req: BacktestRequest):
-    if not os.getenv("FOOTBALL_DATA_API_KEY"):
-        raise HTTPException(503, "FOOTBALL_DATA_API_KEY is not configured")
+    if not os.getenv("API_FOOTBALL_KEY"):
+        raise HTTPException(503, "API_FOOTBALL_KEY is not configured")
     try:
         return await backtest_mod.run_backtest(req)
     except ValueError as e:
@@ -1993,10 +1993,9 @@ Add this block to the end of `.env.example`:
 ```
 # --- Soccer backtest -------------------------------------------------------
 
-# football-data.org v4 API key. Required for the /backtest page. Get one at
-# https://www.football-data.org/client/register . Free tier allows 10
-# requests/minute which is enough for the backtest cache.
-FOOTBALL_DATA_API_KEY=
+# API-Football v3 (api-sports.io) key. Required for the /backtest page.
+# Free tier: 100 req/day + 30 req/min. Sign up at https://www.api-football.com/
+API_FOOTBALL_KEY=
 
 # Filesystem path for the soccer-match cache SQLite file. Defaults to the
 # repo root in dev; production overrides to /tmp/soccer-cache.db via SST.
@@ -2008,13 +2007,13 @@ SOCCER_CACHE_DB_PATH=./soccer-cache.db
 After the `const apiToken = new sst.Secret("ApiToken");` line, add:
 
 ```typescript
-    const footballDataApiKey = new sst.Secret("FootballDataApiKey");
+    const apiFootballKey = new sst.Secret("ApiFootballKey");
 ```
 
 Inside the `environment` block of the `Api` service (right before `CORS_ORIGINS`), add:
 
 ```typescript
-          FOOTBALL_DATA_API_KEY: footballDataApiKey.value,
+          API_FOOTBALL_KEY: apiFootballKey.value,
           SOCCER_CACHE_DB_PATH: "/tmp/soccer-cache.db",
 ```
 
@@ -2029,7 +2028,7 @@ Expected: clean. (SST config is TypeScript, but not type-checked by our Python t
 
 ```bash
 git add .env.example sst.config.ts
-git commit -m "chore(infra): wire FOOTBALL_DATA_API_KEY secret + SOCCER_CACHE_DB_PATH"
+git commit -m "chore(infra): wire API_FOOTBALL_KEY secret + SOCCER_CACHE_DB_PATH"
 ```
 
 ---
@@ -2768,7 +2767,7 @@ Expected: clean.
 
 - [ ] **Step 3: Manual dashboard QA per spec §Manual dashboard QA**
 
-With `pnpm dev:api` + `pnpm dev:dashboard` running and `FOOTBALL_DATA_API_KEY` set in `.env`:
+With `pnpm dev:api` + `pnpm dev:dashboard` running and `API_FOOTBALL_KEY` set in `.env`:
 
 - Load `/backtest`, run with defaults on EPL. Confirm summary cards render.
 - Confirm bankroll chart appears only when `w/ prices > 0` (compare against the empty-price placeholder otherwise).
@@ -2791,26 +2790,26 @@ Cross-check each bullet in the spec's testing section against the committed test
 
 ## Spec-to-plan traceability
 
-| Spec section | Task |
-|--------------|------|
-| §Strategy model — `simulate_match` | Task 5 |
-| §Strategy model — `min_yes_price` filter semantics | Task 8 |
-| §Data sources — football-data.org client | Task 2 |
-| §Data sources — `find_observed_yes_ask` | Tasks 6, 7 |
-| §Architecture — `soccer_cache.py` | Tasks 1–3 |
-| §Architecture — `backtest.py` | Tasks 4–8 |
-| §Architecture — API change | Task 9 |
-| §Storage — `soccer-cache.db` schema + migrations | Task 1 |
-| §Storage — cache policy (FINISHED-only, permanent) | Task 3 |
-| §API contract — request/response shape | Tasks 4, 8 |
-| §API contract — 400/401/503 | Task 9 |
-| §API contract — partial results | Tasks 3, 8 |
-| §UI — layout + controls | Task 12 |
-| §UI — summary cards | Task 13 |
-| §UI — bankroll curve | Task 14 |
-| §UI — match log | Task 15 |
-| §UI — loading / partial / empty / error | Tasks 13, 16 |
-| §UI — header link from `/` | Task 17 |
-| §Environment / deployment | Task 10 |
-| §Frontend deps (recharts) | Task 11 |
-| §Testing | Tasks 1–9, 18 |
+| Spec section                                       | Task          |
+|----------------------------------------------------|---------------|
+| §Strategy model — `simulate_match`                 | Task 5        |
+| §Strategy model — `min_yes_price` filter semantics | Task 8        |
+| §Data sources — API-Football v3 client             | Task 2        |
+| §Data sources — `find_observed_yes_ask`            | Tasks 6, 7    |
+| §Architecture — `soccer_cache.py`                  | Tasks 1–3     |
+| §Architecture — `backtest.py`                      | Tasks 4–8     |
+| §Architecture — API change                         | Task 9        |
+| §Storage — `soccer-cache.db` schema + migrations   | Task 1        |
+| §Storage — cache policy (FINISHED-only, permanent) | Task 3        |
+| §API contract — request/response shape             | Tasks 4, 8    |
+| §API contract — 400/401/503                        | Task 9        |
+| §API contract — partial results                    | Tasks 3, 8    |
+| §UI — layout + controls                            | Task 12       |
+| §UI — summary cards                                | Task 13       |
+| §UI — bankroll curve                               | Task 14       |
+| §UI — match log                                    | Task 15       |
+| §UI — loading / partial / empty / error            | Tasks 13, 16  |
+| §UI — header link from `/`                         | Task 17       |
+| §Environment / deployment                          | Task 10       |
+| §Frontend deps (recharts)                          | Task 11       |
+| §Testing                                           | Tasks 1–9, 18 |
