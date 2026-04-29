@@ -7,7 +7,7 @@ export interface BacktestParams {
   min_lead: number;
   initial_capital: number;
   bet_fraction: number; // 0..1, fraction of current capital staked per bet
-  avg_win_yield: number; // EUR returned per 1 EUR staked on a winning bet (e.g. 0.03)
+  contract_price_cents: number;
 }
 
 export interface BacktestTrade {
@@ -22,9 +22,10 @@ export interface BacktestTrade {
   score_at_fire_away: number;
   leading_side: "home" | "away";
   result: "win" | "loss";
-  bet_amount: number;
-  pnl: number;
-  capital_after: number;
+  contracts: number;
+  contract_price_cents: number;
+  pnl_cents: number;
+  capital_after_cents: number;
 }
 
 export interface BacktestSummary {
@@ -33,8 +34,8 @@ export interface BacktestSummary {
   wins: number;
   losses: number;
   win_rate: number; // 0..1, 4 decimal places
-  initial_capital: number;
-  final_capital: number;
+  initial_capital_cents: number;
+  final_capital_cents: number;
   gain_pct: number; // (final − initial) / initial * 100
 }
 
@@ -42,10 +43,6 @@ export interface BacktestResult {
   summary: BacktestSummary;
   trades: BacktestTrade[];
 }
-
-// Default avg win yield: 0.03 EUR per 1 EUR staked. Asymmetric Kalshi-style payoff —
-// callers may override via BacktestParams.avg_win_yield. Loss always forfeits the full stake.
-export const DEFAULT_WIN_YIELD = 0.03;
 
 // ---- Helpers ---------------------------------------------------------------
 
@@ -124,35 +121,17 @@ export function detectFire(
   return null;
 }
 
-// Back-compat alias: legacy callers used `simulateMatch` and expected a trade-shaped
-// object without monetary fields. Tests/scripts may still depend on the name.
-export function simulateMatch(
-  match: Match,
-  params: { min_minute: number; min_lead: number },
-): Omit<BacktestTrade, "bet_amount" | "pnl" | "capital_after"> | null {
-  const fire = detectFire(match, params.min_minute, params.min_lead);
-  if (fire === null) return null;
-  return {
-    match_id: fire.match.id,
-    date: fire.match.date,
-    home_team: fire.match.home_team,
-    away_team: fire.match.away_team,
-    final_home: fire.final_home,
-    final_away: fire.final_away,
-    fired_at_minute: fire.fired_at_minute,
-    score_at_fire_home: fire.score_at_fire_home,
-    score_at_fire_away: fire.score_at_fire_away,
-    leading_side: fire.leading_side,
-    result: fire.result,
-  };
-}
-
 export function runBacktest(
   file: SeasonFile,
   params: BacktestParams,
 ): BacktestResult {
-  const { min_minute, min_lead, initial_capital, bet_fraction, avg_win_yield } =
-    params;
+  const {
+    min_minute,
+    min_lead,
+    initial_capital,
+    bet_fraction,
+    contract_price_cents,
+  } = params;
 
   // Walk matches chronologically (oldest first) so capital accumulates in time order.
   // YYYY-MM-DD strings are lexicographically sortable.
@@ -160,17 +139,26 @@ export function runBacktest(
     a.date.localeCompare(b.date),
   );
 
+  const initial_capital_cents = Math.floor(initial_capital * 100);
   const trades: BacktestTrade[] = [];
-  let capital = initial_capital;
+  let capital_cents = initial_capital_cents;
 
   for (const match of chronological) {
     const fire = detectFire(match, min_minute, min_lead);
     if (fire === null) continue;
 
-    const bet_amount = capital * bet_fraction;
-    const pnl =
-      fire.result === "win" ? bet_amount * avg_win_yield : -bet_amount;
-    capital += pnl;
+    const bet_amount_cents = Math.floor(capital_cents * bet_fraction);
+    const contracts = Math.floor(bet_amount_cents / contract_price_cents);
+
+    let pnl_cents: number;
+    if (contracts === 0) {
+      pnl_cents = 0;
+    } else if (fire.result === "win") {
+      pnl_cents = contracts * (100 - contract_price_cents);
+    } else {
+      pnl_cents = -contracts * contract_price_cents;
+    }
+    capital_cents += pnl_cents;
 
     trades.push({
       match_id: fire.match.id,
@@ -184,9 +172,10 @@ export function runBacktest(
       score_at_fire_away: fire.score_at_fire_away,
       leading_side: fire.leading_side,
       result: fire.result,
-      bet_amount,
-      pnl,
-      capital_after: capital,
+      contracts,
+      contract_price_cents,
+      pnl_cents,
+      capital_after_cents: capital_cents,
     });
   }
 
@@ -194,12 +183,15 @@ export function runBacktest(
   const losses = trades.filter((t) => t.result === "loss").length;
   const settled = wins + losses;
   const win_rate = settled === 0 ? 0 : Math.round((wins / settled) * 1e4) / 1e4;
-  const final_capital = capital;
+  const final_capital_cents = capital_cents;
   const gain_pct =
-    initial_capital === 0
+    initial_capital_cents === 0
       ? 0
       : Math.round(
-          ((final_capital - initial_capital) / initial_capital) * 100 * 1e4,
+          ((final_capital_cents - initial_capital_cents) /
+            initial_capital_cents) *
+            100 *
+            1e4,
         ) / 1e4;
 
   // Display newest-first.
@@ -214,8 +206,8 @@ export function runBacktest(
       wins,
       losses,
       win_rate,
-      initial_capital,
-      final_capital,
+      initial_capital_cents,
+      final_capital_cents,
       gain_pct,
     },
     trades: display_trades,
