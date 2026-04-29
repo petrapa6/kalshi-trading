@@ -2228,11 +2228,18 @@ export default function Dashboard() {
           fetch(`${API}/api/trades?limit=50`),
           fetch(`${API}/api/opportunities?limit=50`),
         ]);
+        if (statsRes.status === 401 || statsRes.status === 403) {
+          setError(
+            `API auth failed (${statsRes.status}): check API_TOKEN in .env and restart the dashboard`,
+          );
+          return;
+        }
         if (statsRes.ok) setStats(await statsRes.json());
+        else setError(`API returned ${statsRes.status}`);
         if (tradesRes.ok) setTrades((await tradesRes.json()).trades ?? []);
         if (oppsRes.ok)
           setOpportunities((await oppsRes.json()).opportunities ?? []);
-        setError(null);
+        if (statsRes.ok) setError(null);
       } catch {
         setError("Cannot connect to API");
       }
@@ -2337,7 +2344,7 @@ export default function Dashboard() {
               </h1>
               <a
                 href="/backtest"
-                className="inline-block mt-1 text-sm text-blue-400 hover:text-blue-200 underline"
+                className="inline-block mt-2 px-4 py-2 rounded-lg text-sm font-bold transition-all bg-zinc-900 text-zinc-400 hover:text-amber-500 hover:bg-zinc-800"
               >
                 Strategy Backtest →
               </a>
