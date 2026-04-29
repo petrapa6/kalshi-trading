@@ -17,6 +17,7 @@
 // IMPORTS below, following the same pattern.
 
 import epl_2024_25 from "../../../resources/epl_2024_25_season.json";
+import laliga_2024_25 from "../../../resources/laliga_2024_25_season.json";
 
 // ---- Types -----------------------------------------------------------------
 
@@ -51,7 +52,7 @@ const FILENAME_RE = /^([a-z0-9]+)_(\d{4})_(\d{2})_season\.json$/;
 
 const LEAGUE_NAMES: Record<string, string> = {
   epl: "EPL",
-  pd: "La Liga",
+  laliga: "La Liga",
   bl1: "Bundesliga",
 };
 
@@ -79,6 +80,10 @@ export interface SeasonOption {
 // Webpack bundles each JSON with the client component at build time.
 const IMPORTS: Array<{ filename: string; data: SeasonFile }> = [
   { filename: "epl_2024_25_season.json", data: epl_2024_25 as SeasonFile },
+  {
+    filename: "laliga_2024_25_season.json",
+    data: laliga_2024_25 as SeasonFile,
+  },
 ];
 
 export const SEASONS: SeasonOption[] = IMPORTS.flatMap(({ filename, data }) => {
