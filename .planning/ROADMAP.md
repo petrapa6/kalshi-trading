@@ -2,19 +2,18 @@
 
 ## Overview
 
-The product is a working, deployed prediction-market scanner. v1.0 is shipped and described in `PROJECT.md` Validated requirements + `.planning/codebase/`. v1.1 (the current milestone) is a focused frontend refactor of the backtest dashboard page — moving it off the live API + Kalshi-price wiring and onto pre-fetched season JSONs in `resources/`.
-
-This roadmap is bootstrapped retroactively for an existing brownfield project. No deep-questioning research agents were run; v1.0 phases are not enumerated phase-by-phase.
+This roadmap is bootstrapped retroactively for an existing brownfield project. v1.0 is the pre-GSD production scanner; v1.1 refactored the backtest dashboard page onto local season JSONs.
 
 ## Milestones
 
-- ✅ **v1.0 Production Scanner** — shipped, see PROJECT.md Validated section
-- 🚧 **v1.1 Local-JSON Backtest** — in progress (this milestone)
+- ✅ **v1.0 Production Scanner** — shipped pre-GSD, see PROJECT.md Validated section
+- ✅ **v1.1 Local-JSON Backtest** — shipped 2026-04-29
+- 📋 **v1.2 (TBD)** — not yet planned
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 Production Scanner — SHIPPED</summary>
+<summary>✅ v1.0 Production Scanner — SHIPPED (pre-GSD)</summary>
 
 v1.0 was built before GSD scaffolding existed. There are no per-phase artifacts. Full inventory of what shipped lives in:
 
@@ -25,32 +24,27 @@ v1.0 was built before GSD scaffolding existed. There are no per-phase artifacts.
 
 </details>
 
-### 🚧 v1.1 Local-JSON Backtest (In Progress)
+<details>
+<summary>✅ v1.1 Local-JSON Backtest — SHIPPED 2026-04-29</summary>
 
-**Milestone Goal:** Replace the dashboard backtest page's dependency on `/api/backtest/soccer` and Kalshi prices with a self-contained, deterministic experience driven by pre-fetched season JSONs in `resources/`.
+4 quick tasks executed on branch `feat/soccer-backtest`.
 
-This milestone is being executed as a single quick task (rather than a multi-phase plan) because the scope is contained to `dashboard/app/backtest/page.tsx`.
+- [x] 260429-h5z: Local-JSON backtest page (BT-03..05) — completed 2026-04-29
+- [x] 260429-jtl: Capital simulation + newest-first trade list — completed 2026-04-29
+- [x] 260429-k1c: Configurable avg win yield input — completed 2026-04-29
+- [x] 260429-k6u: Wire in LaLiga 2024/25 season — completed 2026-04-29
 
-#### Quick Task: Local-JSON Backtest Page
+Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 
-**Goal**: Refactor the backtest page to load and render data from `resources/*.json`.
-**Depends on**: v1.0 (existing backtest page + auth gate)
-**Requirements**: BT-03, BT-04, BT-05
-**Success Criteria** (what must be TRUE):
-  1. Visiting `/backtest` shows a dropdown listing every `(league, season)` parsed from `resources/*.json` filenames.
-  2. Selecting a `(league, season)` renders the strategy form, summary stats, trade list, and any retained graphs from that JSON file alone — no network calls to `/api/backtest/soccer`.
-  3. The Kalshi-price-based bankroll chart and the `result.partial` retry banner are removed from the page; nothing on the page depends on Kalshi market prices.
-  4. `pnpm fmt:check && pnpm lint && pnpm build` pass cleanly in `dashboard/`.
-  5. Unauthenticated users continue to be redirected to `/` (auth gate from commit `34b8ab7` still works).
-
-**Plan**: Will be tracked in `.planning/quick/<id>-update-the-soccer-backtest-page-to-check/` (created by `/gsd-quick`).
+</details>
 
 ## Progress
 
 | Phase | Milestone | Status | Completed |
 |-------|-----------|--------|-----------|
-| v1.0 Production Scanner (aggregate) | v1.0 | Complete | pre-GSD |
-| Local-JSON Backtest | v1.1 | In progress | - |
+| v1.0 Production Scanner (aggregate) | v1.0 | ✅ Complete | pre-GSD |
+| v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | ✅ Complete | 2026-04-29 |
 
 ---
 *Roadmap defined: 2026-04-29 (inline bootstrap, brownfield)*
+*Last updated: 2026-04-29 after v1.1 milestone completion*

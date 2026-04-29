@@ -2,46 +2,27 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-29)
+See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** v1.1 Local-JSON Backtest (quick tasks `260429-h5z`, `260429-jtl`, `260429-k1c`, `260429-k6u` complete)
+**Current focus:** Planning next milestone (v1.1 shipped; use `/gsd-new-milestone` to start v1.2)
 
 ## Current Position
 
-Phase: v1.1 quick task `260429-k6u` — Wire in LaLiga 2024/25 season
-Plan: 260429-k6u-01 (complete)
-Status: Quick task complete; v1.1 milestone done unless additional work scoped.
-Last activity: 2026-04-29 — Completed quick task 260429-k6u: LaLiga 2024/25 season is now selectable in the backtest dropdown.
+Phase: v1.1 complete
+Status: ✅ Milestone v1.1 archived and tagged. Ready for next milestone planning.
+Last activity: 2026-04-29 — Completed and archived v1.1 Local-JSON Backtest milestone.
 
-Progress: [██████████] 100% (v1.1 milestone — 1 quick task complete)
+Progress: [██████████] 100% (v1.1 milestone — all 4 quick tasks shipped)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1 (first GSD-tracked task on this repo)
-- Average duration: ~4 min planner + ~4 min executor
-- Total execution time: ~8 min
+- Total plans completed: 4 (all v1.1 quick tasks)
+- Average duration: ~4 min planner + ~4 min executor per task
+- Total execution time: ~32 min for v1.1 milestone
 
-## Accumulated Context
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecting current work:
-
-- v1.1 bootstrap: skipped `/gsd-new-project` deep-questioning workflow because `.planning/codebase/` already maps the existing system.
-- v1.1 scope: keep `/api/backtest/soccer` endpoint untouched; only the dashboard wiring changes.
-- v1.1 commit `34b8ab7`: dashboard backtest page now goes through `checkAuth` gate. The dropped auto-retry code became obsolete in advance of this milestone.
-
-### Pending Todos
-
-None yet.
-
-### Blockers/Concerns
-
-None.
-
-### Quick Tasks Completed
+## Quick Tasks Completed
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
@@ -65,5 +46,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-29
-Stopped at: Quick task `260429-h5z` complete (commits 9f7dd67, 01381c6). v1.1 milestone done. Browser smoke test pending — sandbox couldn't reach the dev server.
-Resume file: None
+Stopped at: v1.1 milestone archived and tagged v1.1.
+Resume: Start v1.2 planning with `/gsd-new-milestone`.

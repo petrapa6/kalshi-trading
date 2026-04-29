@@ -25,16 +25,15 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 - ✓ **CLI-01**: React-ink CLI views/edits runtime config, stats, and trades over Bearer auth — existing
 - ✓ **BT-01**: `/api/backtest/soccer` simulates the strategy over historical API-Football matches with cached match + goal data — existing
 - ✓ **BT-02**: Backtest dashboard page lets user tune league, dates, min_minute, min_lead, min_yes_price, initial_balance, bet_percent — existing
+- ✓ **BT-03**: Backtest page reads pre-fetched season JSONs from `resources/` (one file per league+season) instead of calling `/api/backtest/soccer` — v1.1
+- ✓ **BT-04**: User selects league+season via dropdown sourced from `resources/*.json` filenames — v1.1
+- ✓ **BT-05**: Backtest page renders graphs and strategy config purely from local JSON; the `/api/backtest/soccer` integration and the Kalshi-price-based bankroll chart are removed from the page — v1.1
 - ✓ **INFRA-01**: SST v3 deploys API to ECS Fargate + dashboard via OpenNext + Cloudflare DNS — existing
 - ✓ **INFRA-02**: SQLite snapshot to S3 every 30 min; restored on container start — existing
 
 ### Active
 
-<!-- Current milestone scope. -->
-
-- [ ] **BT-03**: Backtest page reads pre-fetched season JSONs from `resources/` (one file per league+season) instead of calling `/api/backtest/soccer`
-- [ ] **BT-04**: User selects league+season via dropdown sourced from `resources/*.json` filenames
-- [ ] **BT-05**: Backtest page renders graphs and strategy config purely from local JSON; the `/api/backtest/soccer` integration and the Kalshi-price-based bankroll chart are removed from the page
+<!-- Next milestone scope — not yet defined. Run /gsd-new-milestone to plan. -->
 
 ### Out of Scope
 
@@ -45,8 +44,10 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 ## Context
 
 - Brownfield project — production deployment exists. `.planning/codebase/` (mapped on commit `f2c2f78`) is the source of truth for architecture and stack.
-- Current branch `feat/soccer-backtest` shipped the API-Football v3 provider swap and added a `fetch-football-season` skill that produces season JSONs into `resources/`. Today only `epl_2024_25_season.json` exists.
-- The integer-cents invariant (Kalshi prices internal cents, dollar strings only at the `kalshi_client.py` boundary) holds across the codebase. Backtest JSONs do not contain Kalshi prices, so this milestone removes price-based charts rather than re-implementing them locally.
+- v1.1 shipped 2026-04-29 on branch `feat/soccer-backtest`. The backtest page is now a fully self-contained client-side computation over 6 pre-fetched season JSONs (EPL, LaLiga, Bundesliga, Ligue 1, Serie A, MLS). No network calls after page load.
+- The integer-cents invariant (Kalshi prices internal cents, dollar strings only at the `kalshi_client.py` boundary) holds across the codebase. Backtest JSONs do not contain Kalshi prices; the v1.1 milestone removed price-based charts entirely.
+- Known tech debt: hand-maintained static import catalog in `seasons.ts` requires editing for each new season JSON; pre-existing `pnpm fmt:check` failures in `app/page.tsx` and surrounding files; no fee/partial-fill modeling in backtest engine.
+- Outstanding todo: rework trading mechanism for contract-based P&L (see `.planning/todos/pending/2026-04-29-backtest-contract-based-pnl.md`).
 
 ## Constraints
 
@@ -59,9 +60,11 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Bootstrap minimal `.planning/` scaffolding inline (skip `/gsd-new-project` deep-questioning + 4 research agents) | Brownfield repo with a complete codebase map already exists; full project workflow would re-derive what's already in `.planning/codebase/`. | — Pending |
-| Replace API+Kalshi-price wiring on the backtest page with local JSON loader | Pre-fetched season JSONs give deterministic backtests without depending on the soccer cache or Kalshi prices being available. | — Pending |
-| Keep `/api/backtest/soccer` endpoint in place | Backend may still be useful from CLI/scripts; only dashboard wiring changes. | — Pending |
+| Bootstrap minimal `.planning/` scaffolding inline (skip `/gsd-new-project` deep-questioning + 4 research agents) | Brownfield repo with a complete codebase map already exists; full project workflow would re-derive what's already in `.planning/codebase/`. | ✓ Good — saved significant time with no loss of planning quality |
+| Replace API+Kalshi-price wiring on the backtest page with local JSON loader | Pre-fetched season JSONs give deterministic backtests without depending on the soccer cache or Kalshi prices being available. | ✓ Good — removes a runtime dependency; backtest now works offline and deterministically |
+| Keep `/api/backtest/soccer` endpoint in place | Backend may still be useful from CLI/scripts; only dashboard wiring changes. | ✓ Good — minimal blast radius; endpoint preserved for future use |
+| Use static imports over `import.meta.glob` for season catalog | Next.js 16 Webpack doesn't support `import.meta.glob` without a custom loader; static imports bundle JSON at build time and satisfy `output: standalone`. | ✓ Good — clean build, correct standalone trace; trade-off (hand-maintained catalog) documented |
+| Execute v1.1 as quick tasks rather than formal GSD phases | Scope was tightly contained to `dashboard/app/backtest/`; quick tasks move faster with less planning overhead for sub-day work. | ✓ Good — 4 tasks executed in a single session; overhead appropriate to scope |
 
 ## Evolution
 
@@ -81,4 +84,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-29 after inline bootstrap (brownfield)*
+*Last updated: 2026-04-29 after v1.1 milestone completion*
