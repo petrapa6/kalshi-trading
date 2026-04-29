@@ -46,6 +46,10 @@ sst-env.d.ts.backup
 *.swp
 *.swo
 
+# --- Claude Code ---
+.claude/compaction-snapshots/
+.claude/settings.local.json
+
 # --- Misc ---
 *.pem
 *.key
