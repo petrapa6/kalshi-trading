@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { checkAuth } from "../actions";
 import {
   CartesianGrid,
   Line,
@@ -184,10 +185,18 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
 }
 
 export default function BacktestPage() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
   const [form, setForm] = useState<FormState>(defaultForm);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BacktestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    checkAuth().then((ok) => {
+      if (!ok) window.location.href = "/";
+      else setAuthed(true);
+    });
+  }, []);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -219,6 +228,8 @@ export default function BacktestPage() {
       setLoading(false);
     }
   }
+
+  if (!authed) return <div className="min-h-screen bg-black" />;
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
