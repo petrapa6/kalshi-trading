@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-04-29)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** v1.1 Local-JSON Backtest (quick task `260429-h29`)
+**Current focus:** v1.1 Local-JSON Backtest (quick task `260429-h5z` complete)
 
 ## Current Position
 
-Phase: v1.1 quick task — Local-JSON Backtest Page
-Plan: Pending creation by `/gsd-quick`
-Status: Ready to plan
-Last activity: 2026-04-29 — Inline bootstrap of `.planning/` scaffolding (brownfield); auth gate committed at `34b8ab7`.
+Phase: v1.1 quick task `260429-h5z` — Local-JSON Backtest Page
+Plan: 260429-h5z-01 (complete)
+Status: Quick task complete; v1.1 milestone done unless additional work scoped.
+Last activity: 2026-04-29 — Completed quick task 260429-h5z: local-JSON backtest page (BT-03..05).
 
-Progress: [░░░░░░░░░░] 0% (v1.1 milestone)
+Progress: [██████████] 100% (v1.1 milestone — 1 quick task complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0 (this is the first GSD-tracked task on this repo)
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1 (first GSD-tracked task on this repo)
+- Average duration: ~4 min planner + ~4 min executor
+- Total execution time: ~8 min
 
 ## Accumulated Context
 
@@ -41,6 +41,12 @@ None yet.
 
 None.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260429-h5z | Local-JSON backtest page (BT-03..05): dropdown over `resources/*.json`, drop API+price wiring | 2026-04-29 | 01381c6 | [260429-h5z-update-soccer-backtest-page-to-load-leag](./quick/260429-h5z-update-soccer-backtest-page-to-load-leag/) |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
@@ -50,5 +56,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-04-29
-Stopped at: Inline bootstrap complete, ready to invoke `/gsd-quick` for the milestone scope.
+Stopped at: Quick task `260429-h5z` complete (commits 9f7dd67, 01381c6). v1.1 milestone done. Browser smoke test pending — sandbox couldn't reach the dev server.
 Resume file: None
