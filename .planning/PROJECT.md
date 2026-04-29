@@ -36,12 +36,13 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 <!-- v1.2 Strategy Engine — defined 2026-04-29 -->
 
 - **BT-06**: Backtest engine uses contract-based P&L math (`contracts = floor(stake/price)`, win = `contracts × (1−price)`, loss = `contracts × price`)
+- **BT-07**: Backtest page strategy dropdown populated from `strategies.yaml` pre-populates parameter sliders (sliders stay editable)
 - **STR-01**: Named strategies are defined in a `strategies.yaml` file (replaces `WHAT_IF_STRATEGIES` hardcoded list in `scanner.py`)
 - **STR-02**: Each strategy supports multi-trigger conditions: OR-of-AND sets (e.g. "goal_diff ≥ 3 at minute ≥ 20 OR goal_diff ≥ 2 at minute ≥ 75")
 - **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner
 - **STR-04**: `stretch_opportunities` table and `WHAT_IF_STRATEGIES` are replaced by the new strategy file system
-- **DRY-01**: Live scanner places dry-run orders via Kalshi API per each defined strategy (real API calls, `dry_run=True` flag)
-- **DRY-02**: Dry-run trades are stored in the DB tagged by strategy name
+- **DRY-01**: Live scanner evaluates strategies each loop; when triggered, records live Kalshi yes_ask price and writes a dry-run Trade row (no API call, hardcoded `dry_run=True`)
+- **DRY-02**: Dry-run trades stored with `strategy_name`; P&L computed on settlement using contract math with the recorded yes_ask entry price
 - **DASH-03**: New analytics dashboard page shows per-strategy trade log, P&L curve, and win rate
 - **DASH-04**: Analytics page auto-refreshes to show live dry-run activity as new trades arrive
 
