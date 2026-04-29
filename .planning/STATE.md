@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategy Engine
 status: planning
-last_updated: "2026-04-29T13:54:28.531Z"
+last_updated: "2026-04-29"
 last_activity: 2026-04-29
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** Planning next milestone (v1.1 shipped; use `/gsd-new-milestone` to start v1.2)
+**Current focus:** Phase 1 — Backtest P&L Math (ready to plan)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 1 of 4 (Backtest P&L Math)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-29 — Milestone v1.2 started
+Status: Ready to plan
+Last activity: 2026-04-29 — Roadmap created for v1.2 (4 phases, 10 requirements)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -37,20 +39,26 @@ Last activity: 2026-04-29 — Milestone v1.2 started
 - Average duration: ~4 min planner + ~4 min executor per task
 - Total execution time: ~32 min for v1.1 milestone
 
-## Quick Tasks Completed
+## Accumulated Context
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260429-h5z | Local-JSON backtest page (BT-03..05): dropdown over `resources/*.json`, drop API+price wiring | 2026-04-29 | 01381c6 | [260429-h5z-update-soccer-backtest-page-to-load-leag](./quick/260429-h5z-update-soccer-backtest-page-to-load-leag/) |
-| 260429-jtl | Backtest page strategy: capital + bet size inputs, final capital + gain analytics, newest-first trade list | 2026-04-29 | a25e1a5 | [260429-jtl-backtest-page-strategy-order-matches-new](./quick/260429-jtl-backtest-page-strategy-order-matches-new/) |
-| 260429-k1c | Backtest page: configurable Avg win yield input replacing hard-coded WIN_YIELD constant | 2026-04-29 | 1344495 | [260429-k1c-backtest-page-configurable-avg-win-yield](./quick/260429-k1c-backtest-page-configurable-avg-win-yield/) |
-| 260429-k6u | Wire in LaLiga 2024/25 season into backtest seasons catalog | 2026-04-29 | a906c6c | [260429-k6u-wire-in-laliga-2024-25-season-from-resou](./quick/260429-k6u-wire-in-laliga-2024-25-season-from-resou/) |
+### Decisions
 
-## Pending Todos
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- DRY-01: Local simulation (no Kalshi API call) is the dry-run implementation — hardcoded `dry_run=True` in strategy evaluation path regardless of process-level `DRY_RUN` env var.
+- STR-04: Use `RENAME TO stretch_opportunities_archived`, never DROP — test against S3 backup copy before deploying.
+
+### Pending Todos
 
 | File | Title | Area |
 |------|-------|------|
 | [2026-04-29-backtest-contract-based-pnl.md](./todos/pending/2026-04-29-backtest-contract-based-pnl.md) | Backtest page: rework trading mechanism for contract-based P&L | ui |
+
+### Blockers/Concerns
+
+- [Phase 2] YAML field vocabulary: backtest uses `minute`/`goal_diff` (soccer); scanner uses `clock_seconds`/`score_diff`. Must design the condition field mapping explicitly before coding STR-01.
+- [Phase 3] Settlement reconciliation currently filters `dry_run == False` — DRY-02 must add a parallel path for `dry_run=True AND strategy_name IS NOT NULL` trades or P&L will never compute.
 
 ## Deferred Items
 
@@ -61,5 +69,5 @@ Last activity: 2026-04-29 — Milestone v1.2 started
 ## Session Continuity
 
 Last session: 2026-04-29
-Stopped at: v1.1 milestone archived and tagged v1.1.
-Resume: Start v1.2 planning with `/gsd-new-milestone`.
+Stopped at: Roadmap created. Run `/gsd-plan-phase 1` to plan Phase 1.
+Resume: `/gsd-plan-phase 1` (Backtest P&L Math — BT-06 only)

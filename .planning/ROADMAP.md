@@ -2,13 +2,13 @@
 
 ## Overview
 
-This roadmap is bootstrapped retroactively for an existing brownfield project. v1.0 is the pre-GSD production scanner; v1.1 refactored the backtest dashboard page onto local season JSONs.
+This roadmap is bootstrapped retroactively for an existing brownfield project. v1.0 is the pre-GSD production scanner; v1.1 refactored the backtest dashboard page onto local season JSONs. v1.2 replaces the hardcoded strategy system with a YAML-driven strategy engine and analytics dashboard.
 
 ## Milestones
 
 - ✅ **v1.0 Production Scanner** — shipped pre-GSD, see PROJECT.md Validated section
 - ✅ **v1.1 Local-JSON Backtest** — shipped 2026-04-29
-- 📋 **v1.2 (TBD)** — not yet planned
+- 🚧 **v1.2 Strategy Engine** — Phases 1–4 (in progress)
 
 ## Phases
 
@@ -38,13 +38,76 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
 
+### 🚧 v1.2 Strategy Engine (In Progress)
+
+**Milestone Goal:** Replace the hardcoded strategy list with a file-driven engine supporting multi-trigger conditions, power both backtest and live dry-run trading, and surface per-strategy analytics in the dashboard.
+
+- [ ] **Phase 1: Backtest P&L Math** - Replace yield-based math with contract-based P&L in the backtest engine
+- [ ] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest
+- [ ] **Phase 3: Scanner Integration** - DB migration, strategy evaluation in live scanner, stretch system removal
+- [ ] **Phase 4: Analytics Dashboard** - Per-strategy analytics API endpoints and dashboard page
+
+## Phase Details
+
+### Phase 1: Backtest P&L Math
+**Goal**: The backtest engine computes P&L using contract-based math, removing the avg_win_yield approximation
+**Depends on**: Nothing (first phase)
+**Requirements**: BT-06
+**Success Criteria** (what must be TRUE):
+  1. Backtest results use `contracts = floor(stake / price)`, `win = contracts × (1 − price)`, `loss = contracts × price` — verifiable by checking output against manual calculation for one match
+  2. The `avg_win_yield` slider is gone from the backtest UI; existing sliders (min_minute, min_lead, min_yes_price, max_yes_price) remain and function
+  3. `pnpm fmt:check && pnpm lint && pnpm build` passes with no new failures
+**Plans**: TBD
+
+### Phase 2: Strategy Engine Core
+**Goal**: Named strategies defined in `strategies.yaml` drive both the backtest simulator and can be validated against historical data before touching the live scanner
+**Depends on**: Phase 1
+**Requirements**: STR-01, STR-02, STR-03, BT-07
+**Success Criteria** (what must be TRUE):
+  1. A `strategies.yaml` file exists at the repo root with at least one named strategy using OR-of-AND triggers; the scanner logs a warning and runs with no strategies if the file is missing
+  2. Backtest page strategy dropdown is populated from `strategies.yaml`; selecting a strategy pre-fills parameter sliders with the strategy's first trigger values; sliders remain editable
+  3. Empty trigger block (`triggers: []` or a trigger with no fields) is rejected at load time — Pydantic validation enforces `min_length=1` on trigger lists and individual trigger dicts
+  4. `uv run ruff check . && uv run ruff format --check . && uv run ty check` passes clean
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 3: Scanner Integration
+**Goal**: The live scanner evaluates strategies each loop and records dry-run trades; the stretch system is decommissioned
+**Depends on**: Phase 2
+**Requirements**: STR-04, DRY-01, DRY-02
+**Success Criteria** (what must be TRUE):
+  1. `stretch_opportunities` table is renamed to `stretch_opportunities_archived` (not dropped); `WHAT_IF_STRATEGIES` is removed from `scanner.py`; `GET /api/sport-stats` returns correct game counts derived from the `opportunities` table
+  2. When a strategy trigger fires for a live market, a `Trade` row is written with `dry_run=True`, `strategy_name` set, and `yes_price` = the live `yes_ask` from `market_prices` cache — no Kalshi API call is made regardless of the process-level `DRY_RUN` env var
+  3. `trading_paused == "true"` prevents dry-run strategy trades from being written, same as live trades
+  4. Settlement reconciliation processes `dry_run=True AND strategy_name IS NOT NULL` trades (WebSocket primary + REST fallback); P&L is computed using contract math on the recorded `yes_ask` entry price
+  5. `connect_args` in `db.py` includes `"timeout": 5` to prevent `SQLITE_BUSY` errors under concurrent analytics polling
+**Plans**: TBD
+
+### Phase 4: Analytics Dashboard
+**Goal**: Users can inspect per-strategy dry-run performance in the dashboard with live-updating data
+**Depends on**: Phase 3
+**Requirements**: DASH-03, DASH-04
+**Success Criteria** (what must be TRUE):
+  1. A new dashboard page (behind `checkAuth` gate) shows a strategy selector, summary stat cards (total trades, wins, losses, win rate, realized P&L), and a cumulative P&L line chart for the selected strategy
+  2. A trade log table on the analytics page shows per-trade detail (date, ticker, entry price, contracts, P&L, status) for the selected strategy
+  3. The page auto-refreshes every 5 minutes; new dry-run trades appear without a manual reload
+  4. Strategies with zero trades appear in the selector but show empty charts and zeroed stat cards rather than 404 or blank page
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
-| Phase | Milestone | Status | Completed |
-|-------|-----------|--------|-----------|
-| v1.0 Production Scanner (aggregate) | v1.0 | ✅ Complete | pre-GSD |
-| v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | ✅ Complete | 2026-04-29 |
+**Execution Order:** 1 → 2 → 3 → 4
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| v1.0 Production Scanner (aggregate) | v1.0 | — | ✅ Complete | pre-GSD |
+| v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | 4/4 | ✅ Complete | 2026-04-29 |
+| 1. Backtest P&L Math | v1.2 | 0/? | Not started | - |
+| 2. Strategy Engine Core | v1.2 | 0/? | Not started | - |
+| 3. Scanner Integration | v1.2 | 0/? | Not started | - |
+| 4. Analytics Dashboard | v1.2 | 0/? | Not started | - |
 
 ---
 *Roadmap defined: 2026-04-29 (inline bootstrap, brownfield)*
-*Last updated: 2026-04-29 after v1.1 milestone completion*
+*v1.2 phases added: 2026-04-29*

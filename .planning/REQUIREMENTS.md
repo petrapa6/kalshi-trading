@@ -61,13 +61,13 @@
 
 | REQ-ID | Phase | Notes |
 |--------|-------|-------|
-| BT-06 | — | |
-| BT-07 | — | |
-| STR-01 | — | |
-| STR-02 | — | |
-| STR-03 | — | |
-| STR-04 | — | |
-| DRY-01 | — | |
-| DRY-02 | — | |
-| DASH-03 | — | |
-| DASH-04 | — | |
+| BT-06 | Phase 1 | Backtest P&L Math |
+| BT-07 | Phase 2 | Strategy Engine Core |
+| STR-01 | Phase 2 | Strategy Engine Core |
+| STR-02 | Phase 2 | Strategy Engine Core |
+| STR-03 | Phase 2 | Strategy Engine Core |
+| STR-04 | Phase 3 | Scanner Integration |
+| DRY-01 | Phase 3 | Scanner Integration |
+| DRY-02 | Phase 3 | Scanner Integration |
+| DASH-03 | Phase 4 | Analytics Dashboard |
+| DASH-04 | Phase 4 | Analytics Dashboard |
