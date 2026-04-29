@@ -3,15 +3,36 @@
 import { useEffect, useMemo, useState } from "react";
 import { checkAuth } from "../actions";
 import { SEASONS, type SeasonOption } from "./seasons";
-import { runBacktest, type BacktestTrade } from "./backtest";
+import { runBacktest, WIN_YIELD, type BacktestTrade } from "./backtest";
 
-function SummaryCard({ label, value }: { label: string; value: string }) {
+function formatEuro(value: number): string {
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function SummaryCard({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: "positive" | "negative" | "neutral";
+}) {
+  const valueClass =
+    tone === "positive"
+      ? "text-green-400"
+      : tone === "negative"
+        ? "text-red-400"
+        : "text-white";
   return (
     <div className="bg-gray-900 rounded p-3">
       <div className="text-xs uppercase tracking-wider text-gray-400">
         {label}
       </div>
-      <div className="text-lg font-semibold text-white">{value}</div>
+      <div className={`text-lg font-semibold ${valueClass}`}>{value}</div>
     </div>
   );
 }
@@ -19,6 +40,8 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
 function TradeRow({ trade }: { trade: BacktestTrade }) {
   const won = trade.result === "win";
   const emoji = won ? "✅" : "❌";
+  const pnlSign = trade.pnl >= 0 ? "+" : "−";
+  const pnlClass = trade.pnl >= 0 ? "text-green-400" : "text-red-400";
   return (
     <div className={`p-2 rounded ${won ? "bg-green-900/30" : "bg-red-900/30"}`}>
       <div className="text-sm">
@@ -29,6 +52,13 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
         Fired min {trade.fired_at_minute} @ {trade.score_at_fire_home}-
         {trade.score_at_fire_away} · {trade.leading_side} leads
       </div>
+      <div className="text-xs text-gray-300 mt-1">
+        Bet €{formatEuro(trade.bet_amount)} ·{" "}
+        <span className={pnlClass}>
+          {pnlSign}€{formatEuro(Math.abs(trade.pnl))}
+        </span>{" "}
+        · capital €{formatEuro(trade.capital_after)}
+      </div>
     </div>
   );
 }
@@ -38,6 +68,8 @@ export default function BacktestPage() {
   const [selectedKey, setSelectedKey] = useState<string>(SEASONS[0]?.key ?? "");
   const [minMinute, setMinMinute] = useState(75);
   const [minLead, setMinLead] = useState(2);
+  const [initialCapital, setInitialCapital] = useState(1000);
+  const [betFractionPct, setBetFractionPct] = useState(2);
 
   useEffect(() => {
     checkAuth().then((ok) => {
@@ -57,9 +89,11 @@ export default function BacktestPage() {
         ? runBacktest(selected.data, {
             min_minute: minMinute,
             min_lead: minLead,
+            initial_capital: initialCapital,
+            bet_fraction: betFractionPct / 100,
           })
         : null,
-    [selected, minMinute, minLead],
+    [selected, minMinute, minLead, initialCapital, betFractionPct],
   );
 
   if (!authed) return <div className="min-h-screen bg-black" />;
@@ -124,9 +158,49 @@ export default function BacktestPage() {
               className="w-full"
             />
           </div>
+          <div className="border-t border-gray-800 pt-3 space-y-3">
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">
+                Initial capital (€)
+              </label>
+              <input
+                type="number"
+                min={1}
+                step={1}
+                value={initialCapital}
+                onChange={(e) =>
+                  setInitialCapital(Math.max(1, Number(e.target.value) || 0))
+                }
+                className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">
+                Bet size (% of current capital)
+              </label>
+              <input
+                type="number"
+                min={0.1}
+                max={100}
+                step={0.1}
+                value={betFractionPct}
+                onChange={(e) =>
+                  setBetFractionPct(
+                    Math.min(100, Math.max(0.1, Number(e.target.value) || 0.1)),
+                  )
+                }
+                className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+              />
+            </div>
+            <p className="text-xs text-gray-500">
+              Win yield: {WIN_YIELD.toFixed(2)} EUR per 1 EUR staked. A losing
+              bet loses the full stake.
+            </p>
+          </div>
           <p className="text-xs text-gray-500">
             Trades fire on the first goal where minute ≥ min_minute and |lead| ≥
-            min_lead. Stoppage time is ignored.
+            min_lead. Stoppage time is ignored. Simulation walks matches
+            chronologically (oldest first); the list below is newest first.
           </p>
         </aside>
         <main className="space-y-6">
@@ -166,6 +240,23 @@ export default function BacktestPage() {
                   <SummaryCard
                     label="Win rate"
                     value={`${(result.summary.win_rate * 100).toFixed(1)}%`}
+                  />
+                  <SummaryCard
+                    label="Final capital"
+                    value={`€${formatEuro(result.summary.final_capital)}`}
+                    tone={
+                      result.summary.final_capital >=
+                      result.summary.initial_capital
+                        ? "positive"
+                        : "negative"
+                    }
+                  />
+                  <SummaryCard
+                    label="Gain"
+                    value={`${result.summary.gain_pct >= 0 ? "+" : ""}${result.summary.gain_pct.toFixed(2)}%`}
+                    tone={
+                      result.summary.gain_pct >= 0 ? "positive" : "negative"
+                    }
                   />
                 </section>
                 {result.trades.length > 0 ? (
