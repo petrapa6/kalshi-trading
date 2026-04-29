@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { checkAuth } from "../actions";
 import { SEASONS, type SeasonOption } from "./seasons";
-import { runBacktest, DEFAULT_WIN_YIELD, type BacktestTrade } from "./backtest";
+import { runBacktest, type BacktestTrade } from "./backtest";
 
 function formatEuro(value: number): string {
   return value.toLocaleString(undefined, {
@@ -40,8 +40,9 @@ function SummaryCard({
 function TradeRow({ trade }: { trade: BacktestTrade }) {
   const won = trade.result === "win";
   const emoji = won ? "✅" : "❌";
-  const pnlSign = trade.pnl >= 0 ? "+" : "−";
-  const pnlClass = trade.pnl >= 0 ? "text-green-400" : "text-red-400";
+  const cost_cents = trade.contracts * trade.contract_price_cents;
+  const pnlSign = trade.pnl_cents >= 0 ? "+" : "−";
+  const pnlClass = trade.pnl_cents >= 0 ? "text-green-400" : "text-red-400";
   return (
     <div className={`p-2 rounded ${won ? "bg-green-900/30" : "bg-red-900/30"}`}>
       <div className="text-sm">
@@ -53,11 +54,12 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
         {trade.score_at_fire_away} · {trade.leading_side} leads
       </div>
       <div className="text-xs text-gray-300 mt-1">
-        Bet €{formatEuro(trade.bet_amount)} ·{" "}
+        {trade.contracts} contracts @ {trade.contract_price_cents}¢ · €
+        {formatEuro(cost_cents / 100)} cost ·{" "}
         <span className={pnlClass}>
-          {pnlSign}€{formatEuro(Math.abs(trade.pnl))}
+          {pnlSign}€{formatEuro(Math.abs(trade.pnl_cents) / 100)}
         </span>{" "}
-        · capital €{formatEuro(trade.capital_after)}
+        · capital €{formatEuro(trade.capital_after_cents / 100)}
       </div>
     </div>
   );
@@ -70,7 +72,7 @@ export default function BacktestPage() {
   const [minLead, setMinLead] = useState(2);
   const [initialCapital, setInitialCapital] = useState(1000);
   const [betFractionPct, setBetFractionPct] = useState(2);
-  const [avgWinYield, setAvgWinYield] = useState(DEFAULT_WIN_YIELD);
+  const [contractPriceCents, setContractPriceCents] = useState(97);
 
   useEffect(() => {
     checkAuth().then((ok) => {
@@ -92,10 +94,17 @@ export default function BacktestPage() {
             min_lead: minLead,
             initial_capital: initialCapital,
             bet_fraction: betFractionPct / 100,
-            avg_win_yield: avgWinYield,
+            contract_price_cents: contractPriceCents,
           })
         : null,
-    [selected, minMinute, minLead, initialCapital, betFractionPct, avgWinYield],
+    [
+      selected,
+      minMinute,
+      minLead,
+      initialCapital,
+      betFractionPct,
+      contractPriceCents,
+    ],
   );
 
   if (!authed) return <div className="min-h-screen bg-black" />;
@@ -196,29 +205,22 @@ export default function BacktestPage() {
             </div>
             <div>
               <label className="block text-sm text-gray-300 mb-1">
-                Avg win yield (EUR per 1 EUR staked)
+                Contract price (cents): {contractPriceCents}
               </label>
               <input
-                type="number"
-                min={0.001}
-                max={1}
-                step={0.001}
-                value={avgWinYield}
-                onChange={(e) =>
-                  setAvgWinYield(
-                    Math.min(
-                      1,
-                      Math.max(0.001, Number(e.target.value) || 0.001),
-                    ),
-                  )
-                }
-                className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+                type="range"
+                min={50}
+                max={99}
+                step={1}
+                value={contractPriceCents}
+                onChange={(e) => setContractPriceCents(Number(e.target.value))}
+                className="w-full"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Yield per win: {100 - contractPriceCents} cents per contract (€
+                {formatEuro((100 - contractPriceCents) / 100)})
+              </p>
             </div>
-            <p className="text-xs text-gray-500">
-              Win yield: {avgWinYield} EUR per 1 EUR staked. A losing bet loses
-              the full stake.
-            </p>
           </div>
           <p className="text-xs text-gray-500">
             Trades fire on the first goal where minute ≥ min_minute and |lead| ≥
@@ -266,10 +268,10 @@ export default function BacktestPage() {
                   />
                   <SummaryCard
                     label="Final capital"
-                    value={`€${formatEuro(result.summary.final_capital)}`}
+                    value={`€${formatEuro(result.summary.final_capital_cents / 100)}`}
                     tone={
-                      result.summary.final_capital >=
-                      result.summary.initial_capital
+                      result.summary.final_capital_cents >=
+                      result.summary.initial_capital_cents
                         ? "positive"
                         : "negative"
                     }
