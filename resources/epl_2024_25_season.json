@@ -1,0 +1,7868 @@
+{
+  "matches": [
+    {
+      "id": "704279",
+      "date": "2024-08-16",
+      "home_team": "Manchester United",
+      "away_team": "Fulham",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "87|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704280",
+      "date": "2024-08-17",
+      "home_team": "Ipswich Town",
+      "away_team": "Liverpool",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "60|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704281",
+      "date": "2024-08-17",
+      "home_team": "Arsenal",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "74|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704282",
+      "date": "2024-08-17",
+      "home_team": "Everton",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "0:2"
+        },
+        {
+          "time": "87|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704283",
+      "date": "2024-08-17",
+      "home_team": "Newcastle United",
+      "away_team": "Southampton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704284",
+      "date": "2024-08-17",
+      "home_team": "Nottingham Forest",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "86|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704285",
+      "date": "2024-08-17",
+      "home_team": "West Ham United",
+      "away_team": "Aston Villa",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "1:1"
+        },
+        {
+          "time": "79|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704286",
+      "date": "2024-08-18",
+      "home_team": "Brentford",
+      "away_team": "Crystal Palace",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:0"
+        },
+        {
+          "time": "76|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704287",
+      "date": "2024-08-18",
+      "home_team": "Chelsea",
+      "away_team": "Manchester City",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "84|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704288",
+      "date": "2024-08-19",
+      "home_team": "Leicester City",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704289",
+      "date": "2024-08-24",
+      "home_team": "Aston Villa",
+      "away_team": "Arsenal",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "0:1"
+        },
+        {
+          "time": "77|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704291",
+      "date": "2024-08-24",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Manchester United",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704292",
+      "date": "2024-08-24",
+      "home_team": "Crystal Palace",
+      "away_team": "West Ham United",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "0:1"
+        },
+        {
+          "time": "72|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704293",
+      "date": "2024-08-24",
+      "home_team": "Fulham",
+      "away_team": "Leicester City",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704295",
+      "date": "2024-08-24",
+      "home_team": "Manchester City",
+      "away_team": "Ipswich Town",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "12|0",
+          "score": "1:1"
+        },
+        {
+          "time": "14|0",
+          "score": "2:1"
+        },
+        {
+          "time": "16|0",
+          "score": "3:1"
+        },
+        {
+          "time": "88|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704296",
+      "date": "2024-08-24",
+      "home_team": "Southampton",
+      "away_team": "Nottingham Forest",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "70|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704297",
+      "date": "2024-08-24",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Everton",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "25|0",
+          "score": "2:0"
+        },
+        {
+          "time": "71|0",
+          "score": "3:0"
+        },
+        {
+          "time": "77|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704290",
+      "date": "2024-08-25",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Newcastle United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "77|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704294",
+      "date": "2024-08-25",
+      "home_team": "Liverpool",
+      "away_team": "Brentford",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "70|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704298",
+      "date": "2024-08-25",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Chelsea",
+      "final_score": "2:6",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|0",
+          "score": "1:2"
+        },
+        {
+          "time": "45|6",
+          "score": "2:2"
+        },
+        {
+          "time": "49|0",
+          "score": "2:3"
+        },
+        {
+          "time": "58|0",
+          "score": "2:4"
+        },
+        {
+          "time": "63|0",
+          "score": "2:5"
+        },
+        {
+          "time": "80|0",
+          "score": "2:6"
+        }
+      ]
+    },
+    {
+      "id": "704299",
+      "date": "2024-08-31",
+      "home_team": "Arsenal",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704300",
+      "date": "2024-08-31",
+      "home_team": "Brentford",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:0"
+        },
+        {
+          "time": "69|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|5",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704302",
+      "date": "2024-08-31",
+      "home_team": "Everton",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "1:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:0"
+        },
+        {
+          "time": "87|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|2",
+          "score": "2:2"
+        },
+        {
+          "time": "90|6",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704303",
+      "date": "2024-08-31",
+      "home_team": "Nottingham Forest",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "12|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704304",
+      "date": "2024-08-31",
+      "home_team": "Leicester City",
+      "away_team": "Aston Villa",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "63|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704307",
+      "date": "2024-08-31",
+      "home_team": "West Ham United",
+      "away_team": "Manchester City",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "19|0",
+          "score": "0:2"
+        },
+        {
+          "time": "30|0",
+          "score": "0:3"
+        },
+        {
+          "time": "83|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704308",
+      "date": "2024-08-31",
+      "home_team": "Ipswich Town",
+      "away_team": "Fulham",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704301",
+      "date": "2024-09-01",
+      "home_team": "Chelsea",
+      "away_team": "Crystal Palace",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "53|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704305",
+      "date": "2024-09-01",
+      "home_team": "Manchester United",
+      "away_team": "Liverpool",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "0:2"
+        },
+        {
+          "time": "56|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704306",
+      "date": "2024-09-01",
+      "home_team": "Newcastle United",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:0"
+        },
+        {
+          "time": "78|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704309",
+      "date": "2024-09-14",
+      "home_team": "Aston Villa",
+      "away_team": "Everton",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "0:2"
+        },
+        {
+          "time": "36|0",
+          "score": "1:2"
+        },
+        {
+          "time": "58|0",
+          "score": "2:2"
+        },
+        {
+          "time": "76|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704310",
+      "date": "2024-09-14",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Chelsea",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "86|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704311",
+      "date": "2024-09-14",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Ipswich Town",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704312",
+      "date": "2024-09-14",
+      "home_team": "Crystal Palace",
+      "away_team": "Leicester City",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "46|0",
+          "score": "0:2"
+        },
+        {
+          "time": "47|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|2",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704313",
+      "date": "2024-09-14",
+      "home_team": "Fulham",
+      "away_team": "West Ham United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|5",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704314",
+      "date": "2024-09-14",
+      "home_team": "Liverpool",
+      "away_team": "Nottingham Forest",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "72|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704315",
+      "date": "2024-09-14",
+      "home_team": "Manchester City",
+      "away_team": "Brentford",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "19|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704316",
+      "date": "2024-09-14",
+      "home_team": "Southampton",
+      "away_team": "Manchester United",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|6",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704317",
+      "date": "2024-09-15",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Arsenal",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "64|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704318",
+      "date": "2024-09-15",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Newcastle United",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "75|0",
+          "score": "1:1"
+        },
+        {
+          "time": "80|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704319",
+      "date": "2024-09-21",
+      "home_team": "Aston Villa",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "73|0",
+          "score": "1:1"
+        },
+        {
+          "time": "88|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|4",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704321",
+      "date": "2024-09-21",
+      "home_team": "Crystal Palace",
+      "away_team": "Manchester United",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704322",
+      "date": "2024-09-21",
+      "home_team": "Fulham",
+      "away_team": "Newcastle United",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "22|0",
+          "score": "2:0"
+        },
+        {
+          "time": "46|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|2",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704323",
+      "date": "2024-09-21",
+      "home_team": "Leicester City",
+      "away_team": "Everton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "73|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704324",
+      "date": "2024-09-21",
+      "home_team": "Liverpool",
+      "away_team": "AFC Bournemouth",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:0"
+        },
+        {
+          "time": "37|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704326",
+      "date": "2024-09-21",
+      "home_team": "Southampton",
+      "away_team": "Ipswich Town",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|5",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704327",
+      "date": "2024-09-21",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Brentford",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "8|0",
+          "score": "1:1"
+        },
+        {
+          "time": "28|0",
+          "score": "2:1"
+        },
+        {
+          "time": "85|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704328",
+      "date": "2024-09-21",
+      "home_team": "West Ham United",
+      "away_team": "Chelsea",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "0:2"
+        },
+        {
+          "time": "47|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704320",
+      "date": "2024-09-22",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Nottingham Forest",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|0",
+          "score": "2:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704325",
+      "date": "2024-09-22",
+      "home_team": "Manchester City",
+      "away_team": "Arsenal",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:2"
+        },
+        {
+          "time": "90|8",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704329",
+      "date": "2024-09-28",
+      "home_team": "Arsenal",
+      "away_team": "Leicester City",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|1",
+          "score": "2:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:1"
+        },
+        {
+          "time": "63|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|4",
+          "score": "2:3"
+        },
+        {
+          "time": "90|9",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "704331",
+      "date": "2024-09-28",
+      "home_team": "Brentford",
+      "away_team": "West Ham United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704332",
+      "date": "2024-09-28",
+      "home_team": "Chelsea",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "1:1"
+        },
+        {
+          "time": "28|0",
+          "score": "2:1"
+        },
+        {
+          "time": "31|0",
+          "score": "3:1"
+        },
+        {
+          "time": "34|0",
+          "score": "3:2"
+        },
+        {
+          "time": "41|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "704333",
+      "date": "2024-09-28",
+      "home_team": "Nottingham Forest",
+      "away_team": "Fulham",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704336",
+      "date": "2024-09-28",
+      "home_team": "Newcastle United",
+      "away_team": "Manchester City",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704337",
+      "date": "2024-09-28",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Liverpool",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704338",
+      "date": "2024-09-28",
+      "home_team": "Everton",
+      "away_team": "Crystal Palace",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704334",
+      "date": "2024-09-29",
+      "home_team": "Ipswich Town",
+      "away_team": "Aston Villa",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "15|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:2"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704335",
+      "date": "2024-09-29",
+      "home_team": "Manchester United",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "0:2"
+        },
+        {
+          "time": "77|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704330",
+      "date": "2024-09-30",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "2:0"
+        },
+        {
+          "time": "39|0",
+          "score": "3:0"
+        },
+        {
+          "time": "51|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704339",
+      "date": "2024-10-05",
+      "home_team": "Leicester City",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704340",
+      "date": "2024-10-05",
+      "home_team": "Everton",
+      "away_team": "Newcastle United",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704343",
+      "date": "2024-10-05",
+      "home_team": "Arsenal",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704344",
+      "date": "2024-10-05",
+      "home_team": "West Ham United",
+      "away_team": "Ipswich Town",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "6|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "2:1"
+        },
+        {
+          "time": "49|0",
+          "score": "3:1"
+        },
+        {
+          "time": "69|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704345",
+      "date": "2024-10-05",
+      "home_team": "Crystal Palace",
+      "away_team": "Liverpool",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704346",
+      "date": "2024-10-05",
+      "home_team": "Brentford",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "5:3",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "4|0",
+          "score": "1:1"
+        },
+        {
+          "time": "20|0",
+          "score": "2:1"
+        },
+        {
+          "time": "26|0",
+          "score": "2:2"
+        },
+        {
+          "time": "28|0",
+          "score": "3:2"
+        },
+        {
+          "time": "45|2",
+          "score": "4:2"
+        },
+        {
+          "time": "90|0",
+          "score": "5:2"
+        },
+        {
+          "time": "90|3",
+          "score": "5:3"
+        }
+      ]
+    },
+    {
+      "id": "704348",
+      "date": "2024-10-05",
+      "home_team": "Manchester City",
+      "away_team": "Fulham",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "2:1"
+        },
+        {
+          "time": "82|0",
+          "score": "3:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704341",
+      "date": "2024-10-06",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        },
+        {
+          "time": "48|0",
+          "score": "1:2"
+        },
+        {
+          "time": "58|0",
+          "score": "2:2"
+        },
+        {
+          "time": "66|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704342",
+      "date": "2024-10-06",
+      "home_team": "Chelsea",
+      "away_team": "Nottingham Forest",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704347",
+      "date": "2024-10-06",
+      "home_team": "Aston Villa",
+      "away_team": "Manchester United",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704349",
+      "date": "2024-10-19",
+      "home_team": "Southampton",
+      "away_team": "Leicester City",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:1"
+        },
+        {
+          "time": "74|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|8",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704351",
+      "date": "2024-10-19",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Arsenal",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "70|0",
+          "score": "1:0"
+        },
+        {
+          "time": "79|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704352",
+      "date": "2024-10-19",
+      "home_team": "Manchester United",
+      "away_team": "Brentford",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "45|5",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704353",
+      "date": "2024-10-19",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "West Ham United",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "1:1"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:2"
+        },
+        {
+          "time": "60|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704355",
+      "date": "2024-10-19",
+      "home_team": "Ipswich Town",
+      "away_team": "Everton",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704356",
+      "date": "2024-10-19",
+      "home_team": "Fulham",
+      "away_team": "Aston Villa",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "9|0",
+          "score": "1:1"
+        },
+        {
+          "time": "59|0",
+          "score": "1:2"
+        },
+        {
+          "time": "69|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704357",
+      "date": "2024-10-19",
+      "home_team": "Newcastle United",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704354",
+      "date": "2024-10-20",
+      "home_team": "Liverpool",
+      "away_team": "Chelsea",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "1:1"
+        },
+        {
+          "time": "51|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704358",
+      "date": "2024-10-20",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Manchester City",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704350",
+      "date": "2024-10-21",
+      "home_team": "Nottingham Forest",
+      "away_team": "Crystal Palace",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "65|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704362",
+      "date": "2024-10-25",
+      "home_team": "Leicester City",
+      "away_team": "Nottingham Forest",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:2"
+        },
+        {
+          "time": "60|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704361",
+      "date": "2024-10-26",
+      "home_team": "Everton",
+      "away_team": "Fulham",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "61|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|4",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704363",
+      "date": "2024-10-26",
+      "home_team": "Manchester City",
+      "away_team": "Southampton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704364",
+      "date": "2024-10-26",
+      "home_team": "Brentford",
+      "away_team": "Ipswich Town",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "31|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "45|1",
+          "score": "2:2"
+        },
+        {
+          "time": "51|0",
+          "score": "3:2"
+        },
+        {
+          "time": "86|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|6",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "704365",
+      "date": "2024-10-26",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "1:0"
+        },
+        {
+          "time": "85|0",
+          "score": "2:0"
+        },
+        {
+          "time": "88|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|3",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704368",
+      "date": "2024-10-26",
+      "home_team": "Aston Villa",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "76|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|6",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704359",
+      "date": "2024-10-27",
+      "home_team": "Chelsea",
+      "away_team": "Newcastle United",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704360",
+      "date": "2024-10-27",
+      "home_team": "Crystal Palace",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704366",
+      "date": "2024-10-27",
+      "home_team": "West Ham United",
+      "away_team": "Manchester United",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "74|0",
+          "score": "1:0"
+        },
+        {
+          "time": "81|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|2",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704367",
+      "date": "2024-10-27",
+      "home_team": "Arsenal",
+      "away_team": "Liverpool",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "43|0",
+          "score": "2:1"
+        },
+        {
+          "time": "81|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704370",
+      "date": "2024-11-02",
+      "home_team": "Southampton",
+      "away_team": "Everton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "85|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704371",
+      "date": "2024-11-02",
+      "home_team": "Nottingham Forest",
+      "away_team": "West Ham United",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:0"
+        },
+        {
+          "time": "78|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704372",
+      "date": "2024-11-02",
+      "home_team": "Newcastle United",
+      "away_team": "Arsenal",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704373",
+      "date": "2024-11-02",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Crystal Palace",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "60|0",
+          "score": "0:1"
+        },
+        {
+          "time": "67|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        },
+        {
+          "time": "77|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704374",
+      "date": "2024-11-02",
+      "home_team": "Liverpool",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704375",
+      "date": "2024-11-02",
+      "home_team": "Ipswich Town",
+      "away_team": "Leicester City",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|4",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704377",
+      "date": "2024-11-02",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Manchester City",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:0"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704369",
+      "date": "2024-11-03",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Aston Villa",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "1:1"
+        },
+        {
+          "time": "75|0",
+          "score": "2:1"
+        },
+        {
+          "time": "79|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|6",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704378",
+      "date": "2024-11-03",
+      "home_team": "Manchester United",
+      "away_team": "Chelsea",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "70|0",
+          "score": "1:0"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704376",
+      "date": "2024-11-04",
+      "home_team": "Fulham",
+      "away_team": "Brentford",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|2",
+          "score": "1:1"
+        },
+        {
+          "time": "90|7",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704379",
+      "date": "2024-11-09",
+      "home_team": "Crystal Palace",
+      "away_team": "Fulham",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "0:1"
+        },
+        {
+          "time": "83|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704381",
+      "date": "2024-11-09",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Manchester City",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "1:1"
+        },
+        {
+          "time": "83|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704382",
+      "date": "2024-11-09",
+      "home_team": "Brentford",
+      "away_team": "AFC Bournemouth",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "49|0",
+          "score": "1:2"
+        },
+        {
+          "time": "50|0",
+          "score": "2:2"
+        },
+        {
+          "time": "58|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704384",
+      "date": "2024-11-09",
+      "home_team": "West Ham United",
+      "away_team": "Everton",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704385",
+      "date": "2024-11-09",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Southampton",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704388",
+      "date": "2024-11-09",
+      "home_team": "Liverpool",
+      "away_team": "Aston Villa",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "84|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704380",
+      "date": "2024-11-10",
+      "home_team": "Chelsea",
+      "away_team": "Arsenal",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "60|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704383",
+      "date": "2024-11-10",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Ipswich Town",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "0:1"
+        },
+        {
+          "time": "43|0",
+          "score": "0:2"
+        },
+        {
+          "time": "69|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704386",
+      "date": "2024-11-10",
+      "home_team": "Manchester United",
+      "away_team": "Leicester City",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704387",
+      "date": "2024-11-10",
+      "home_team": "Nottingham Forest",
+      "away_team": "Newcastle United",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "1:2"
+        },
+        {
+          "time": "83|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704390",
+      "date": "2024-11-23",
+      "home_team": "Fulham",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "53|0",
+          "score": "1:2"
+        },
+        {
+          "time": "87|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|5",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "704391",
+      "date": "2024-11-23",
+      "home_team": "Everton",
+      "away_team": "Brentford",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704392",
+      "date": "2024-11-23",
+      "home_team": "Leicester City",
+      "away_team": "Chelsea",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "75|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|5",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704393",
+      "date": "2024-11-23",
+      "home_team": "Arsenal",
+      "away_team": "Nottingham Forest",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "2:0"
+        },
+        {
+          "time": "86|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704394",
+      "date": "2024-11-23",
+      "home_team": "Aston Villa",
+      "away_team": "Crystal Palace",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:2"
+        },
+        {
+          "time": "77|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704395",
+      "date": "2024-11-23",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|3",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704396",
+      "date": "2024-11-23",
+      "home_team": "Manchester City",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "20|0",
+          "score": "0:2"
+        },
+        {
+          "time": "52|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|3",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704389",
+      "date": "2024-11-24",
+      "home_team": "Ipswich Town",
+      "away_team": "Manchester United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704397",
+      "date": "2024-11-24",
+      "home_team": "Southampton",
+      "away_team": "Liverpool",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "65|0",
+          "score": "2:2"
+        },
+        {
+          "time": "83|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704398",
+      "date": "2024-11-25",
+      "home_team": "Newcastle United",
+      "away_team": "West Ham United",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704408",
+      "date": "2024-11-29",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Southampton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "59|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704399",
+      "date": "2024-11-30",
+      "home_team": "Nottingham Forest",
+      "away_team": "Ipswich Town",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704400",
+      "date": "2024-11-30",
+      "home_team": "West Ham United",
+      "away_team": "Arsenal",
+      "final_score": "2:5",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "0:2"
+        },
+        {
+          "time": "34|0",
+          "score": "0:3"
+        },
+        {
+          "time": "36|0",
+          "score": "0:4"
+        },
+        {
+          "time": "38|0",
+          "score": "1:4"
+        },
+        {
+          "time": "40|0",
+          "score": "2:4"
+        },
+        {
+          "time": "45|5",
+          "score": "2:5"
+        }
+      ]
+    },
+    {
+      "id": "704402",
+      "date": "2024-11-30",
+      "home_team": "Brentford",
+      "away_team": "Leicester City",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "29|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|8",
+          "score": "3:1"
+        },
+        {
+          "time": "59|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704403",
+      "date": "2024-11-30",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "5|0",
+          "score": "1:1"
+        },
+        {
+          "time": "8|0",
+          "score": "1:2"
+        },
+        {
+          "time": "18|0",
+          "score": "1:3"
+        },
+        {
+          "time": "69|0",
+          "score": "2:3"
+        },
+        {
+          "time": "74|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "704405",
+      "date": "2024-11-30",
+      "home_team": "Crystal Palace",
+      "away_team": "Newcastle United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|4",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704401",
+      "date": "2024-12-01",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Fulham",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "1:0"
+        },
+        {
+          "time": "67|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704404",
+      "date": "2024-12-01",
+      "home_team": "Chelsea",
+      "away_team": "Aston Villa",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "36|0",
+          "score": "2:0"
+        },
+        {
+          "time": "83|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704406",
+      "date": "2024-12-01",
+      "home_team": "Liverpool",
+      "away_team": "Manchester City",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "78|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704407",
+      "date": "2024-12-01",
+      "home_team": "Manchester United",
+      "away_team": "Everton",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "41|0",
+          "score": "2:0"
+        },
+        {
+          "time": "46|0",
+          "score": "3:0"
+        },
+        {
+          "time": "64|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704411",
+      "date": "2024-12-03",
+      "home_team": "Leicester City",
+      "away_team": "West Ham United",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|3",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704412",
+      "date": "2024-12-03",
+      "home_team": "Ipswich Town",
+      "away_team": "Crystal Palace",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704409",
+      "date": "2024-12-04",
+      "home_team": "Aston Villa",
+      "away_team": "Brentford",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:0"
+        },
+        {
+          "time": "34|0",
+          "score": "3:0"
+        },
+        {
+          "time": "54|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704410",
+      "date": "2024-12-04",
+      "home_team": "Arsenal",
+      "away_team": "Manchester United",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "1:0"
+        },
+        {
+          "time": "73|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704415",
+      "date": "2024-12-04",
+      "home_team": "Everton",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "2:0"
+        },
+        {
+          "time": "49|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704416",
+      "date": "2024-12-04",
+      "home_team": "Manchester City",
+      "away_team": "Nottingham Forest",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "2:0"
+        },
+        {
+          "time": "57|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704417",
+      "date": "2024-12-04",
+      "home_team": "Newcastle United",
+      "away_team": "Liverpool",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:2"
+        },
+        {
+          "time": "83|0",
+          "score": "2:3"
+        },
+        {
+          "time": "90|0",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "704418",
+      "date": "2024-12-04",
+      "home_team": "Southampton",
+      "away_team": "Chelsea",
+      "final_score": "1:5",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "11|0",
+          "score": "1:1"
+        },
+        {
+          "time": "17|0",
+          "score": "1:2"
+        },
+        {
+          "time": "34|0",
+          "score": "1:3"
+        },
+        {
+          "time": "76|0",
+          "score": "1:4"
+        },
+        {
+          "time": "87|0",
+          "score": "1:5"
+        }
+      ]
+    },
+    {
+      "id": "704413",
+      "date": "2024-12-05",
+      "home_team": "Fulham",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        },
+        {
+          "time": "79|0",
+          "score": "1:2"
+        },
+        {
+          "time": "87|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704414",
+      "date": "2024-12-05",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704419",
+      "date": "2024-12-07",
+      "home_team": "Manchester United",
+      "away_team": "Nottingham Forest",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:2"
+        },
+        {
+          "time": "54|0",
+          "score": "1:3"
+        },
+        {
+          "time": "61|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704422",
+      "date": "2024-12-07",
+      "home_team": "Aston Villa",
+      "away_team": "Southampton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704423",
+      "date": "2024-12-07",
+      "home_team": "Brentford",
+      "away_team": "Newcastle United",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "11|0",
+          "score": "1:1"
+        },
+        {
+          "time": "28|0",
+          "score": "2:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:2"
+        },
+        {
+          "time": "56|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "704424",
+      "date": "2024-12-07",
+      "home_team": "Crystal Palace",
+      "away_team": "Manchester City",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704420",
+      "date": "2024-12-08",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Chelsea",
+      "final_score": "3:4",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "11|0",
+          "score": "2:0"
+        },
+        {
+          "time": "17|0",
+          "score": "2:1"
+        },
+        {
+          "time": "61|0",
+          "score": "2:2"
+        },
+        {
+          "time": "73|0",
+          "score": "2:3"
+        },
+        {
+          "time": "84|0",
+          "score": "2:4"
+        },
+        {
+          "time": "90|6",
+          "score": "3:4"
+        }
+      ]
+    },
+    {
+      "id": "704421",
+      "date": "2024-12-08",
+      "home_team": "Fulham",
+      "away_team": "Arsenal",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704427",
+      "date": "2024-12-08",
+      "home_team": "Ipswich Town",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "87|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704428",
+      "date": "2024-12-08",
+      "home_team": "Leicester City",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "0:1"
+        },
+        {
+          "time": "79|0",
+          "score": "0:2"
+        },
+        {
+          "time": "86|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|1",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704426",
+      "date": "2024-12-09",
+      "home_team": "West Ham United",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704429",
+      "date": "2024-12-14",
+      "home_team": "Arsenal",
+      "away_team": "Everton",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704433",
+      "date": "2024-12-14",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Ipswich Town",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "72|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|4",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704435",
+      "date": "2024-12-14",
+      "home_team": "Newcastle United",
+      "away_team": "Leicester City",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "50|0",
+          "score": "3:0"
+        },
+        {
+          "time": "60|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704436",
+      "date": "2024-12-14",
+      "home_team": "Nottingham Forest",
+      "away_team": "Aston Villa",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "63|0",
+          "score": "0:1"
+        },
+        {
+          "time": "87|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|3",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704438",
+      "date": "2024-12-14",
+      "home_team": "Liverpool",
+      "away_team": "Fulham",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "76|0",
+          "score": "1:2"
+        },
+        {
+          "time": "86|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704431",
+      "date": "2024-12-15",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Crystal Palace",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "33|0",
+          "score": "0:2"
+        },
+        {
+          "time": "82|0",
+          "score": "0:3"
+        },
+        {
+          "time": "87|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704432",
+      "date": "2024-12-15",
+      "home_team": "Chelsea",
+      "away_team": "Brentford",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "1:0"
+        },
+        {
+          "time": "80|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704434",
+      "date": "2024-12-15",
+      "home_team": "Manchester City",
+      "away_team": "Manchester United",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "88|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704437",
+      "date": "2024-12-15",
+      "home_team": "Southampton",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "12|0",
+          "score": "0:2"
+        },
+        {
+          "time": "14|0",
+          "score": "0:3"
+        },
+        {
+          "time": "25|0",
+          "score": "0:4"
+        },
+        {
+          "time": "45|5",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "704430",
+      "date": "2024-12-16",
+      "home_team": "AFC Bournemouth",
+      "away_team": "West Ham United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "87|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704442",
+      "date": "2024-12-21",
+      "home_team": "Ipswich Town",
+      "away_team": "Newcastle United",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "0:2"
+        },
+        {
+          "time": "45|2",
+          "score": "0:3"
+        },
+        {
+          "time": "54|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704443",
+      "date": "2024-12-21",
+      "home_team": "West Ham United",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704444",
+      "date": "2024-12-21",
+      "home_team": "Aston Villa",
+      "away_team": "Manchester City",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|3",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704445",
+      "date": "2024-12-21",
+      "home_team": "Brentford",
+      "away_team": "Nottingham Forest",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "51|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704446",
+      "date": "2024-12-21",
+      "home_team": "Crystal Palace",
+      "away_team": "Arsenal",
+      "final_score": "1:5",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "11|0",
+          "score": "1:1"
+        },
+        {
+          "time": "15|0",
+          "score": "1:2"
+        },
+        {
+          "time": "38|0",
+          "score": "1:3"
+        },
+        {
+          "time": "60|0",
+          "score": "1:4"
+        },
+        {
+          "time": "84|0",
+          "score": "1:5"
+        }
+      ]
+    },
+    {
+      "id": "704439",
+      "date": "2024-12-22",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Liverpool",
+      "final_score": "3:6",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "0:2"
+        },
+        {
+          "time": "41|0",
+          "score": "1:2"
+        },
+        {
+          "time": "45|1",
+          "score": "1:3"
+        },
+        {
+          "time": "54|0",
+          "score": "1:4"
+        },
+        {
+          "time": "61|0",
+          "score": "1:5"
+        },
+        {
+          "time": "72|0",
+          "score": "2:5"
+        },
+        {
+          "time": "83|0",
+          "score": "3:5"
+        },
+        {
+          "time": "85|0",
+          "score": "3:6"
+        }
+      ]
+    },
+    {
+      "id": "704440",
+      "date": "2024-12-22",
+      "home_team": "Manchester United",
+      "away_team": "AFC Bournemouth",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        },
+        {
+          "time": "63|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704441",
+      "date": "2024-12-22",
+      "home_team": "Leicester City",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704447",
+      "date": "2024-12-22",
+      "home_team": "Everton",
+      "away_team": "Chelsea",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704448",
+      "date": "2024-12-22",
+      "home_team": "Fulham",
+      "away_team": "Southampton",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704449",
+      "date": "2024-12-26",
+      "home_team": "Chelsea",
+      "away_team": "Fulham",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "82|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704451",
+      "date": "2024-12-26",
+      "home_team": "Manchester City",
+      "away_team": "Everton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "36|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704452",
+      "date": "2024-12-26",
+      "home_team": "Newcastle United",
+      "away_team": "Aston Villa",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "59|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704453",
+      "date": "2024-12-26",
+      "home_team": "Nottingham Forest",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704454",
+      "date": "2024-12-26",
+      "home_team": "Southampton",
+      "away_team": "West Ham United",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704455",
+      "date": "2024-12-26",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Manchester United",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "58|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|9",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704456",
+      "date": "2024-12-26",
+      "home_team": "Liverpool",
+      "away_team": "Leicester City",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:1"
+        },
+        {
+          "time": "49|0",
+          "score": "2:1"
+        },
+        {
+          "time": "82|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704458",
+      "date": "2024-12-26",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Crystal Palace",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704450",
+      "date": "2024-12-27",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Brentford",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704457",
+      "date": "2024-12-27",
+      "home_team": "Arsenal",
+      "away_team": "Ipswich Town",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704460",
+      "date": "2024-12-29",
+      "home_team": "Fulham",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "40|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704462",
+      "date": "2024-12-29",
+      "home_team": "Leicester City",
+      "away_team": "Manchester City",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704463",
+      "date": "2024-12-29",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "12|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|3",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704464",
+      "date": "2024-12-29",
+      "home_team": "West Ham United",
+      "away_team": "Liverpool",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "0:3"
+        },
+        {
+          "time": "54|0",
+          "score": "0:4"
+        },
+        {
+          "time": "84|0",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "704465",
+      "date": "2024-12-29",
+      "home_team": "Everton",
+      "away_team": "Nottingham Forest",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704466",
+      "date": "2024-12-29",
+      "home_team": "Crystal Palace",
+      "away_team": "Southampton",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704459",
+      "date": "2024-12-30",
+      "home_team": "Aston Villa",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "2:1"
+        },
+        {
+          "time": "81|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704461",
+      "date": "2024-12-30",
+      "home_team": "Ipswich Town",
+      "away_team": "Chelsea",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "53|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704468",
+      "date": "2024-12-30",
+      "home_team": "Manchester United",
+      "away_team": "Newcastle United",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "19|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704467",
+      "date": "2025-01-01",
+      "home_team": "Brentford",
+      "away_team": "Arsenal",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "29|0",
+          "score": "1:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:2"
+        },
+        {
+          "time": "53|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704469",
+      "date": "2025-01-04",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Everton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "77|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704470",
+      "date": "2025-01-04",
+      "home_team": "Aston Villa",
+      "away_team": "Leicester City",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "58|0",
+          "score": "1:0"
+        },
+        {
+          "time": "63|0",
+          "score": "1:1"
+        },
+        {
+          "time": "76|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704472",
+      "date": "2025-01-04",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Newcastle United",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "6|0",
+          "score": "1:1"
+        },
+        {
+          "time": "38|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704473",
+      "date": "2025-01-04",
+      "home_team": "Southampton",
+      "away_team": "Brentford",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "62|0",
+          "score": "0:2"
+        },
+        {
+          "time": "69|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|2",
+          "score": "0:4"
+        },
+        {
+          "time": "90|4",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "704474",
+      "date": "2025-01-04",
+      "home_team": "Manchester City",
+      "away_team": "West Ham United",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        },
+        {
+          "time": "58|0",
+          "score": "3:1"
+        },
+        {
+          "time": "71|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704477",
+      "date": "2025-01-04",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Arsenal",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704478",
+      "date": "2025-01-04",
+      "home_team": "Crystal Palace",
+      "away_team": "Chelsea",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "82|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704471",
+      "date": "2025-01-05",
+      "home_team": "Fulham",
+      "away_team": "Ipswich Town",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "69|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|1",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704475",
+      "date": "2025-01-05",
+      "home_team": "Liverpool",
+      "away_team": "Manchester United",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "52|0",
+          "score": "0:1"
+        },
+        {
+          "time": "59|0",
+          "score": "1:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:1"
+        },
+        {
+          "time": "80|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704476",
+      "date": "2025-01-06",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Nottingham Forest",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "44|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|4",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704482",
+      "date": "2025-01-14",
+      "home_team": "Brentford",
+      "away_team": "Manchester City",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "66|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "0:2"
+        },
+        {
+          "time": "82|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|2",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704483",
+      "date": "2025-01-14",
+      "home_team": "West Ham United",
+      "away_team": "Fulham",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "2:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:1"
+        },
+        {
+          "time": "67|0",
+          "score": "3:1"
+        },
+        {
+          "time": "78|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704484",
+      "date": "2025-01-14",
+      "home_team": "Nottingham Forest",
+      "away_team": "Liverpool",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "66|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704487",
+      "date": "2025-01-14",
+      "home_team": "Chelsea",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|5",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704479",
+      "date": "2025-01-15",
+      "home_team": "Leicester City",
+      "away_team": "Crystal Palace",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "52|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704481",
+      "date": "2025-01-15",
+      "home_team": "Everton",
+      "away_team": "Aston Villa",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704485",
+      "date": "2025-01-15",
+      "home_team": "Arsenal",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704486",
+      "date": "2025-01-15",
+      "home_team": "Newcastle United",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:0"
+        },
+        {
+          "time": "74|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704480",
+      "date": "2025-01-16",
+      "home_team": "Ipswich Town",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "0:1"
+        },
+        {
+          "time": "82|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704488",
+      "date": "2025-01-16",
+      "home_team": "Manchester United",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "1:0"
+        },
+        {
+          "time": "82|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|4",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704491",
+      "date": "2025-01-18",
+      "home_team": "West Ham United",
+      "away_team": "Crystal Palace",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "48|0",
+          "score": "0:1"
+        },
+        {
+          "time": "89|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704493",
+      "date": "2025-01-18",
+      "home_team": "Arsenal",
+      "away_team": "Aston Villa",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        },
+        {
+          "time": "55|0",
+          "score": "2:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704494",
+      "date": "2025-01-18",
+      "home_team": "Brentford",
+      "away_team": "Liverpool",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "90|1",
+          "score": "0:1"
+        },
+        {
+          "time": "90|3",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704496",
+      "date": "2025-01-18",
+      "home_team": "Newcastle United",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|2",
+          "score": "1:3"
+        },
+        {
+          "time": "90|6",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "704498",
+      "date": "2025-01-18",
+      "home_team": "Leicester City",
+      "away_team": "Fulham",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "48|0",
+          "score": "0:1"
+        },
+        {
+          "time": "68|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704489",
+      "date": "2025-01-19",
+      "home_team": "Everton",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|7",
+          "score": "2:1"
+        },
+        {
+          "time": "77|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|2",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704490",
+      "date": "2025-01-19",
+      "home_team": "Ipswich Town",
+      "away_team": "Manchester City",
+      "final_score": "0:6",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "0:2"
+        },
+        {
+          "time": "42|0",
+          "score": "0:3"
+        },
+        {
+          "time": "49|0",
+          "score": "0:4"
+        },
+        {
+          "time": "57|0",
+          "score": "0:5"
+        },
+        {
+          "time": "69|0",
+          "score": "0:6"
+        }
+      ]
+    },
+    {
+      "id": "704492",
+      "date": "2025-01-19",
+      "home_team": "Nottingham Forest",
+      "away_team": "Southampton",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:0"
+        },
+        {
+          "time": "41|0",
+          "score": "3:0"
+        },
+        {
+          "time": "60|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|1",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704497",
+      "date": "2025-01-19",
+      "home_team": "Manchester United",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "1:2"
+        },
+        {
+          "time": "76|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704495",
+      "date": "2025-01-20",
+      "home_team": "Chelsea",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|5",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        },
+        {
+          "time": "65|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704501",
+      "date": "2025-01-25",
+      "home_team": "Southampton",
+      "away_team": "Newcastle United",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "26|0",
+          "score": "1:1"
+        },
+        {
+          "time": "30|0",
+          "score": "1:2"
+        },
+        {
+          "time": "51|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704502",
+      "date": "2025-01-25",
+      "home_team": "Manchester City",
+      "away_team": "Chelsea",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704504",
+      "date": "2025-01-25",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Arsenal",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "74|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704506",
+      "date": "2025-01-25",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Everton",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704507",
+      "date": "2025-01-25",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Nottingham Forest",
+      "final_score": "5:0",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "55|0",
+          "score": "2:0"
+        },
+        {
+          "time": "61|0",
+          "score": "3:0"
+        },
+        {
+          "time": "87|0",
+          "score": "4:0"
+        },
+        {
+          "time": "90|1",
+          "score": "5:0"
+        }
+      ]
+    },
+    {
+      "id": "704508",
+      "date": "2025-01-25",
+      "home_team": "Liverpool",
+      "away_team": "Ipswich Town",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "35|0",
+          "score": "2:0"
+        },
+        {
+          "time": "44|0",
+          "score": "3:0"
+        },
+        {
+          "time": "65|0",
+          "score": "4:0"
+        },
+        {
+          "time": "90|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704499",
+      "date": "2025-01-26",
+      "home_team": "Aston Villa",
+      "away_team": "West Ham United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704500",
+      "date": "2025-01-26",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Leicester City",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "1:0"
+        },
+        {
+          "time": "46|0",
+          "score": "1:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704503",
+      "date": "2025-01-26",
+      "home_team": "Fulham",
+      "away_team": "Manchester United",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "78|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704505",
+      "date": "2025-01-26",
+      "home_team": "Crystal Palace",
+      "away_team": "Brentford",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "66|0",
+          "score": "0:1"
+        },
+        {
+          "time": "80|0",
+          "score": "0:2"
+        },
+        {
+          "time": "85|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704509",
+      "date": "2025-02-01",
+      "home_team": "Everton",
+      "away_team": "Leicester City",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "6|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|2",
+          "score": "3:0"
+        },
+        {
+          "time": "90|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704510",
+      "date": "2025-02-01",
+      "home_team": "Ipswich Town",
+      "away_team": "Southampton",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "87|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704511",
+      "date": "2025-02-01",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Liverpool",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "75|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704514",
+      "date": "2025-02-01",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Aston Villa",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|7",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704517",
+      "date": "2025-02-01",
+      "home_team": "Newcastle United",
+      "away_team": "Fulham",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704518",
+      "date": "2025-02-01",
+      "home_team": "Nottingham Forest",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "7:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        },
+        {
+          "time": "64|0",
+          "score": "3:1"
+        },
+        {
+          "time": "69|0",
+          "score": "4:1"
+        },
+        {
+          "time": "89|0",
+          "score": "5:1"
+        },
+        {
+          "time": "90|1",
+          "score": "6:1"
+        }
+      ]
+    },
+    {
+      "id": "704512",
+      "date": "2025-02-02",
+      "home_team": "Brentford",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "87|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704515",
+      "date": "2025-02-02",
+      "home_team": "Arsenal",
+      "away_team": "Manchester City",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "55|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "62|0",
+          "score": "3:1"
+        },
+        {
+          "time": "76|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|3",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "704516",
+      "date": "2025-02-02",
+      "home_team": "Manchester United",
+      "away_team": "Crystal Palace",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "64|0",
+          "score": "0:1"
+        },
+        {
+          "time": "89|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704513",
+      "date": "2025-02-03",
+      "home_team": "Chelsea",
+      "away_team": "West Ham United",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        },
+        {
+          "time": "64|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704425",
+      "date": "2025-02-12",
+      "home_team": "Everton",
+      "away_team": "Liverpool",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "73|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|8",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704526",
+      "date": "2025-02-14",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Chelsea",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "2:0"
+        },
+        {
+          "time": "63|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704519",
+      "date": "2025-02-15",
+      "home_team": "Fulham",
+      "away_team": "Nottingham Forest",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704520",
+      "date": "2025-02-15",
+      "home_team": "Leicester City",
+      "away_team": "Arsenal",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "81|0",
+          "score": "0:1"
+        },
+        {
+          "time": "87|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704522",
+      "date": "2025-02-15",
+      "home_team": "Manchester City",
+      "away_team": "Newcastle United",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "24|0",
+          "score": "2:0"
+        },
+        {
+          "time": "33|0",
+          "score": "3:0"
+        },
+        {
+          "time": "84|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704523",
+      "date": "2025-02-15",
+      "home_team": "West Ham United",
+      "away_team": "Brentford",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704525",
+      "date": "2025-02-15",
+      "home_team": "Crystal Palace",
+      "away_team": "Everton",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "80|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704527",
+      "date": "2025-02-15",
+      "home_team": "Aston Villa",
+      "away_team": "Ipswich Town",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "56|0",
+          "score": "0:1"
+        },
+        {
+          "time": "69|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704528",
+      "date": "2025-02-15",
+      "home_team": "Southampton",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "0:2"
+        },
+        {
+          "time": "72|0",
+          "score": "1:2"
+        },
+        {
+          "time": "83|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704521",
+      "date": "2025-02-16",
+      "home_team": "Liverpool",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:0"
+        },
+        {
+          "time": "67|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704524",
+      "date": "2025-02-16",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Manchester United",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704567",
+      "date": "2025-02-19",
+      "home_team": "Aston Villa",
+      "away_team": "Liverpool",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|3",
+          "score": "2:1"
+        },
+        {
+          "time": "61|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704535",
+      "date": "2025-02-21",
+      "home_team": "Leicester City",
+      "away_team": "Brentford",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "0:2"
+        },
+        {
+          "time": "32|0",
+          "score": "0:3"
+        },
+        {
+          "time": "89|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704529",
+      "date": "2025-02-22",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704530",
+      "date": "2025-02-22",
+      "home_team": "Everton",
+      "away_team": "Manchester United",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "2:0"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        },
+        {
+          "time": "80|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704531",
+      "date": "2025-02-22",
+      "home_team": "Fulham",
+      "away_team": "Crystal Palace",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "66|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704532",
+      "date": "2025-02-22",
+      "home_team": "Ipswich Town",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "36|0",
+          "score": "1:2"
+        },
+        {
+          "time": "77|0",
+          "score": "1:3"
+        },
+        {
+          "time": "84|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "704536",
+      "date": "2025-02-22",
+      "home_team": "Southampton",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "0:2"
+        },
+        {
+          "time": "71|0",
+          "score": "0:3"
+        },
+        {
+          "time": "82|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704537",
+      "date": "2025-02-22",
+      "home_team": "Aston Villa",
+      "away_team": "Chelsea",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704538",
+      "date": "2025-02-22",
+      "home_team": "Arsenal",
+      "away_team": "West Ham United",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704533",
+      "date": "2025-02-23",
+      "home_team": "Newcastle United",
+      "away_team": "Nottingham Forest",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "25|0",
+          "score": "2:1"
+        },
+        {
+          "time": "33|0",
+          "score": "3:1"
+        },
+        {
+          "time": "34|0",
+          "score": "4:1"
+        },
+        {
+          "time": "63|0",
+          "score": "4:2"
+        },
+        {
+          "time": "90|0",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "704534",
+      "date": "2025-02-23",
+      "home_team": "Manchester City",
+      "away_team": "Liverpool",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704539",
+      "date": "2025-02-25",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Fulham",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704542",
+      "date": "2025-02-25",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "75|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704544",
+      "date": "2025-02-25",
+      "home_team": "Crystal Palace",
+      "away_team": "Aston Villa",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "1:1"
+        },
+        {
+          "time": "59|0",
+          "score": "2:1"
+        },
+        {
+          "time": "71|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|1",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704547",
+      "date": "2025-02-25",
+      "home_team": "Chelsea",
+      "away_team": "Southampton",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "36|0",
+          "score": "2:0"
+        },
+        {
+          "time": "44|0",
+          "score": "3:0"
+        },
+        {
+          "time": "78|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "704540",
+      "date": "2025-02-26",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Manchester City",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704541",
+      "date": "2025-02-26",
+      "home_team": "Nottingham Forest",
+      "away_team": "Arsenal",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704545",
+      "date": "2025-02-26",
+      "home_team": "Brentford",
+      "away_team": "Everton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "45|4",
+          "score": "1:0"
+        },
+        {
+          "time": "77|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704546",
+      "date": "2025-02-26",
+      "home_team": "Manchester United",
+      "away_team": "Ipswich Town",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "0:2"
+        },
+        {
+          "time": "26|0",
+          "score": "1:2"
+        },
+        {
+          "time": "45|2",
+          "score": "1:3"
+        },
+        {
+          "time": "47|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704548",
+      "date": "2025-02-26",
+      "home_team": "Liverpool",
+      "away_team": "Newcastle United",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "63|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704543",
+      "date": "2025-02-27",
+      "home_team": "West Ham United",
+      "away_team": "Leicester City",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704549",
+      "date": "2025-03-08",
+      "home_team": "Brentford",
+      "away_team": "Aston Villa",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704550",
+      "date": "2025-03-08",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Fulham",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|8",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704551",
+      "date": "2025-03-08",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Everton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704554",
+      "date": "2025-03-08",
+      "home_team": "Nottingham Forest",
+      "away_team": "Manchester City",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "83|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704556",
+      "date": "2025-03-08",
+      "home_team": "Liverpool",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "45|1",
+          "score": "0:1"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704557",
+      "date": "2025-03-08",
+      "home_team": "Crystal Palace",
+      "away_team": "Ipswich Town",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "82|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704553",
+      "date": "2025-03-09",
+      "home_team": "Chelsea",
+      "away_team": "Leicester City",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "60|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704555",
+      "date": "2025-03-09",
+      "home_team": "Manchester United",
+      "away_team": "Arsenal",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "1:0"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704558",
+      "date": "2025-03-09",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "0:2"
+        },
+        {
+          "time": "67|0",
+          "score": "1:2"
+        },
+        {
+          "time": "84|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704552",
+      "date": "2025-03-10",
+      "home_team": "West Ham United",
+      "away_team": "Newcastle United",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "63|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704561",
+      "date": "2025-03-15",
+      "home_team": "Manchester City",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "21|0",
+          "score": "1:1"
+        },
+        {
+          "time": "39|0",
+          "score": "2:1"
+        },
+        {
+          "time": "48|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704563",
+      "date": "2025-03-15",
+      "home_team": "Southampton",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "0:2"
+        },
+        {
+          "time": "75|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704565",
+      "date": "2025-03-15",
+      "home_team": "Everton",
+      "away_team": "West Ham United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|1",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704566",
+      "date": "2025-03-15",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Brentford",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "0:2"
+        },
+        {
+          "time": "71|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704568",
+      "date": "2025-03-15",
+      "home_team": "Ipswich Town",
+      "away_team": "Nottingham Forest",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        },
+        {
+          "time": "41|0",
+          "score": "0:3"
+        },
+        {
+          "time": "82|0",
+          "score": "1:3"
+        },
+        {
+          "time": "87|0",
+          "score": "1:4"
+        },
+        {
+          "time": "90|3",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "704559",
+      "date": "2025-03-16",
+      "home_team": "Arsenal",
+      "away_team": "Chelsea",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704562",
+      "date": "2025-03-16",
+      "home_team": "Leicester City",
+      "away_team": "Manchester United",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "67|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704564",
+      "date": "2025-03-16",
+      "home_team": "Fulham",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "78|0",
+          "score": "1:0"
+        },
+        {
+          "time": "88|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704569",
+      "date": "2025-04-01",
+      "home_team": "Nottingham Forest",
+      "away_team": "Manchester United",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704572",
+      "date": "2025-04-01",
+      "home_team": "Arsenal",
+      "away_team": "Fulham",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "73|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|4",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704573",
+      "date": "2025-04-01",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "West Ham United",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704570",
+      "date": "2025-04-02",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Ipswich Town",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "60|0",
+          "score": "0:2"
+        },
+        {
+          "time": "67|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704571",
+      "date": "2025-04-02",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Aston Villa",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|10",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704574",
+      "date": "2025-04-02",
+      "home_team": "Manchester City",
+      "away_team": "Leicester City",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "29|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704575",
+      "date": "2025-04-02",
+      "home_team": "Liverpool",
+      "away_team": "Everton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "57|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704577",
+      "date": "2025-04-02",
+      "home_team": "Southampton",
+      "away_team": "Crystal Palace",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|2",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704578",
+      "date": "2025-04-02",
+      "home_team": "Newcastle United",
+      "away_team": "Brentford",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "1:0"
+        },
+        {
+          "time": "66|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704576",
+      "date": "2025-04-03",
+      "home_team": "Chelsea",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704580",
+      "date": "2025-04-05",
+      "home_team": "Aston Villa",
+      "away_team": "Nottingham Forest",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "15|0",
+          "score": "2:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704582",
+      "date": "2025-04-05",
+      "home_team": "West Ham United",
+      "away_team": "AFC Bournemouth",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:1"
+        },
+        {
+          "time": "79|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704583",
+      "date": "2025-04-05",
+      "home_team": "Crystal Palace",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704584",
+      "date": "2025-04-05",
+      "home_team": "Everton",
+      "away_team": "Arsenal",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704585",
+      "date": "2025-04-05",
+      "home_team": "Ipswich Town",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "72|0",
+          "score": "1:1"
+        },
+        {
+          "time": "84|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704579",
+      "date": "2025-04-06",
+      "home_team": "Brentford",
+      "away_team": "Chelsea",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704581",
+      "date": "2025-04-06",
+      "home_team": "Manchester United",
+      "away_team": "Manchester City",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704586",
+      "date": "2025-04-06",
+      "home_team": "Fulham",
+      "away_team": "Liverpool",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        },
+        {
+          "time": "37|0",
+          "score": "3:1"
+        },
+        {
+          "time": "72|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704587",
+      "date": "2025-04-06",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Southampton",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "42|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|6",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704588",
+      "date": "2025-04-07",
+      "home_team": "Leicester City",
+      "away_team": "Newcastle United",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "11|0",
+          "score": "0:2"
+        },
+        {
+          "time": "34|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704589",
+      "date": "2025-04-12",
+      "home_team": "Nottingham Forest",
+      "away_team": "Everton",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "90|4",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704591",
+      "date": "2025-04-12",
+      "home_team": "Manchester City",
+      "away_team": "Crystal Palace",
+      "final_score": "5:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "0:2"
+        },
+        {
+          "time": "33|0",
+          "score": "1:2"
+        },
+        {
+          "time": "36|0",
+          "score": "2:2"
+        },
+        {
+          "time": "47|0",
+          "score": "3:2"
+        },
+        {
+          "time": "56|0",
+          "score": "4:2"
+        },
+        {
+          "time": "79|0",
+          "score": "5:2"
+        }
+      ]
+    },
+    {
+      "id": "704592",
+      "date": "2025-04-12",
+      "home_team": "Southampton",
+      "away_team": "Aston Villa",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "73|0",
+          "score": "0:1"
+        },
+        {
+          "time": "79|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|4",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "704595",
+      "date": "2025-04-12",
+      "home_team": "Arsenal",
+      "away_team": "Brentford",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "61|0",
+          "score": "1:0"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704597",
+      "date": "2025-04-12",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Leicester City",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        },
+        {
+          "time": "74|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704590",
+      "date": "2025-04-13",
+      "home_team": "Newcastle United",
+      "away_team": "Manchester United",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "1:1"
+        },
+        {
+          "time": "49|0",
+          "score": "2:1"
+        },
+        {
+          "time": "64|0",
+          "score": "3:1"
+        },
+        {
+          "time": "77|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704593",
+      "date": "2025-04-13",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "59|0",
+          "score": "1:2"
+        },
+        {
+          "time": "64|0",
+          "score": "2:2"
+        },
+        {
+          "time": "85|0",
+          "score": "2:3"
+        },
+        {
+          "time": "86|0",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "704594",
+      "date": "2025-04-13",
+      "home_team": "Liverpool",
+      "away_team": "West Ham United",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "86|0",
+          "score": "2:0"
+        },
+        {
+          "time": "89|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704598",
+      "date": "2025-04-13",
+      "home_team": "Chelsea",
+      "away_team": "Ipswich Town",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "0:1"
+        },
+        {
+          "time": "31|0",
+          "score": "0:2"
+        },
+        {
+          "time": "46|0",
+          "score": "0:3"
+        },
+        {
+          "time": "79|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704596",
+      "date": "2025-04-14",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Fulham",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704560",
+      "date": "2025-04-16",
+      "home_team": "Newcastle United",
+      "away_team": "Crystal Palace",
+      "final_score": "5:0",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|3",
+          "score": "2:1"
+        },
+        {
+          "time": "45|8",
+          "score": "3:1"
+        },
+        {
+          "time": "58|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "704603",
+      "date": "2025-04-19",
+      "home_team": "West Ham United",
+      "away_team": "Southampton",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|3",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704604",
+      "date": "2025-04-19",
+      "home_team": "Everton",
+      "away_team": "Manchester City",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "84|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|2",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704605",
+      "date": "2025-04-19",
+      "home_team": "Crystal Palace",
+      "away_team": "AFC Bournemouth",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704606",
+      "date": "2025-04-19",
+      "home_team": "Aston Villa",
+      "away_team": "Newcastle United",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "64|0",
+          "score": "2:1"
+        },
+        {
+          "time": "73|0",
+          "score": "2:2"
+        },
+        {
+          "time": "75|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704607",
+      "date": "2025-04-19",
+      "home_team": "Brentford",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|3",
+          "score": "1:1"
+        },
+        {
+          "time": "48|0",
+          "score": "2:1"
+        },
+        {
+          "time": "58|0",
+          "score": "3:1"
+        },
+        {
+          "time": "81|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|5",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "704600",
+      "date": "2025-04-20",
+      "home_team": "Manchester United",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "77|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704601",
+      "date": "2025-04-20",
+      "home_team": "Leicester City",
+      "away_team": "Liverpool",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "76|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704602",
+      "date": "2025-04-20",
+      "home_team": "Ipswich Town",
+      "away_team": "Arsenal",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "28|0",
+          "score": "0:2"
+        },
+        {
+          "time": "69|0",
+          "score": "0:3"
+        },
+        {
+          "time": "88|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "704608",
+      "date": "2025-04-20",
+      "home_team": "Fulham",
+      "away_team": "Chelsea",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "83|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|3",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704599",
+      "date": "2025-04-21",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Nottingham Forest",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "0:2"
+        },
+        {
+          "time": "87|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704615",
+      "date": "2025-04-22",
+      "home_team": "Manchester City",
+      "away_team": "Aston Villa",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|4",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "704618",
+      "date": "2025-04-23",
+      "home_team": "Arsenal",
+      "away_team": "Crystal Palace",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "42|0",
+          "score": "2:1"
+        },
+        {
+          "time": "83|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704610",
+      "date": "2025-04-26",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "West Ham United",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "1:1"
+        },
+        {
+          "time": "83|0",
+          "score": "1:2"
+        },
+        {
+          "time": "89|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|2",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704611",
+      "date": "2025-04-26",
+      "home_team": "Chelsea",
+      "away_team": "Everton",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704612",
+      "date": "2025-04-26",
+      "home_team": "Southampton",
+      "away_team": "Fulham",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "72|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|2",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704613",
+      "date": "2025-04-26",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Leicester City",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:0"
+        },
+        {
+          "time": "85|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704614",
+      "date": "2025-04-26",
+      "home_team": "Newcastle United",
+      "away_team": "Ipswich Town",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "45|4",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:0"
+        },
+        {
+          "time": "80|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "704609",
+      "date": "2025-04-27",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Manchester United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|6",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704617",
+      "date": "2025-04-27",
+      "home_team": "Liverpool",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "24|0",
+          "score": "2:1"
+        },
+        {
+          "time": "34|0",
+          "score": "3:1"
+        },
+        {
+          "time": "63|0",
+          "score": "4:1"
+        },
+        {
+          "time": "69|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "704616",
+      "date": "2025-05-01",
+      "home_team": "Nottingham Forest",
+      "away_team": "Brentford",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704627",
+      "date": "2025-05-02",
+      "home_team": "Manchester City",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704619",
+      "date": "2025-05-03",
+      "home_team": "Arsenal",
+      "away_team": "AFC Bournemouth",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "67|0",
+          "score": "1:1"
+        },
+        {
+          "time": "75|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704620",
+      "date": "2025-05-03",
+      "home_team": "Aston Villa",
+      "away_team": "Fulham",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704625",
+      "date": "2025-05-03",
+      "home_team": "Everton",
+      "away_team": "Ipswich Town",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "35|0",
+          "score": "2:0"
+        },
+        {
+          "time": "41|0",
+          "score": "2:1"
+        },
+        {
+          "time": "79|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704626",
+      "date": "2025-05-03",
+      "home_team": "Leicester City",
+      "away_team": "Southampton",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "44|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704621",
+      "date": "2025-05-04",
+      "home_team": "Brentford",
+      "away_team": "Manchester United",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "0:2"
+        },
+        {
+          "time": "33|0",
+          "score": "1:2"
+        },
+        {
+          "time": "70|0",
+          "score": "2:2"
+        },
+        {
+          "time": "74|0",
+          "score": "3:2"
+        },
+        {
+          "time": "82|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|5",
+          "score": "3:4"
+        }
+      ]
+    },
+    {
+      "id": "704622",
+      "date": "2025-05-04",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Newcastle United",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "89|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704623",
+      "date": "2025-05-04",
+      "home_team": "Chelsea",
+      "away_team": "Liverpool",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        },
+        {
+          "time": "85|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|6",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704628",
+      "date": "2025-05-04",
+      "home_team": "West Ham United",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "28|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704624",
+      "date": "2025-05-05",
+      "home_team": "Crystal Palace",
+      "away_team": "Nottingham Forest",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "60|0",
+          "score": "1:0"
+        },
+        {
+          "time": "64|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704629",
+      "date": "2025-05-10",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Aston Villa",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "45|6",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704630",
+      "date": "2025-05-10",
+      "home_team": "Fulham",
+      "away_team": "Everton",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|3",
+          "score": "1:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:2"
+        },
+        {
+          "time": "74|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704631",
+      "date": "2025-05-10",
+      "home_team": "Ipswich Town",
+      "away_team": "Brentford",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704636",
+      "date": "2025-05-10",
+      "home_team": "Southampton",
+      "away_team": "Manchester City",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "704638",
+      "date": "2025-05-10",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "85|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704632",
+      "date": "2025-05-11",
+      "home_team": "Liverpool",
+      "away_team": "Arsenal",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "21|0",
+          "score": "2:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704633",
+      "date": "2025-05-11",
+      "home_team": "Manchester United",
+      "away_team": "West Ham United",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704634",
+      "date": "2025-05-11",
+      "home_team": "Newcastle United",
+      "away_team": "Chelsea",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704635",
+      "date": "2025-05-11",
+      "home_team": "Nottingham Forest",
+      "away_team": "Leicester City",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "81|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "704637",
+      "date": "2025-05-11",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Crystal Palace",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704640",
+      "date": "2025-05-16",
+      "home_team": "Aston Villa",
+      "away_team": "Tottenham Hotspur",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "1:0"
+        },
+        {
+          "time": "73|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704643",
+      "date": "2025-05-16",
+      "home_team": "Chelsea",
+      "away_team": "Manchester United",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "71|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704639",
+      "date": "2025-05-18",
+      "home_team": "Arsenal",
+      "away_team": "Newcastle United",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "704641",
+      "date": "2025-05-18",
+      "home_team": "Brentford",
+      "away_team": "Fulham",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "43|0",
+          "score": "2:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:2"
+        },
+        {
+          "time": "70|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "704645",
+      "date": "2025-05-18",
+      "home_team": "Everton",
+      "away_team": "Southampton",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|2",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704646",
+      "date": "2025-05-18",
+      "home_team": "Leicester City",
+      "away_team": "Ipswich Town",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704648",
+      "date": "2025-05-18",
+      "home_team": "West Ham United",
+      "away_team": "Nottingham Forest",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        },
+        {
+          "time": "86|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704642",
+      "date": "2025-05-19",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Liverpool",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:2"
+        },
+        {
+          "time": "69|0",
+          "score": "2:2"
+        },
+        {
+          "time": "85|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "704644",
+      "date": "2025-05-20",
+      "home_team": "Crystal Palace",
+      "away_team": "Wolverhampton Wanderers",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        },
+        {
+          "time": "50|0",
+          "score": "3:1"
+        },
+        {
+          "time": "62|0",
+          "score": "3:2"
+        },
+        {
+          "time": "86|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "704647",
+      "date": "2025-05-20",
+      "home_team": "Manchester City",
+      "away_team": "AFC Bournemouth",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "2:0"
+        },
+        {
+          "time": "89|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|6",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "704649",
+      "date": "2025-05-25",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Leicester City",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "74|0",
+          "score": "1:0"
+        },
+        {
+          "time": "88|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "704650",
+      "date": "2025-05-25",
+      "home_team": "Fulham",
+      "away_team": "Manchester City",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "72|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "704651",
+      "date": "2025-05-25",
+      "home_team": "Ipswich Town",
+      "away_team": "West Ham United",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "0:1"
+        },
+        {
+          "time": "52|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "1:2"
+        },
+        {
+          "time": "87|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "704652",
+      "date": "2025-05-25",
+      "home_team": "Liverpool",
+      "away_team": "Crystal Palace",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "84|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704653",
+      "date": "2025-05-25",
+      "home_team": "Newcastle United",
+      "away_team": "Everton",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "65|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704654",
+      "date": "2025-05-25",
+      "home_team": "Wolverhampton Wanderers",
+      "away_team": "Brentford",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "75|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "704655",
+      "date": "2025-05-25",
+      "home_team": "Nottingham Forest",
+      "away_team": "Chelsea",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "704656",
+      "date": "2025-05-25",
+      "home_team": "Southampton",
+      "away_team": "Arsenal",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "704657",
+      "date": "2025-05-25",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Brighton & Hove Albion",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "64|0",
+          "score": "1:2"
+        },
+        {
+          "time": "88|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|3",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "704658",
+      "date": "2025-05-25",
+      "home_team": "Manchester United",
+      "away_team": "Aston Villa",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "76|0",
+          "score": "1:0"
+        },
+        {
+          "time": "87|0",
+          "score": "2:0"
+        }
+      ]
+    }
+  ]
+}
