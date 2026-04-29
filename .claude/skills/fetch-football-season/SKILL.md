@@ -1,6 +1,6 @@
 ---
 name: fetch-football-season
-description: Use when fetching complete historical football/soccer season match data with per-minute goal times. Covers EPL, La Liga, Bundesliga, Serie A, Ligue 1, UCL, MLS.
+description: Use when fetching complete historical football/soccer season match data with per-minute goal times. Covers EPL, La Liga, Bundesliga, Serie A, Ligue 1, UCL, MLS (plus more).
 ---
 
 # fetch-football-season
@@ -94,3 +94,5 @@ Own goals are attributed to the **beneficiary** side (ESPN already does this —
 - Uses `scoringPlay: true` (not `type.text`) to identify goals reliably.
 - ESPN clock format is `"90'+5'"` for stoppage time — both apostrophe positions handled.
 - Own goals: ESPN's scoreboard `details` already records the **beneficiary** team on own-goal entries, so the script trusts the tagged team_id directly (verified against EPL 2024/25).
+- **MLS penalty shootouts**: ESPN marks shootout penalty kicks as `scoringPlay=true`. The script detects this via the `shootouts: True` LEAGUES flag and truncates the goals array once the regulation/ET final score is first reached. If `final_score == "0:0"`, all recorded goals are shootout kicks and the goals list is cleared entirely. This flag is only set for MLS; European leagues are unaffected.
+- **Known ESPN data issues**: Some matches have misattributed goal team IDs (e.g. Bundesliga 2024/25 match 711556: Union Berlin vs Bochum, running=1:1 but actual final=0:2). Re-fetching from ESPN returns the same bad data. The verify script flags these; they cannot be auto-fixed.

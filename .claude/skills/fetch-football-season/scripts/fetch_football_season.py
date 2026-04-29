@@ -30,14 +30,14 @@ REQUEST_DELAY = 0.3  # seconds between requests
 # split_season=True: year is end-year (European Aug–Jun format)
 # split_season=False: year IS the season year (e.g. MLS)
 LEAGUES: dict[str, dict] = {
-    "EPL":        {"path": "eng.1",          "name": "English Premier League",   "split": True},
-    "PL":         {"path": "eng.1",          "name": "English Premier League",   "split": True},
-    "LALIGA":     {"path": "esp.1",          "name": "La Liga",                  "split": True},
-    "BUNDESLIGA": {"path": "ger.1",          "name": "Bundesliga",               "split": True},
-    "SERIEA":     {"path": "ita.1",          "name": "Serie A",                  "split": True},
-    "LIGUE1":     {"path": "fra.1",          "name": "Ligue 1",                  "split": True},
-    "UCL":        {"path": "uefa.champions", "name": "UEFA Champions League",    "split": True},
-    "MLS":        {"path": "usa.1",          "name": "Major League Soccer",      "split": False},
+    "EPL":        {"path": "eng.1",          "name": "English Premier League",   "split": True,  "shootouts": False},
+    "PL":         {"path": "eng.1",          "name": "English Premier League",   "split": True,  "shootouts": False},
+    "LALIGA":     {"path": "esp.1",          "name": "La Liga",                  "split": True,  "shootouts": False},
+    "BUNDESLIGA": {"path": "ger.1",          "name": "Bundesliga",               "split": True,  "shootouts": False},
+    "SERIEA":     {"path": "ita.1",          "name": "Serie A",                  "split": True,  "shootouts": False},
+    "LIGUE1":     {"path": "fra.1",          "name": "Ligue 1",                  "split": True,  "shootouts": False},
+    "UCL":        {"path": "uefa.champions", "name": "UEFA Champions League",    "split": True,  "shootouts": False},
+    "MLS":        {"path": "usa.1",          "name": "Major League Soccer",      "split": False, "shootouts": True},
 }
 
 
@@ -75,7 +75,7 @@ def _parse_minute(display: str) -> tuple[int, int]:
     return 0, 0
 
 
-def build_match(event: dict) -> dict | None:
+def build_match(event: dict, *, shootouts: bool = False) -> dict | None:
     """Build a match JSON object from an ESPN event. Returns None if not completed."""
     comps = event.get("competitions", [])
     if not comps:
@@ -123,6 +123,28 @@ def build_match(event: dict) -> dict | None:
             away_running += 1
 
         goals.append({"time": f"{minute}|{stoppage}", "score": f"{home_running}:{away_running}"})
+
+    # MLS (and similar shootout leagues): ESPN marks penalty kicks as
+    # scoringPlay=true, but final_score reflects only regulation+ET goals.
+    # Truncate the goals list at the point the final score is first reached.
+    if shootouts:
+        try:
+            home_final = int(home_score)
+            away_final = int(away_score)
+            if home_running != home_final or away_running != away_final:
+                if home_final == 0 and away_final == 0:
+                    # 0:0 final — every recorded goal is a penalty kick
+                    goals = []
+                else:
+                    truncated: list[dict] = []
+                    for g in goals:
+                        truncated.append(g)
+                        s = g["score"].split(":")
+                        if int(s[0]) == home_final and int(s[1]) == away_final:
+                            break
+                    goals = truncated
+        except (ValueError, IndexError):
+            pass
 
     return {
         "id": event.get("id", ""),
@@ -176,8 +198,9 @@ def main() -> None:
     print(f"\nTotal unique matches collected: {len(all_events)}")
 
     matches = []
+    shootouts = info.get("shootouts", False)
     for event in all_events.values():
-        m = build_match(event)
+        m = build_match(event, shootouts=shootouts)
         if m:
             matches.append(m)
 

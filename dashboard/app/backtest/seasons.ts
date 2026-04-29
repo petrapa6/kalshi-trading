@@ -16,8 +16,12 @@
 // TODO: when a new season JSON is added to resources/, add a corresponding entry to
 // IMPORTS below, following the same pattern.
 
+import bundesliga_2024_25 from "../../../resources/bundesliga_2024_25_season.json";
 import epl_2024_25 from "../../../resources/epl_2024_25_season.json";
 import laliga_2024_25 from "../../../resources/laliga_2024_25_season.json";
+import ligue1_2024_25 from "../../../resources/ligue1_2024_25_season.json";
+import mls_2025 from "../../../resources/mls_2025_season.json";
+import seriea_2024_25 from "../../../resources/seriea_2024_25_season.json";
 
 // ---- Types -----------------------------------------------------------------
 
@@ -48,12 +52,17 @@ export interface ParsedFilename {
   label: string; // e.g. "EPL · 2024/25"
 }
 
-const FILENAME_RE = /^([a-z0-9]+)_(\d{4})_(\d{2})_season\.json$/;
+// Matches both split-season (epl_2024_25_season.json) and
+// calendar-year (mls_2025_season.json) filenames.
+const FILENAME_RE = /^([a-z0-9]+)_(\d{4})(?:_(\d{2}))?_season\.json$/;
 
 const LEAGUE_NAMES: Record<string, string> = {
+  bundesliga: "Bundesliga",
   epl: "EPL",
   laliga: "La Liga",
-  bl1: "Bundesliga",
+  ligue1: "Ligue 1",
+  mls: "MLS",
+  seriea: "Serie A",
 };
 
 export function parseSeasonFilename(name: string): ParsedFilename | null {
@@ -61,9 +70,18 @@ export function parseSeasonFilename(name: string): ParsedFilename | null {
   if (!m) return null;
   const league = m[1];
   const startYear = parseInt(m[2], 10);
+  const prettyLeague = LEAGUE_NAMES[league] ?? league.toUpperCase();
+  if (m[3] === undefined) {
+    // Calendar-year league (e.g. MLS): filename has no end-year segment
+    return {
+      league,
+      startYear,
+      endYear: startYear,
+      label: `${prettyLeague} · ${startYear}`,
+    };
+  }
   const endYY = parseInt(m[3], 10);
   const endYear = Math.floor(startYear / 100) * 100 + endYY;
-  const prettyLeague = LEAGUE_NAMES[league] ?? league.toUpperCase();
   const label = `${prettyLeague} · ${startYear}/${String(endYY).padStart(2, "0")}`;
   return { league, startYear, endYear, label };
 }
@@ -79,10 +97,23 @@ export interface SeasonOption {
 // Hand-maintained list of (filename, imported data) pairs.
 // Webpack bundles each JSON with the client component at build time.
 const IMPORTS: Array<{ filename: string; data: SeasonFile }> = [
+  {
+    filename: "bundesliga_2024_25_season.json",
+    data: bundesliga_2024_25 as SeasonFile,
+  },
   { filename: "epl_2024_25_season.json", data: epl_2024_25 as SeasonFile },
   {
     filename: "laliga_2024_25_season.json",
     data: laliga_2024_25 as SeasonFile,
+  },
+  {
+    filename: "ligue1_2024_25_season.json",
+    data: ligue1_2024_25 as SeasonFile,
+  },
+  { filename: "mls_2025_season.json", data: mls_2025 as SeasonFile },
+  {
+    filename: "seriea_2024_25_season.json",
+    data: seriea_2024_25 as SeasonFile,
   },
 ];
 
