@@ -113,9 +113,9 @@ def build_match(event: dict) -> dict | None:
         detail_team_id = str(detail.get("team", {}).get("id", ""))
         side = team_side.get(detail_team_id, "unknown")
 
-        # Own goals: ESPN records the conceding team; flip to beneficiary side
-        if detail.get("ownGoal", False):
-            side = "away" if side == "home" else "home"
+        # ESPN's scoreboard `details` records the beneficiary team on own-goal
+        # entries, so trust team_id as-is (verified against EPL 2024/25 own-goals
+        # by Tuanzebe and Pinnock — both tagged with the benefiting team's id).
 
         if side == "home":
             home_running += 1

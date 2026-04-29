@@ -11,8 +11,10 @@ Script that fetches all completed matches for a football league season from ESPN
 
 ## Usage
 
+The scripts live next to this `SKILL.md` in `scripts/`. Run from the project root:
+
 ```bash
-python3 ~/.claude/skills/fetch-football-season/scripts/fetch_football_season.py LEAGUE YEAR [--out FILE]
+python3 .claude/skills/fetch-football-season/scripts/fetch_football_season.py LEAGUE YEAR [--out FILE]
 ```
 
 `YEAR` is the **end-year** of the season — `2025` fetches 2024/25 for split-season leagues.
@@ -29,6 +31,18 @@ python3 ... MLS 2025 --out mls_2025.json
 ```
 
 Runtime: ~2 min per season (~300 day-by-day requests at 0.3 s each).
+
+## Verifying / Fixing a Fetched JSON
+
+```bash
+# Read-only check: every match's goal running tally must equal final_score
+python3 .claude/skills/fetch-football-season/scripts/verify_football_season.py epl_2025.json
+
+# Auto-fix: re-fetch each mismatched match from ESPN and write fixes back
+python3 .claude/skills/fetch-football-season/scripts/verify_football_season.py epl_2025.json --fix --league EPL
+```
+
+Exit code is `0` when clean, `1` when any mismatch remains. Mismatches that survive a re-fetch usually mean ESPN itself is missing a goal entry for that event — those are reported but not invented.
 
 ## Supported Leagues
 
@@ -72,11 +86,11 @@ Runtime: ~2 min per season (~300 day-by-day requests at 0.3 s each).
 **`time`** format: `"minute|stoppage"` — e.g. `"90|3"` for a 90+3' goal.  
 **`score`** reflects the running score **after** that goal (home:away).  
 Goalless matches are included with `"goals": []`.  
-Own goals are attributed to the **beneficiary** side.
+Own goals are attributed to the **beneficiary** side (ESPN already does this — the script trusts the tagged team).
 
 ## Implementation Notes
 
 - Walks day-by-day across the season; deduplicates events by ESPN event ID.
 - Uses `scoringPlay: true` (not `type.text`) to identify goals reliably.
 - ESPN clock format is `"90'+5'"` for stoppage time — both apostrophe positions handled.
-- Own-goal flip: ESPN records the conceding team on own-goal details; script inverts to beneficiary.
+- Own goals: ESPN's scoreboard `details` already records the **beneficiary** team on own-goal entries, so the script trusts the tagged team_id directly (verified against EPL 2024/25).
