@@ -33,28 +33,49 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 
 ### Active
 
-<!-- Next milestone scope — not yet defined. Run /gsd-new-milestone to plan. -->
+<!-- v1.2 Strategy Engine — defined 2026-04-29 -->
+
+- **BT-06**: Backtest engine uses contract-based P&L math (`contracts = floor(stake/price)`, win = `contracts × (1−price)`, loss = `contracts × price`)
+- **STR-01**: Named strategies are defined in a `strategies.yaml` file (replaces `WHAT_IF_STRATEGIES` hardcoded list in `scanner.py`)
+- **STR-02**: Each strategy supports multi-trigger conditions: OR-of-AND sets (e.g. "goal_diff ≥ 3 at minute ≥ 20 OR goal_diff ≥ 2 at minute ≥ 75")
+- **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner
+- **STR-04**: `stretch_opportunities` table and `WHAT_IF_STRATEGIES` are replaced by the new strategy file system
+- **DRY-01**: Live scanner places dry-run orders via Kalshi API per each defined strategy (real API calls, `dry_run=True` flag)
+- **DRY-02**: Dry-run trades are stored in the DB tagged by strategy name
+- **DASH-03**: New analytics dashboard page shows per-strategy trade log, P&L curve, and win rate
+- **DASH-04**: Analytics page auto-refreshes to show live dry-run activity as new trades arrive
 
 ### Out of Scope
 
-- Live trading changes — this milestone only touches `dashboard/app/backtest/page.tsx`. Scanner/API are untouched.
-- Backend deletion of `/api/backtest/soccer` — leave the endpoint and `soccer_cache` intact; only the dashboard wiring changes.
-- New season fetchers — JSONs are produced out-of-band by the existing `fetch-football-season` skill.
+- Real-money trading — this milestone is dry-run only; `trading_paused` kill switch remains in place
+- New season JSONs or backtest page UI redesign beyond the P&L math change
+- CLI changes — no new CLI commands for strategy management in this milestone
+
+## Current Milestone: v1.2 Strategy Engine
+
+**Goal:** Replace the hardcoded strategy list with a file-driven engine that supports multi-trigger conditions, powers both backtest and live dry-run trading, and surfaces per-strategy analytics in the dashboard.
+
+**Target features:**
+- Contract-based P&L math in the backtest engine
+- `strategies.yaml` replaces `WHAT_IF_STRATEGIES` + `stretch_opportunities`
+- Multi-trigger (OR-of-AND) conditions in strategies
+- Kalshi dry-run: live scanner places API orders per strategy with `dry_run=True`
+- New analytics dashboard page with per-strategy trade log, P&L curves, win rate, auto-refresh
 
 ## Context
 
 - Brownfield project — production deployment exists. `.planning/codebase/` (mapped on commit `f2c2f78`) is the source of truth for architecture and stack.
 - v1.1 shipped 2026-04-29 on branch `feat/soccer-backtest`. The backtest page is now a fully self-contained client-side computation over 6 pre-fetched season JSONs (EPL, LaLiga, Bundesliga, Ligue 1, Serie A, MLS). No network calls after page load.
 - The integer-cents invariant (Kalshi prices internal cents, dollar strings only at the `kalshi_client.py` boundary) holds across the codebase. Backtest JSONs do not contain Kalshi prices; the v1.1 milestone removed price-based charts entirely.
-- Known tech debt: hand-maintained static import catalog in `seasons.ts` requires editing for each new season JSON; pre-existing `pnpm fmt:check` failures in `app/page.tsx` and surrounding files; no fee/partial-fill modeling in backtest engine.
-- Outstanding todo: rework trading mechanism for contract-based P&L (see `.planning/todos/pending/2026-04-29-backtest-contract-based-pnl.md`).
+- Known tech debt: hand-maintained static import catalog in `seasons.ts` requires editing for each new season JSON; pre-existing `pnpm fmt:check` failures in `app/page.tsx` and surrounding files.
+- The pending contract-based P&L todo (`.planning/todos/pending/2026-04-29-backtest-contract-based-pnl.md`) is a v1.2 target.
 
 ## Constraints
 
 - **Tech stack**: Next.js 16 + React 19 + Tailwind 4 + recharts (existing dashboard deps). No new packages without a strong reason.
 - **Code style**: oxfmt + oxlint, 4-space indent (`dashboard/oxfmt.json`). `pnpm fmt:check && pnpm lint && pnpm build` must pass.
-- **Auth**: Backtest page must remain behind the `checkAuth` gate (just added on commit `34b8ab7`).
-- **No backend changes**: `/api/backtest/soccer` and `soccer_cache.py` stay; this is a frontend-only milestone.
+- **Auth**: All new dashboard pages must be behind the `checkAuth` gate.
+- **Kill switch**: `trading_paused == "true"` must be checked before any dry-run order placement, same as live trades.
 
 ## Key Decisions
 
@@ -84,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-29 after v1.1 milestone completion*
+*Last updated: 2026-04-29 — v1.2 Strategy Engine milestone started*

@@ -1,3 +1,18 @@
+---
+gsd_state_version: 1.0
+milestone: v1.2
+milestone_name: Strategy Engine
+status: planning
+last_updated: "2026-04-29T13:54:28.531Z"
+last_activity: 2026-04-29
+progress:
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
+---
+
 # Project State
 
 ## Project Reference
@@ -9,15 +24,15 @@ See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 
 ## Current Position
 
-Phase: v1.1 complete
-Status: ✅ Milestone v1.1 archived and tagged. Ready for next milestone planning.
-Last activity: 2026-04-29 — Completed and archived v1.1 Local-JSON Backtest milestone.
-
-Progress: [██████████] 100% (v1.1 milestone — all 4 quick tasks shipped)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-29 — Milestone v1.2 started
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 4 (all v1.1 quick tasks)
 - Average duration: ~4 min planner + ~4 min executor per task
 - Total execution time: ~32 min for v1.1 milestone
