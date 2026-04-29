@@ -2,6 +2,7 @@
 created: "2026-04-29"
 title: "Backtest page: rework trading mechanism for contract-based P&L"
 area: ui
+resolves_phase: 1
 files:
   - dashboard/app/backtest/backtest.ts
   - dashboard/app/backtest/page.tsx
