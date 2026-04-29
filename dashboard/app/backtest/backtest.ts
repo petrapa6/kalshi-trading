@@ -5,6 +5,8 @@ import type { Match, SeasonFile } from "./seasons";
 export interface BacktestParams {
   min_minute: number;
   min_lead: number;
+  initial_capital: number;
+  bet_fraction: number; // 0..1, fraction of current capital staked per bet
 }
 
 export interface BacktestTrade {
@@ -19,6 +21,9 @@ export interface BacktestTrade {
   score_at_fire_away: number;
   leading_side: "home" | "away";
   result: "win" | "loss";
+  bet_amount: number;
+  pnl: number;
+  capital_after: number;
 }
 
 export interface BacktestSummary {
@@ -27,12 +32,18 @@ export interface BacktestSummary {
   wins: number;
   losses: number;
   win_rate: number; // 0..1, 4 decimal places
+  initial_capital: number;
+  final_capital: number;
+  gain_pct: number; // (final − initial) / initial * 100
 }
 
 export interface BacktestResult {
   summary: BacktestSummary;
   trades: BacktestTrade[];
 }
+
+// Asymmetric Kalshi-style payoff: win earns 3% of the stake, loss forfeits the full stake.
+export const WIN_YIELD = 0.03;
 
 // ---- Helpers ---------------------------------------------------------------
 
@@ -62,11 +73,23 @@ export function parseScore(score: string): { home: number; away: number } {
 
 // ---- Strategy engine -------------------------------------------------------
 
-export function simulateMatch(
+interface FireOutcome {
+  match: Match;
+  final_home: number;
+  final_away: number;
+  fired_at_minute: number;
+  score_at_fire_home: number;
+  score_at_fire_away: number;
+  leading_side: "home" | "away";
+  result: "win" | "loss";
+}
+
+// Detects whether the strategy fires on this match. Independent of capital.
+export function detectFire(
   match: Match,
-  params: BacktestParams,
-): BacktestTrade | null {
-  const { min_minute, min_lead } = params;
+  min_minute: number,
+  min_lead: number,
+): FireOutcome | null {
   const { home: finalHome, away: finalAway } = parseScore(match.final_score);
 
   for (const goal of match.goals) {
@@ -77,7 +100,6 @@ export function simulateMatch(
     // base-minute only; stoppage ignored to mirror src/predictions/backtest.py
     if (minute >= min_minute && lead >= min_lead) {
       const leading_side: "home" | "away" = home > away ? "home" : "away";
-
       const result: "win" | "loss" =
         (leading_side === "home" && finalHome > finalAway) ||
         (leading_side === "away" && finalAway > finalHome)
@@ -85,10 +107,7 @@ export function simulateMatch(
           : "loss";
 
       return {
-        match_id: match.id,
-        date: match.date,
-        home_team: match.home_team,
-        away_team: match.away_team,
+        match,
         final_home: finalHome,
         final_away: finalAway,
         fired_at_minute: minute,
@@ -103,23 +122,86 @@ export function simulateMatch(
   return null;
 }
 
+// Back-compat alias: legacy callers used `simulateMatch` and expected a trade-shaped
+// object without monetary fields. Tests/scripts may still depend on the name.
+export function simulateMatch(
+  match: Match,
+  params: { min_minute: number; min_lead: number },
+): Omit<BacktestTrade, "bet_amount" | "pnl" | "capital_after"> | null {
+  const fire = detectFire(match, params.min_minute, params.min_lead);
+  if (fire === null) return null;
+  return {
+    match_id: fire.match.id,
+    date: fire.match.date,
+    home_team: fire.match.home_team,
+    away_team: fire.match.away_team,
+    final_home: fire.final_home,
+    final_away: fire.final_away,
+    fired_at_minute: fire.fired_at_minute,
+    score_at_fire_home: fire.score_at_fire_home,
+    score_at_fire_away: fire.score_at_fire_away,
+    leading_side: fire.leading_side,
+    result: fire.result,
+  };
+}
+
 export function runBacktest(
   file: SeasonFile,
   params: BacktestParams,
 ): BacktestResult {
-  const trades: BacktestTrade[] = [];
+  const { min_minute, min_lead, initial_capital, bet_fraction } = params;
 
-  for (const match of file.matches) {
-    const trade = simulateMatch(match, params);
-    if (trade !== null) {
-      trades.push(trade);
-    }
+  // Walk matches chronologically (oldest first) so capital accumulates in time order.
+  // YYYY-MM-DD strings are lexicographically sortable.
+  const chronological = [...file.matches].sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
+
+  const trades: BacktestTrade[] = [];
+  let capital = initial_capital;
+
+  for (const match of chronological) {
+    const fire = detectFire(match, min_minute, min_lead);
+    if (fire === null) continue;
+
+    const bet_amount = capital * bet_fraction;
+    const pnl = fire.result === "win" ? bet_amount * WIN_YIELD : -bet_amount;
+    capital += pnl;
+
+    trades.push({
+      match_id: fire.match.id,
+      date: fire.match.date,
+      home_team: fire.match.home_team,
+      away_team: fire.match.away_team,
+      final_home: fire.final_home,
+      final_away: fire.final_away,
+      fired_at_minute: fire.fired_at_minute,
+      score_at_fire_home: fire.score_at_fire_home,
+      score_at_fire_away: fire.score_at_fire_away,
+      leading_side: fire.leading_side,
+      result: fire.result,
+      bet_amount,
+      pnl,
+      capital_after: capital,
+    });
   }
 
   const wins = trades.filter((t) => t.result === "win").length;
   const losses = trades.filter((t) => t.result === "loss").length;
   const settled = wins + losses;
   const win_rate = settled === 0 ? 0 : Math.round((wins / settled) * 1e4) / 1e4;
+  const final_capital = capital;
+  const gain_pct =
+    initial_capital === 0
+      ? 0
+      : Math.round(
+          ((final_capital - initial_capital) / initial_capital) * 100 * 1e4,
+        ) / 1e4;
+
+  // Display newest-first.
+  const display_trades = [...trades].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
 
   return {
     summary: {
@@ -128,7 +210,10 @@ export function runBacktest(
       wins,
       losses,
       win_rate,
+      initial_capital,
+      final_capital,
+      gain_pct,
     },
-    trades,
+    trades: display_trades,
   };
 }
