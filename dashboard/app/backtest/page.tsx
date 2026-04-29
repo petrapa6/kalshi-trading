@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { checkAuth } from "../actions";
 import { SEASONS, type SeasonOption } from "./seasons";
-import { runBacktest, WIN_YIELD, type BacktestTrade } from "./backtest";
+import { runBacktest, DEFAULT_WIN_YIELD, type BacktestTrade } from "./backtest";
 
 function formatEuro(value: number): string {
   return value.toLocaleString(undefined, {
@@ -70,6 +70,7 @@ export default function BacktestPage() {
   const [minLead, setMinLead] = useState(2);
   const [initialCapital, setInitialCapital] = useState(1000);
   const [betFractionPct, setBetFractionPct] = useState(2);
+  const [avgWinYield, setAvgWinYield] = useState(DEFAULT_WIN_YIELD);
 
   useEffect(() => {
     checkAuth().then((ok) => {
@@ -91,9 +92,10 @@ export default function BacktestPage() {
             min_lead: minLead,
             initial_capital: initialCapital,
             bet_fraction: betFractionPct / 100,
+            avg_win_yield: avgWinYield,
           })
         : null,
-    [selected, minMinute, minLead, initialCapital, betFractionPct],
+    [selected, minMinute, minLead, initialCapital, betFractionPct, avgWinYield],
   );
 
   if (!authed) return <div className="min-h-screen bg-black" />;
@@ -192,9 +194,30 @@ export default function BacktestPage() {
                 className="w-full bg-black border border-gray-700 rounded px-2 py-1"
               />
             </div>
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">
+                Avg win yield (EUR per 1 EUR staked)
+              </label>
+              <input
+                type="number"
+                min={0.001}
+                max={1}
+                step={0.001}
+                value={avgWinYield}
+                onChange={(e) =>
+                  setAvgWinYield(
+                    Math.min(
+                      1,
+                      Math.max(0.001, Number(e.target.value) || 0.001),
+                    ),
+                  )
+                }
+                className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+              />
+            </div>
             <p className="text-xs text-gray-500">
-              Win yield: {WIN_YIELD.toFixed(2)} EUR per 1 EUR staked. A losing
-              bet loses the full stake.
+              Win yield: {avgWinYield} EUR per 1 EUR staked. A losing bet loses
+              the full stake.
             </p>
           </div>
           <p className="text-xs text-gray-500">
