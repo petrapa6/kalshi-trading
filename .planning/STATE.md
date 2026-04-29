@@ -4,8 +4,8 @@ milestone: v1.2
 milestone_name: Strategy Engine
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-04-29T21:16:12.871Z"
-last_activity: 2026-04-29 -- Phase 1 planning complete
+last_updated: "2026-04-29T21:19:00.355Z"
+last_activity: 2026-04-29 -- Phase 01 execution started
 progress:
   total_phases: 4
   completed_phases: 0
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** Phase 1 — Backtest P&L Math (ready to plan)
+**Current focus:** Phase 01 — backtest-p-l-math
 
 ## Current Position
 
-Phase: 1 of 4 (Backtest P&L Math)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-04-29 -- Phase 1 planning complete
+Phase: 01 (backtest-p-l-math) — EXECUTING
+Plan: 1 of 1
+Status: Executing Phase 01
+Last activity: 2026-04-29 -- Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
