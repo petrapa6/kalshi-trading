@@ -7,6 +7,7 @@ export interface BacktestParams {
   min_lead: number;
   initial_capital: number;
   bet_fraction: number; // 0..1, fraction of current capital staked per bet
+  avg_win_yield: number; // EUR returned per 1 EUR staked on a winning bet (e.g. 0.03)
 }
 
 export interface BacktestTrade {
@@ -42,8 +43,9 @@ export interface BacktestResult {
   trades: BacktestTrade[];
 }
 
-// Asymmetric Kalshi-style payoff: win earns 3% of the stake, loss forfeits the full stake.
-export const WIN_YIELD = 0.03;
+// Default avg win yield: 0.03 EUR per 1 EUR staked. Asymmetric Kalshi-style payoff —
+// callers may override via BacktestParams.avg_win_yield. Loss always forfeits the full stake.
+export const DEFAULT_WIN_YIELD = 0.03;
 
 // ---- Helpers ---------------------------------------------------------------
 
@@ -149,7 +151,8 @@ export function runBacktest(
   file: SeasonFile,
   params: BacktestParams,
 ): BacktestResult {
-  const { min_minute, min_lead, initial_capital, bet_fraction } = params;
+  const { min_minute, min_lead, initial_capital, bet_fraction, avg_win_yield } =
+    params;
 
   // Walk matches chronologically (oldest first) so capital accumulates in time order.
   // YYYY-MM-DD strings are lexicographically sortable.
@@ -165,7 +168,8 @@ export function runBacktest(
     if (fire === null) continue;
 
     const bet_amount = capital * bet_fraction;
-    const pnl = fire.result === "win" ? bet_amount * WIN_YIELD : -bet_amount;
+    const pnl =
+      fire.result === "win" ? bet_amount * avg_win_yield : -bet_amount;
     capital += pnl;
 
     trades.push({
