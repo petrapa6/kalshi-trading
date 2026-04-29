@@ -50,6 +50,12 @@ None.
 | 260429-k1c | Backtest page: configurable Avg win yield input replacing hard-coded WIN_YIELD constant | 2026-04-29 | 1344495 | [260429-k1c-backtest-page-configurable-avg-win-yield](./quick/260429-k1c-backtest-page-configurable-avg-win-yield/) |
 | 260429-k6u | Wire in LaLiga 2024/25 season into backtest seasons catalog | 2026-04-29 | a906c6c | [260429-k6u-wire-in-laliga-2024-25-season-from-resou](./quick/260429-k6u-wire-in-laliga-2024-25-season-from-resou/) |
 
+## Pending Todos
+
+| File | Title | Area |
+|------|-------|------|
+| [2026-04-29-backtest-contract-based-pnl.md](./todos/pending/2026-04-29-backtest-contract-based-pnl.md) | Backtest page: rework trading mechanism for contract-based P&L | ui |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
