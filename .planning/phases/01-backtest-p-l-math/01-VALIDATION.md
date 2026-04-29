@@ -2,7 +2,7 @@
 phase: 1
 slug: backtest-p-l-math
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-04-29
 ---
@@ -40,15 +40,15 @@ created: 2026-04-29
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 01-XX | 01 | 1 | BT-06 | — | N/A (client-side math, no boundary crossed) | smoke (typecheck via `next build`) | `cd dashboard && pnpm build` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 | — | N/A | static (lint, no unused-vars on removed ids) | `cd dashboard && pnpm lint` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 | — | N/A | static (format) | `cd dashboard && pnpm fmt:check` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (D-16) | — | N/A | static (grep) | `! grep -E 'simulateMatch\|DEFAULT_WIN_YIELD' dashboard/app/backtest/backtest.ts` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (D-16) | — | N/A | static (grep) | `! grep -E 'avgWinYield\|avg_win_yield' dashboard/app/backtest/page.tsx` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (D-06) | — | N/A | static (grep) | `grep -F 'a contract_price input (default 97, range 50–99 cents)' .planning/ROADMAP.md` | ✅ | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (worked example) | — | N/A | manual | Open page, set `initial_capital=1000`, `bet_fraction=0.02`, `contract_price_cents=97`, find a winning trade, verify row reads `"20 contracts @ 97¢ · €19.40 cost · +€0.60 · capital €1000.60"` | manual | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (D-17) | — | N/A | manual | Open page, set `initial_capital=1`, `bet_fraction=0.5`, `contract_price_cents=97`, verify a zero-contract row appears with capital unchanged | manual | ⬜ pending |
-| 01-XX | 01 | 1 | BT-06 (capital conservation) | — | N/A | manual | DevTools: `result.trades.reduce((s,t)=>s+t.pnl_cents,0) === result.summary.final_capital_cents - result.summary.initial_capital_cents` | manual | ⬜ pending |
+| 01-01-T2 | 01 | 1 | BT-06 | — | N/A (client-side math, no boundary crossed) | smoke (typecheck via `next build`) | `cd dashboard && pnpm build` | ✅ | ⬜ pending |
+| 01-01-T2 | 01 | 1 | BT-06 | — | N/A | static (lint, no unused-vars on removed ids) | `cd dashboard && pnpm lint` | ✅ | ⬜ pending |
+| 01-01-T2 | 01 | 1 | BT-06 | — | N/A | static (format) | `cd dashboard && pnpm fmt:check` | ✅ | ⬜ pending |
+| 01-01-T1 | 01 | 1 | BT-06 (D-16) | — | N/A | static (grep) | `! grep -E 'simulateMatch\|DEFAULT_WIN_YIELD' dashboard/app/backtest/backtest.ts` | ✅ | ⬜ pending |
+| 01-01-T2 | 01 | 1 | BT-06 (D-16) | — | N/A | static (grep) | `! grep -E 'avgWinYield\|avg_win_yield' dashboard/app/backtest/page.tsx` | ✅ | ⬜ pending |
+| 01-01-T3 | 01 | 1 | BT-06 (D-06) | — | N/A | static (grep) | `grep -F 'a contract_price input (default 97, range 50–99 cents)' .planning/ROADMAP.md` | ✅ | ⬜ pending |
+| 01-01-T2-manual | 01 | 1 | BT-06 (worked example) | — | N/A | manual | Open page, set `initial_capital=1000`, `bet_fraction=0.02`, `contract_price_cents=97`, find a winning trade, verify row reads `"20 contracts @ 97¢ · €19.40 cost · +€0.60 · capital €1000.60"` | manual | ⬜ pending |
+| 01-01-T2-manual | 01 | 1 | BT-06 (D-17) | — | N/A | manual | Open page, set `initial_capital=1`, `bet_fraction=0.5`, `contract_price_cents=97`, verify a zero-contract row appears with capital unchanged | manual | ⬜ pending |
+| 01-01-T2-manual | 01 | 1 | BT-06 (capital conservation) | — | N/A | manual | DevTools: `result.trades.reduce((s,t)=>s+t.pnl_cents,0) === result.summary.final_capital_cents - result.summary.initial_capital_cents` | manual | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -80,4 +80,4 @@ created: 2026-04-29
 - [ ] Feedback latency < 30s
 - [ ] `nyquist_compliant: true` set in frontmatter (set after planner emits 01-PLAN.md and the per-task IDs replace the `01-XX` placeholders above)
 
-**Approval:** pending
+**Approval:** planned (per `.planning/phases/01-backtest-p-l-math/01-01-PLAN.md`)

@@ -57,7 +57,8 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   1. Backtest results use `contracts = floor(stake / price)`, `win = contracts × (1 − price)`, `loss = contracts × price` — verifiable by checking output against manual calculation for one match
   2. The `avg_win_yield` slider is gone from the backtest UI; existing sliders (min_minute, min_lead, min_yes_price, max_yes_price) remain and function
   3. `pnpm fmt:check && pnpm lint && pnpm build` passes with no new failures
-**Plans**: TBD
+**Plans**: 1 plan
+- [ ] 01-01-PLAN.md — Contract-based P&L math in backtest engine + roadmap criterion #2 rewrite
 
 ### Phase 2: Strategy Engine Core
 **Goal**: Named strategies defined in `strategies.yaml` drive both the backtest simulator and can be validated against historical data before touching the live scanner
