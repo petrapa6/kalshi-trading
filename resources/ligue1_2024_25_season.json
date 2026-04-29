@@ -1,0 +1,6388 @@
+{
+  "matches": [
+    {
+      "id": "706429",
+      "date": "2024-08-16",
+      "home_team": "Le Havre AC",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "1:1"
+        },
+        {
+          "time": "84|0",
+          "score": "1:2"
+        },
+        {
+          "time": "86|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706428",
+      "date": "2024-08-17",
+      "home_team": "Brest",
+      "away_team": "Marseille",
+      "final_score": "1:5",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "31|0",
+          "score": "0:3"
+        },
+        {
+          "time": "45|6",
+          "score": "1:3"
+        },
+        {
+          "time": "48|0",
+          "score": "1:4"
+        },
+        {
+          "time": "69|0",
+          "score": "1:5"
+        }
+      ]
+    },
+    {
+      "id": "706430",
+      "date": "2024-08-17",
+      "home_team": "AS Monaco",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706432",
+      "date": "2024-08-17",
+      "home_team": "Stade de Reims",
+      "away_team": "Lille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "45|30",
+          "score": "0:1"
+        },
+        {
+          "time": "90|3",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706426",
+      "date": "2024-08-18",
+      "home_team": "Angers",
+      "away_team": "Lens",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706427",
+      "date": "2024-08-18",
+      "home_team": "AJ Auxerre",
+      "away_team": "Nice",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706431",
+      "date": "2024-08-18",
+      "home_team": "Montpellier",
+      "away_team": "Strasbourg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "58|0",
+          "score": "0:1"
+        },
+        {
+          "time": "67|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706433",
+      "date": "2024-08-18",
+      "home_team": "Stade Rennais",
+      "away_team": "Lyon",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "21|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706434",
+      "date": "2024-08-18",
+      "home_team": "Toulouse",
+      "away_team": "Nantes",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706441",
+      "date": "2024-08-23",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Montpellier",
+      "final_score": "6:0",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "24|0",
+          "score": "2:0"
+        },
+        {
+          "time": "53|0",
+          "score": "3:0"
+        },
+        {
+          "time": "58|0",
+          "score": "4:0"
+        },
+        {
+          "time": "60|0",
+          "score": "5:0"
+        },
+        {
+          "time": "82|0",
+          "score": "6:0"
+        }
+      ]
+    },
+    {
+      "id": "706436",
+      "date": "2024-08-24",
+      "home_team": "Lille",
+      "away_team": "Angers",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|5",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706437",
+      "date": "2024-08-24",
+      "home_team": "Lyon",
+      "away_team": "AS Monaco",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "65|0",
+          "score": "0:1"
+        },
+        {
+          "time": "80|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706442",
+      "date": "2024-08-24",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Le Havre AC",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "57|0",
+          "score": "0:1"
+        },
+        {
+          "time": "67|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706435",
+      "date": "2024-08-25",
+      "home_team": "Lens",
+      "away_team": "Brest",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706438",
+      "date": "2024-08-25",
+      "home_team": "Marseille",
+      "away_team": "Stade de Reims",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "1:2"
+        },
+        {
+          "time": "71|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706439",
+      "date": "2024-08-25",
+      "home_team": "Nantes",
+      "away_team": "AJ Auxerre",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|6",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706440",
+      "date": "2024-08-25",
+      "home_team": "Nice",
+      "away_team": "Toulouse",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        },
+        {
+          "time": "73|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706443",
+      "date": "2024-08-25",
+      "home_team": "Strasbourg",
+      "away_team": "Stade Rennais",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706452",
+      "date": "2024-08-30",
+      "home_team": "Lyon",
+      "away_team": "Strasbourg",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|2",
+          "score": "1:1"
+        },
+        {
+          "time": "48|0",
+          "score": "1:2"
+        },
+        {
+          "time": "58|0",
+          "score": "1:3"
+        },
+        {
+          "time": "61|0",
+          "score": "2:3"
+        },
+        {
+          "time": "63|0",
+          "score": "3:3"
+        },
+        {
+          "time": "72|0",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "706445",
+      "date": "2024-08-31",
+      "home_team": "Brest",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "2:0"
+        },
+        {
+          "time": "77|0",
+          "score": "3:0"
+        },
+        {
+          "time": "84|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "706447",
+      "date": "2024-08-31",
+      "home_team": "Toulouse",
+      "away_team": "Marseille",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "17|0",
+          "score": "0:2"
+        },
+        {
+          "time": "52|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706450",
+      "date": "2024-08-31",
+      "home_team": "Montpellier",
+      "away_team": "Nantes",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|7",
+          "score": "1:2"
+        },
+        {
+          "time": "85|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706444",
+      "date": "2024-09-01",
+      "home_team": "Angers",
+      "away_team": "Nice",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "0:2"
+        },
+        {
+          "time": "67|0",
+          "score": "1:2"
+        },
+        {
+          "time": "72|0",
+          "score": "1:3"
+        },
+        {
+          "time": "85|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706446",
+      "date": "2024-09-01",
+      "home_team": "Le Havre AC",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|8",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706448",
+      "date": "2024-09-01",
+      "home_team": "Lille",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "0:2"
+        },
+        {
+          "time": "78|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|2",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706449",
+      "date": "2024-09-01",
+      "home_team": "AS Monaco",
+      "away_team": "Lens",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "84|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|4",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706451",
+      "date": "2024-09-01",
+      "home_team": "Stade de Reims",
+      "away_team": "Stade Rennais",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "1:1"
+        },
+        {
+          "time": "48|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706459",
+      "date": "2024-09-13",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Lille",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706453",
+      "date": "2024-09-14",
+      "home_team": "AJ Auxerre",
+      "away_team": "AS Monaco",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "0:2"
+        },
+        {
+          "time": "89|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706455",
+      "date": "2024-09-14",
+      "home_team": "Marseille",
+      "away_team": "Nice",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "40|0",
+          "score": "1:0"
+        },
+        {
+          "time": "53|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706457",
+      "date": "2024-09-14",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Brest",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "73|0",
+          "score": "2:1"
+        },
+        {
+          "time": "74|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706454",
+      "date": "2024-09-15",
+      "home_team": "Lens",
+      "away_team": "Lyon",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706456",
+      "date": "2024-09-15",
+      "home_team": "Nantes",
+      "away_team": "Stade de Reims",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "34|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|1",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706458",
+      "date": "2024-09-15",
+      "home_team": "Stade Rennais",
+      "away_team": "Montpellier",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "35|0",
+          "score": "2:0"
+        },
+        {
+          "time": "60|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706460",
+      "date": "2024-09-15",
+      "home_team": "Strasbourg",
+      "away_team": "Angers",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        },
+        {
+          "time": "62|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706461",
+      "date": "2024-09-15",
+      "home_team": "Toulouse",
+      "away_team": "Le Havre AC",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "70|0",
+          "score": "1:0"
+        },
+        {
+          "time": "86|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706468",
+      "date": "2024-09-20",
+      "home_team": "Nice",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "8:0",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "7|0",
+          "score": "2:0"
+        },
+        {
+          "time": "24|0",
+          "score": "3:0"
+        },
+        {
+          "time": "26|0",
+          "score": "4:0"
+        },
+        {
+          "time": "36|0",
+          "score": "5:0"
+        },
+        {
+          "time": "39|0",
+          "score": "6:0"
+        },
+        {
+          "time": "75|0",
+          "score": "7:0"
+        },
+        {
+          "time": "86|0",
+          "score": "8:0"
+        }
+      ]
+    },
+    {
+      "id": "706464",
+      "date": "2024-09-21",
+      "home_team": "Lille",
+      "away_team": "Strasbourg",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "27|0",
+          "score": "2:0"
+        },
+        {
+          "time": "30|0",
+          "score": "2:1"
+        },
+        {
+          "time": "42|0",
+          "score": "2:2"
+        },
+        {
+          "time": "66|0",
+          "score": "2:3"
+        },
+        {
+          "time": "84|0",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "706469",
+      "date": "2024-09-21",
+      "home_team": "Stade de Reims",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "68|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706470",
+      "date": "2024-09-21",
+      "home_team": "Stade Rennais",
+      "away_team": "Lens",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|6",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706462",
+      "date": "2024-09-22",
+      "home_team": "Angers",
+      "away_team": "Nantes",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "24|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706463",
+      "date": "2024-09-22",
+      "home_team": "Brest",
+      "away_team": "Toulouse",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|1",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706465",
+      "date": "2024-09-22",
+      "home_team": "Lyon",
+      "away_team": "Marseille",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|3",
+          "score": "2:2"
+        },
+        {
+          "time": "90|5",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "706466",
+      "date": "2024-09-22",
+      "home_team": "AS Monaco",
+      "away_team": "Le Havre AC",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "66|0",
+          "score": "2:1"
+        },
+        {
+          "time": "70|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706467",
+      "date": "2024-09-22",
+      "home_team": "Montpellier",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        },
+        {
+          "time": "75|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706472",
+      "date": "2024-09-27",
+      "home_team": "AJ Auxerre",
+      "away_team": "Brest",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:0"
+        },
+        {
+          "time": "59|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706477",
+      "date": "2024-09-27",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Stade Rennais",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "58|0",
+          "score": "2:0"
+        },
+        {
+          "time": "68|0",
+          "score": "3:0"
+        },
+        {
+          "time": "75|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706473",
+      "date": "2024-09-28",
+      "home_team": "Le Havre AC",
+      "away_team": "Lille",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "35|0",
+          "score": "0:2"
+        },
+        {
+          "time": "79|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706474",
+      "date": "2024-09-28",
+      "home_team": "Lens",
+      "away_team": "Nice",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706475",
+      "date": "2024-09-28",
+      "home_team": "AS Monaco",
+      "away_team": "Montpellier",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|8",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706471",
+      "date": "2024-09-29",
+      "home_team": "Angers",
+      "away_team": "Stade de Reims",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "0:2"
+        },
+        {
+          "time": "79|0",
+          "score": "0:3"
+        },
+        {
+          "time": "84|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706476",
+      "date": "2024-09-29",
+      "home_team": "Nantes",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "49|0",
+          "score": "2:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:1"
+        },
+        {
+          "time": "67|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706478",
+      "date": "2024-09-29",
+      "home_team": "Strasbourg",
+      "away_team": "Marseille",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "40|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706479",
+      "date": "2024-09-29",
+      "home_team": "Toulouse",
+      "away_team": "Lyon",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|5",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706480",
+      "date": "2024-10-04",
+      "home_team": "Marseille",
+      "away_team": "Angers",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706482",
+      "date": "2024-10-05",
+      "home_team": "Lille",
+      "away_team": "Toulouse",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706486",
+      "date": "2024-10-05",
+      "home_team": "Stade Rennais",
+      "away_team": "AS Monaco",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "11|0",
+          "score": "1:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706487",
+      "date": "2024-10-05",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "2:0"
+        },
+        {
+          "time": "74|0",
+          "score": "2:1"
+        },
+        {
+          "time": "86|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706481",
+      "date": "2024-10-06",
+      "home_team": "Lyon",
+      "away_team": "Nantes",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706483",
+      "date": "2024-10-06",
+      "home_team": "Brest",
+      "away_team": "Le Havre AC",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706484",
+      "date": "2024-10-06",
+      "home_team": "Nice",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706485",
+      "date": "2024-10-06",
+      "home_team": "Stade de Reims",
+      "away_team": "Montpellier",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "25|0",
+          "score": "2:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:1"
+        },
+        {
+          "time": "57|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|1",
+          "score": "3:2"
+        },
+        {
+          "time": "90|3",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706488",
+      "date": "2024-10-06",
+      "home_team": "Strasbourg",
+      "away_team": "Lens",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "60|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706497",
+      "date": "2024-10-18",
+      "home_team": "AS Monaco",
+      "away_team": "Lille",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706490",
+      "date": "2024-10-19",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Strasbourg",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "58|0",
+          "score": "2:1"
+        },
+        {
+          "time": "66|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|2",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706491",
+      "date": "2024-10-19",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Lens",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "79|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706495",
+      "date": "2024-10-19",
+      "home_team": "Brest",
+      "away_team": "Stade Rennais",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "1:0"
+        },
+        {
+          "time": "86|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706489",
+      "date": "2024-10-20",
+      "home_team": "Nantes",
+      "away_team": "Nice",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "1:0"
+        },
+        {
+          "time": "72|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706492",
+      "date": "2024-10-20",
+      "home_team": "Toulouse",
+      "away_team": "Angers",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "64|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706493",
+      "date": "2024-10-20",
+      "home_team": "Montpellier",
+      "away_team": "Marseille",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "0:2"
+        },
+        {
+          "time": "40|0",
+          "score": "0:3"
+        },
+        {
+          "time": "58|0",
+          "score": "0:4"
+        },
+        {
+          "time": "73|0",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "706494",
+      "date": "2024-10-20",
+      "home_team": "Le Havre AC",
+      "away_team": "Lyon",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "0:2"
+        },
+        {
+          "time": "71|0",
+          "score": "0:3"
+        },
+        {
+          "time": "87|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "706496",
+      "date": "2024-10-20",
+      "home_team": "AJ Auxerre",
+      "away_team": "Stade de Reims",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|5",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706498",
+      "date": "2024-10-25",
+      "home_team": "Stade Rennais",
+      "away_team": "Le Havre AC",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706499",
+      "date": "2024-10-26",
+      "home_team": "Stade de Reims",
+      "away_team": "Brest",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "0:2"
+        },
+        {
+          "time": "29|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706503",
+      "date": "2024-10-26",
+      "home_team": "Lens",
+      "away_team": "Lille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "90|8",
+          "score": "0:1"
+        },
+        {
+          "time": "90|11",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706506",
+      "date": "2024-10-26",
+      "home_team": "Angers",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "39|0",
+          "score": "2:1"
+        },
+        {
+          "time": "57|0",
+          "score": "2:2"
+        },
+        {
+          "time": "69|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|3",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706500",
+      "date": "2024-10-27",
+      "home_team": "Nice",
+      "away_team": "AS Monaco",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706501",
+      "date": "2024-10-27",
+      "home_team": "Montpellier",
+      "away_team": "Toulouse",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "8|0",
+          "score": "0:2"
+        },
+        {
+          "time": "27|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706502",
+      "date": "2024-10-27",
+      "home_team": "Marseille",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "29|0",
+          "score": "0:2"
+        },
+        {
+          "time": "40|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706504",
+      "date": "2024-10-27",
+      "home_team": "Lyon",
+      "away_team": "AJ Auxerre",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "45|5",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706505",
+      "date": "2024-10-27",
+      "home_team": "Strasbourg",
+      "away_team": "Nantes",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "57|0",
+          "score": "2:0"
+        },
+        {
+          "time": "73|0",
+          "score": "3:0"
+        },
+        {
+          "time": "83|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706509",
+      "date": "2024-11-01",
+      "home_team": "AS Monaco",
+      "away_team": "Angers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706514",
+      "date": "2024-11-01",
+      "home_team": "Lille",
+      "away_team": "Lyon",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|1",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706508",
+      "date": "2024-11-02",
+      "home_team": "Brest",
+      "away_team": "Nice",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706510",
+      "date": "2024-11-02",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Strasbourg",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "1:0"
+        },
+        {
+          "time": "78|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706511",
+      "date": "2024-11-02",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Lens",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706507",
+      "date": "2024-11-03",
+      "home_team": "AJ Auxerre",
+      "away_team": "Stade Rennais",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:0"
+        },
+        {
+          "time": "65|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|2",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "706512",
+      "date": "2024-11-03",
+      "home_team": "Nantes",
+      "away_team": "Marseille",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "39|0",
+          "score": "1:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706513",
+      "date": "2024-11-03",
+      "home_team": "Toulouse",
+      "away_team": "Stade de Reims",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "84|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706515",
+      "date": "2024-11-03",
+      "home_team": "Le Havre AC",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "73|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706524",
+      "date": "2024-11-08",
+      "home_team": "Marseille",
+      "away_team": "AJ Auxerre",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "43|0",
+          "score": "0:2"
+        },
+        {
+          "time": "45|0",
+          "score": "0:3"
+        },
+        {
+          "time": "65|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706516",
+      "date": "2024-11-09",
+      "home_team": "Angers",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "20|0",
+          "score": "0:2"
+        },
+        {
+          "time": "31|0",
+          "score": "0:3"
+        },
+        {
+          "time": "45|2",
+          "score": "0:4"
+        },
+        {
+          "time": "90|1",
+          "score": "1:4"
+        },
+        {
+          "time": "90|7",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "706520",
+      "date": "2024-11-09",
+      "home_team": "Strasbourg",
+      "away_team": "AS Monaco",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "79|0",
+          "score": "1:1"
+        },
+        {
+          "time": "89|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|1",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706522",
+      "date": "2024-11-09",
+      "home_team": "Lens",
+      "away_team": "Nantes",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "36|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:2"
+        },
+        {
+          "time": "86|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706517",
+      "date": "2024-11-10",
+      "home_team": "Stade Rennais",
+      "away_team": "Toulouse",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "23|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706518",
+      "date": "2024-11-10",
+      "home_team": "Nice",
+      "away_team": "Lille",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        },
+        {
+          "time": "66|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|6",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706519",
+      "date": "2024-11-10",
+      "home_team": "Montpellier",
+      "away_team": "Brest",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "12|0",
+          "score": "2:0"
+        },
+        {
+          "time": "50|0",
+          "score": "2:1"
+        },
+        {
+          "time": "84|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706521",
+      "date": "2024-11-10",
+      "home_team": "Lyon",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706523",
+      "date": "2024-11-10",
+      "home_team": "Le Havre AC",
+      "away_team": "Stade de Reims",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "0:2"
+        },
+        {
+          "time": "57|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706530",
+      "date": "2024-11-22",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Toulouse",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        },
+        {
+          "time": "84|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706533",
+      "date": "2024-11-22",
+      "home_team": "AS Monaco",
+      "away_team": "Brest",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "24|0",
+          "score": "2:0"
+        },
+        {
+          "time": "50|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|1",
+          "score": "3:1"
+        },
+        {
+          "time": "90|6",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706528",
+      "date": "2024-11-23",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706529",
+      "date": "2024-11-23",
+      "home_team": "Stade de Reims",
+      "away_team": "Lyon",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "55|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706531",
+      "date": "2024-11-23",
+      "home_team": "Lens",
+      "away_team": "Marseille",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "0:2"
+        },
+        {
+          "time": "80|0",
+          "score": "1:2"
+        },
+        {
+          "time": "89|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706525",
+      "date": "2024-11-24",
+      "home_team": "Lille",
+      "away_team": "Stade Rennais",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706526",
+      "date": "2024-11-24",
+      "home_team": "Nice",
+      "away_team": "Strasbourg",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "0:1"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706527",
+      "date": "2024-11-24",
+      "home_team": "AJ Auxerre",
+      "away_team": "Angers",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "90|3",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706532",
+      "date": "2024-11-24",
+      "home_team": "Nantes",
+      "away_team": "Le Havre AC",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706539",
+      "date": "2024-11-29",
+      "home_team": "Stade de Reims",
+      "away_team": "Lens",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706537",
+      "date": "2024-11-30",
+      "home_team": "Brest",
+      "away_team": "Strasbourg",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|1",
+          "score": "2:0"
+        },
+        {
+          "time": "85|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|2",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706540",
+      "date": "2024-11-30",
+      "home_team": "Stade Rennais",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "5:0",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|6",
+          "score": "2:0"
+        },
+        {
+          "time": "53|0",
+          "score": "3:0"
+        },
+        {
+          "time": "61|0",
+          "score": "4:0"
+        },
+        {
+          "time": "67|0",
+          "score": "5:0"
+        }
+      ]
+    },
+    {
+      "id": "706542",
+      "date": "2024-11-30",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Nantes",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706534",
+      "date": "2024-12-01",
+      "home_team": "Montpellier",
+      "away_team": "Lille",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|2",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|3",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706535",
+      "date": "2024-12-01",
+      "home_team": "Marseille",
+      "away_team": "AS Monaco",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "41|0",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "1:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706536",
+      "date": "2024-12-01",
+      "home_team": "Lyon",
+      "away_team": "Nice",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "41|0",
+          "score": "2:1"
+        },
+        {
+          "time": "43|0",
+          "score": "3:1"
+        },
+        {
+          "time": "69|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706538",
+      "date": "2024-12-01",
+      "home_team": "Toulouse",
+      "away_team": "AJ Auxerre",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "1:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706541",
+      "date": "2024-12-01",
+      "home_team": "Le Havre AC",
+      "away_team": "Angers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "63|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706544",
+      "date": "2024-12-06",
+      "home_team": "Lille",
+      "away_team": "Brest",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "44|0",
+          "score": "2:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:1"
+        },
+        {
+          "time": "69|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706549",
+      "date": "2024-12-06",
+      "home_team": "AJ Auxerre",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706543",
+      "date": "2024-12-07",
+      "home_team": "AS Monaco",
+      "away_team": "Toulouse",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "1:0"
+        },
+        {
+          "time": "82|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706546",
+      "date": "2024-12-07",
+      "home_team": "Angers",
+      "away_team": "Lyon",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "55|0",
+          "score": "0:2"
+        },
+        {
+          "time": "88|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706551",
+      "date": "2024-12-07",
+      "home_team": "Nice",
+      "away_team": "Le Havre AC",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "75|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706545",
+      "date": "2024-12-08",
+      "home_team": "Lens",
+      "away_team": "Montpellier",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706547",
+      "date": "2024-12-08",
+      "home_team": "Nantes",
+      "away_team": "Stade Rennais",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "89|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706548",
+      "date": "2024-12-08",
+      "home_team": "Strasbourg",
+      "away_team": "Stade de Reims",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706550",
+      "date": "2024-12-08",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Marseille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706553",
+      "date": "2024-12-13",
+      "home_team": "Toulouse",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "0:1"
+        },
+        {
+          "time": "55|0",
+          "score": "1:1"
+        },
+        {
+          "time": "85|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706552",
+      "date": "2024-12-14",
+      "home_team": "AJ Auxerre",
+      "away_team": "Lens",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "0:1"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|0",
+          "score": "1:2"
+        },
+        {
+          "time": "73|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706555",
+      "date": "2024-12-14",
+      "home_team": "Stade de Reims",
+      "away_team": "AS Monaco",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706556",
+      "date": "2024-12-14",
+      "home_team": "Marseille",
+      "away_team": "Lille",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "87|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706554",
+      "date": "2024-12-15",
+      "home_team": "Stade Rennais",
+      "away_team": "Angers",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706557",
+      "date": "2024-12-15",
+      "home_team": "Brest",
+      "away_team": "Nantes",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "27|0",
+          "score": "2:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|3",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706558",
+      "date": "2024-12-15",
+      "home_team": "Montpellier",
+      "away_team": "Nice",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "28|0",
+          "score": "1:2"
+        },
+        {
+          "time": "80|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706559",
+      "date": "2024-12-15",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Lyon",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "14|0",
+          "score": "2:0"
+        },
+        {
+          "time": "40|0",
+          "score": "2:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706560",
+      "date": "2024-12-15",
+      "home_team": "Le Havre AC",
+      "away_team": "Strasbourg",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706563",
+      "date": "2024-12-18",
+      "home_team": "AS Monaco",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        },
+        {
+          "time": "64|0",
+          "score": "2:2"
+        },
+        {
+          "time": "83|0",
+          "score": "2:3"
+        },
+        {
+          "time": "90|7",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "706564",
+      "date": "2025-01-03",
+      "home_team": "Nice",
+      "away_team": "Stade Rennais",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "34|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|5",
+          "score": "3:1"
+        },
+        {
+          "time": "49|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706561",
+      "date": "2025-01-04",
+      "home_team": "Lyon",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "90|1",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706565",
+      "date": "2025-01-04",
+      "home_team": "Lille",
+      "away_team": "Nantes",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "40|0",
+          "score": "1:0"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706569",
+      "date": "2025-01-04",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Stade de Reims",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "57|0",
+          "score": "2:1"
+        },
+        {
+          "time": "80|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706562",
+      "date": "2025-01-05",
+      "home_team": "Marseille",
+      "away_team": "Le Havre AC",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:0"
+        },
+        {
+          "time": "43|0",
+          "score": "3:0"
+        },
+        {
+          "time": "66|0",
+          "score": "4:0"
+        },
+        {
+          "time": "75|0",
+          "score": "5:0"
+        },
+        {
+          "time": "85|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "706566",
+      "date": "2025-01-05",
+      "home_team": "Strasbourg",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|4",
+          "score": "1:1"
+        },
+        {
+          "time": "59|0",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706567",
+      "date": "2025-01-05",
+      "home_team": "Lens",
+      "away_team": "Toulouse",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "73|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706568",
+      "date": "2025-01-05",
+      "home_team": "Angers",
+      "away_team": "Brest",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|5",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706577",
+      "date": "2025-01-10",
+      "home_team": "AJ Auxerre",
+      "away_team": "Lille",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706578",
+      "date": "2025-01-10",
+      "home_team": "Nantes",
+      "away_team": "AS Monaco",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        },
+        {
+          "time": "59|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706570",
+      "date": "2025-01-11",
+      "home_team": "Brest",
+      "away_team": "Lyon",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "25|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|2",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706575",
+      "date": "2025-01-11",
+      "home_team": "Stade de Reims",
+      "away_team": "Nice",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "34|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "64|0",
+          "score": "1:3"
+        },
+        {
+          "time": "71|0",
+          "score": "2:3"
+        },
+        {
+          "time": "86|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "706576",
+      "date": "2025-01-11",
+      "home_team": "Stade Rennais",
+      "away_team": "Marseille",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "1:1"
+        },
+        {
+          "time": "49|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706571",
+      "date": "2025-01-12",
+      "home_team": "Le Havre AC",
+      "away_team": "Lens",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "1:1"
+        },
+        {
+          "time": "77|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706572",
+      "date": "2025-01-12",
+      "home_team": "Montpellier",
+      "away_team": "Angers",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "69|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|9",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706573",
+      "date": "2025-01-12",
+      "home_team": "Toulouse",
+      "away_team": "Strasbourg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "35|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706574",
+      "date": "2025-01-12",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "23|0",
+          "score": "2:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706584",
+      "date": "2025-01-17",
+      "home_team": "Montpellier",
+      "away_team": "AS Monaco",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "0:1"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706587",
+      "date": "2025-01-17",
+      "home_team": "Lille",
+      "away_team": "Nice",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "1:1"
+        },
+        {
+          "time": "63|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706580",
+      "date": "2025-01-18",
+      "home_team": "Lens",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "59|0",
+          "score": "1:1"
+        },
+        {
+          "time": "86|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706582",
+      "date": "2025-01-18",
+      "home_team": "Stade Rennais",
+      "away_team": "Brest",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "73|0",
+          "score": "0:2"
+        },
+        {
+          "time": "77|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706586",
+      "date": "2025-01-18",
+      "home_team": "Lyon",
+      "away_team": "Toulouse",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706579",
+      "date": "2025-01-19",
+      "home_team": "Angers",
+      "away_team": "AJ Auxerre",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706581",
+      "date": "2025-01-19",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Nantes",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "86|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706583",
+      "date": "2025-01-19",
+      "home_team": "Stade de Reims",
+      "away_team": "Le Havre AC",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "67|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706585",
+      "date": "2025-01-19",
+      "home_team": "Marseille",
+      "away_team": "Strasbourg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "68|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706588",
+      "date": "2025-01-24",
+      "home_team": "AJ Auxerre",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706589",
+      "date": "2025-01-25",
+      "home_team": "Strasbourg",
+      "away_team": "Lille",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706590",
+      "date": "2025-01-25",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Stade de Reims",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706593",
+      "date": "2025-01-25",
+      "home_team": "AS Monaco",
+      "away_team": "Stade Rennais",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|1",
+          "score": "1:1"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        },
+        {
+          "time": "56|0",
+          "score": "3:1"
+        },
+        {
+          "time": "67|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706591",
+      "date": "2025-01-26",
+      "home_team": "Nice",
+      "away_team": "Marseille",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706592",
+      "date": "2025-01-26",
+      "home_team": "Nantes",
+      "away_team": "Lyon",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706594",
+      "date": "2025-01-26",
+      "home_team": "Lens",
+      "away_team": "Angers",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706595",
+      "date": "2025-01-26",
+      "home_team": "Le Havre AC",
+      "away_team": "Brest",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706596",
+      "date": "2025-01-26",
+      "home_team": "Toulouse",
+      "away_team": "Montpellier",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "1:0"
+        },
+        {
+          "time": "62|0",
+          "score": "1:1"
+        },
+        {
+          "time": "83|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706604",
+      "date": "2025-01-31",
+      "home_team": "Montpellier",
+      "away_team": "Lens",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706600",
+      "date": "2025-02-01",
+      "home_team": "Brest",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "2:5",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:2"
+        },
+        {
+          "time": "62|0",
+          "score": "1:3"
+        },
+        {
+          "time": "71|0",
+          "score": "2:3"
+        },
+        {
+          "time": "89|0",
+          "score": "2:4"
+        },
+        {
+          "time": "90|7",
+          "score": "2:5"
+        }
+      ]
+    },
+    {
+      "id": "706601",
+      "date": "2025-02-01",
+      "home_team": "Lille",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "63|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "3:1"
+        },
+        {
+          "time": "78|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706603",
+      "date": "2025-02-01",
+      "home_team": "AS Monaco",
+      "away_team": "AJ Auxerre",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|7",
+          "score": "1:2"
+        },
+        {
+          "time": "57|0",
+          "score": "2:2"
+        },
+        {
+          "time": "63|0",
+          "score": "3:2"
+        },
+        {
+          "time": "65|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706597",
+      "date": "2025-02-02",
+      "home_team": "Stade Rennais",
+      "away_team": "Strasbourg",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "89|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706598",
+      "date": "2025-02-02",
+      "home_team": "Marseille",
+      "away_team": "Lyon",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "64|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        },
+        {
+          "time": "85|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706599",
+      "date": "2025-02-02",
+      "home_team": "Angers",
+      "away_team": "Le Havre AC",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "73|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706602",
+      "date": "2025-02-02",
+      "home_team": "Toulouse",
+      "away_team": "Nice",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "85|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706605",
+      "date": "2025-02-02",
+      "home_team": "Stade de Reims",
+      "away_team": "Nantes",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706607",
+      "date": "2025-02-07",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "AS Monaco",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "17|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        },
+        {
+          "time": "57|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706609",
+      "date": "2025-02-07",
+      "home_team": "Nantes",
+      "away_team": "Brest",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|6",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706606",
+      "date": "2025-02-08",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Stade Rennais",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "84|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706608",
+      "date": "2025-02-08",
+      "home_team": "Nice",
+      "away_team": "Lens",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706611",
+      "date": "2025-02-08",
+      "home_team": "Lille",
+      "away_team": "Le Havre AC",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|7",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706610",
+      "date": "2025-02-09",
+      "home_team": "Strasbourg",
+      "away_team": "Montpellier",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706612",
+      "date": "2025-02-09",
+      "home_team": "AJ Auxerre",
+      "away_team": "Toulouse",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "62|0",
+          "score": "1:0"
+        },
+        {
+          "time": "68|0",
+          "score": "1:1"
+        },
+        {
+          "time": "73|0",
+          "score": "2:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706613",
+      "date": "2025-02-09",
+      "home_team": "Angers",
+      "away_team": "Marseille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "69|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706614",
+      "date": "2025-02-09",
+      "home_team": "Lyon",
+      "away_team": "Stade de Reims",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "68|0",
+          "score": "2:0"
+        },
+        {
+          "time": "79|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|3",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "706623",
+      "date": "2025-02-14",
+      "home_team": "Brest",
+      "away_team": "AJ Auxerre",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "60|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:2"
+        },
+        {
+          "time": "79|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706616",
+      "date": "2025-02-15",
+      "home_team": "Marseille",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "50|0",
+          "score": "2:0"
+        },
+        {
+          "time": "58|0",
+          "score": "3:0"
+        },
+        {
+          "time": "60|0",
+          "score": "4:0"
+        },
+        {
+          "time": "77|0",
+          "score": "5:0"
+        },
+        {
+          "time": "79|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "706617",
+      "date": "2025-02-15",
+      "home_team": "AS Monaco",
+      "away_team": "Nantes",
+      "final_score": "7:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|0",
+          "score": "2:1"
+        },
+        {
+          "time": "49|0",
+          "score": "3:1"
+        },
+        {
+          "time": "54|0",
+          "score": "4:1"
+        },
+        {
+          "time": "64|0",
+          "score": "5:1"
+        },
+        {
+          "time": "81|0",
+          "score": "6:1"
+        },
+        {
+          "time": "90|5",
+          "score": "7:1"
+        }
+      ]
+    },
+    {
+      "id": "706621",
+      "date": "2025-02-15",
+      "home_team": "Toulouse",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "52|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706615",
+      "date": "2025-02-16",
+      "home_team": "Lens",
+      "away_team": "Strasbourg",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "81|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|6",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706618",
+      "date": "2025-02-16",
+      "home_team": "Montpellier",
+      "away_team": "Lyon",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:2"
+        },
+        {
+          "time": "53|0",
+          "score": "1:3"
+        },
+        {
+          "time": "73|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706619",
+      "date": "2025-02-16",
+      "home_team": "Stade de Reims",
+      "away_team": "Angers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "45|1",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706620",
+      "date": "2025-02-16",
+      "home_team": "Stade Rennais",
+      "away_team": "Lille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "80|0",
+          "score": "0:1"
+        },
+        {
+          "time": "86|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706622",
+      "date": "2025-02-16",
+      "home_team": "Le Havre AC",
+      "away_team": "Nice",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "0:2"
+        },
+        {
+          "time": "28|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|4",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706626",
+      "date": "2025-02-21",
+      "home_team": "Stade Rennais",
+      "away_team": "Stade de Reims",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706624",
+      "date": "2025-02-22",
+      "home_team": "AJ Auxerre",
+      "away_team": "Marseille",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "77|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706625",
+      "date": "2025-02-22",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Angers",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "17|0",
+          "score": "0:2"
+        },
+        {
+          "time": "36|0",
+          "score": "1:2"
+        },
+        {
+          "time": "52|0",
+          "score": "2:2"
+        },
+        {
+          "time": "73|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|4",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "706630",
+      "date": "2025-02-22",
+      "home_team": "Lille",
+      "away_team": "AS Monaco",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|1",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706627",
+      "date": "2025-02-23",
+      "home_team": "Nice",
+      "away_team": "Montpellier",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706628",
+      "date": "2025-02-23",
+      "home_team": "Nantes",
+      "away_team": "Lens",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|5",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706629",
+      "date": "2025-02-23",
+      "home_team": "Lyon",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "0:1"
+        },
+        {
+          "time": "59|0",
+          "score": "0:2"
+        },
+        {
+          "time": "83|0",
+          "score": "1:2"
+        },
+        {
+          "time": "85|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|2",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "706631",
+      "date": "2025-02-23",
+      "home_team": "Le Havre AC",
+      "away_team": "Toulouse",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "1:2"
+        },
+        {
+          "time": "63|0",
+          "score": "1:3"
+        },
+        {
+          "time": "78|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706632",
+      "date": "2025-02-23",
+      "home_team": "Strasbourg",
+      "away_team": "Brest",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706634",
+      "date": "2025-02-28",
+      "home_team": "AS Monaco",
+      "away_team": "Stade de Reims",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:0"
+        },
+        {
+          "time": "51|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706636",
+      "date": "2025-03-01",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Lille",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "22|0",
+          "score": "2:0"
+        },
+        {
+          "time": "28|0",
+          "score": "3:0"
+        },
+        {
+          "time": "37|0",
+          "score": "4:0"
+        },
+        {
+          "time": "80|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706638",
+      "date": "2025-03-01",
+      "home_team": "Lens",
+      "away_team": "Le Havre AC",
+      "final_score": "3:4",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "19|0",
+          "score": "2:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:1"
+        },
+        {
+          "time": "33|0",
+          "score": "2:2"
+        },
+        {
+          "time": "48|0",
+          "score": "3:2"
+        },
+        {
+          "time": "62|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|1",
+          "score": "3:4"
+        }
+      ]
+    },
+    {
+      "id": "706641",
+      "date": "2025-03-01",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Nice",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "52|0",
+          "score": "1:2"
+        },
+        {
+          "time": "69|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706633",
+      "date": "2025-03-02",
+      "home_team": "Marseille",
+      "away_team": "Nantes",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "73|0",
+          "score": "1:0"
+        },
+        {
+          "time": "77|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706635",
+      "date": "2025-03-02",
+      "home_team": "Montpellier",
+      "away_team": "Stade Rennais",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "0:2"
+        },
+        {
+          "time": "69|0",
+          "score": "0:3"
+        },
+        {
+          "time": "87|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "706637",
+      "date": "2025-03-02",
+      "home_team": "Lyon",
+      "away_team": "Brest",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "24|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706639",
+      "date": "2025-03-02",
+      "home_team": "AJ Auxerre",
+      "away_team": "Strasbourg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706640",
+      "date": "2025-03-02",
+      "home_team": "Angers",
+      "away_team": "Toulouse",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "0:2"
+        },
+        {
+          "time": "71|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|4",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "706647",
+      "date": "2025-03-07",
+      "home_team": "Toulouse",
+      "away_team": "AS Monaco",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|1",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706645",
+      "date": "2025-03-08",
+      "home_team": "Stade Rennais",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "0:2"
+        },
+        {
+          "time": "53|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|1",
+          "score": "1:3"
+        },
+        {
+          "time": "90|4",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706646",
+      "date": "2025-03-08",
+      "home_team": "Marseille",
+      "away_team": "Lens",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "90|4",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706650",
+      "date": "2025-03-08",
+      "home_team": "Lille",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706642",
+      "date": "2025-03-09",
+      "home_team": "Nantes",
+      "away_team": "Strasbourg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "79|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706643",
+      "date": "2025-03-09",
+      "home_team": "Nice",
+      "away_team": "Lyon",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "78|0",
+          "score": "0:1"
+        },
+        {
+          "time": "83|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706644",
+      "date": "2025-03-09",
+      "home_team": "Stade de Reims",
+      "away_team": "AJ Auxerre",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "24|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706648",
+      "date": "2025-03-09",
+      "home_team": "Brest",
+      "away_team": "Angers",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706649",
+      "date": "2025-03-09",
+      "home_team": "Le Havre AC",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706658",
+      "date": "2025-03-14",
+      "home_team": "Nice",
+      "away_team": "AJ Auxerre",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|4",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706651",
+      "date": "2025-03-15",
+      "home_team": "Angers",
+      "away_team": "AS Monaco",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "77|0",
+          "score": "0:1"
+        },
+        {
+          "time": "88|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706655",
+      "date": "2025-03-15",
+      "home_team": "Lens",
+      "away_team": "Stade Rennais",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706657",
+      "date": "2025-03-15",
+      "home_team": "Nantes",
+      "away_team": "Lille",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "83|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706652",
+      "date": "2025-03-16",
+      "home_team": "Brest",
+      "away_team": "Stade de Reims",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706653",
+      "date": "2025-03-16",
+      "home_team": "Strasbourg",
+      "away_team": "Toulouse",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706654",
+      "date": "2025-03-16",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Marseille",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "42|0",
+          "score": "2:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:1"
+        },
+        {
+          "time": "76|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706656",
+      "date": "2025-03-16",
+      "home_team": "Montpellier",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706659",
+      "date": "2025-03-16",
+      "home_team": "Lyon",
+      "away_team": "Le Havre AC",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|1",
+          "score": "1:2"
+        },
+        {
+          "time": "78|0",
+          "score": "2:2"
+        },
+        {
+          "time": "82|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|6",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706661",
+      "date": "2025-03-28",
+      "home_team": "Strasbourg",
+      "away_team": "Lyon",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        },
+        {
+          "time": "73|0",
+          "score": "3:1"
+        },
+        {
+          "time": "89|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|6",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706662",
+      "date": "2025-03-29",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:6",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:2"
+        },
+        {
+          "time": "53|0",
+          "score": "1:3"
+        },
+        {
+          "time": "62|0",
+          "score": "1:4"
+        },
+        {
+          "time": "66|0",
+          "score": "1:5"
+        },
+        {
+          "time": "90|0",
+          "score": "1:6"
+        }
+      ]
+    },
+    {
+      "id": "706663",
+      "date": "2025-03-29",
+      "home_team": "Stade de Reims",
+      "away_team": "Marseille",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "68|0",
+          "score": "3:0"
+        },
+        {
+          "time": "78|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706668",
+      "date": "2025-03-29",
+      "home_team": "AS Monaco",
+      "away_team": "Nice",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "41|0",
+          "score": "0:1"
+        },
+        {
+          "time": "55|0",
+          "score": "1:1"
+        },
+        {
+          "time": "73|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706660",
+      "date": "2025-03-30",
+      "home_team": "Angers",
+      "away_team": "Stade Rennais",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|5",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "706664",
+      "date": "2025-03-30",
+      "home_team": "Toulouse",
+      "away_team": "Brest",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "62|0",
+          "score": "0:3"
+        },
+        {
+          "time": "65|0",
+          "score": "1:3"
+        },
+        {
+          "time": "78|0",
+          "score": "2:3"
+        },
+        {
+          "time": "90|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "706665",
+      "date": "2025-03-30",
+      "home_team": "Lille",
+      "away_team": "Lens",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706666",
+      "date": "2025-03-30",
+      "home_team": "Le Havre AC",
+      "away_team": "Nantes",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "27|0",
+          "score": "2:1"
+        },
+        {
+          "time": "48|0",
+          "score": "2:2"
+        },
+        {
+          "time": "88|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706667",
+      "date": "2025-03-30",
+      "home_team": "AJ Auxerre",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "82|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706671",
+      "date": "2025-04-04",
+      "home_team": "Nice",
+      "away_team": "Nantes",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "14|0",
+          "score": "1:1"
+        },
+        {
+          "time": "38|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706670",
+      "date": "2025-04-05",
+      "home_team": "Brest",
+      "away_team": "AS Monaco",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "1:0"
+        },
+        {
+          "time": "63|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|4",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706674",
+      "date": "2025-04-05",
+      "home_team": "Lyon",
+      "away_team": "Lille",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "38|0",
+          "score": "1:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706676",
+      "date": "2025-04-05",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Angers",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706669",
+      "date": "2025-04-06",
+      "home_team": "Stade de Reims",
+      "away_team": "Strasbourg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706672",
+      "date": "2025-04-06",
+      "home_team": "Montpellier",
+      "away_team": "Le Havre AC",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "33|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706673",
+      "date": "2025-04-06",
+      "home_team": "Stade Rennais",
+      "away_team": "AJ Auxerre",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "89|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706675",
+      "date": "2025-04-06",
+      "home_team": "Lens",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "75|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706677",
+      "date": "2025-04-06",
+      "home_team": "Marseille",
+      "away_team": "Toulouse",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "1:1"
+        },
+        {
+          "time": "57|0",
+          "score": "2:1"
+        },
+        {
+          "time": "64|0",
+          "score": "3:1"
+        },
+        {
+          "time": "76|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "706680",
+      "date": "2025-04-11",
+      "home_team": "Lens",
+      "away_team": "Stade de Reims",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "88|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706681",
+      "date": "2025-04-12",
+      "home_team": "AS Monaco",
+      "away_team": "Marseille",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "58|0",
+          "score": "2:0"
+        },
+        {
+          "time": "82|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706682",
+      "date": "2025-04-12",
+      "home_team": "Toulouse",
+      "away_team": "Lille",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|4",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706684",
+      "date": "2025-04-12",
+      "home_team": "Strasbourg",
+      "away_team": "Nice",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "51|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|4",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "706678",
+      "date": "2025-04-13",
+      "home_team": "AJ Auxerre",
+      "away_team": "Lyon",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "0:1"
+        },
+        {
+          "time": "62|0",
+          "score": "0:2"
+        },
+        {
+          "time": "77|0",
+          "score": "1:2"
+        },
+        {
+          "time": "84|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706679",
+      "date": "2025-04-13",
+      "home_team": "Le Havre AC",
+      "away_team": "Stade Rennais",
+      "final_score": "1:5",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "12|0",
+          "score": "0:2"
+        },
+        {
+          "time": "15|0",
+          "score": "0:3"
+        },
+        {
+          "time": "42|0",
+          "score": "1:3"
+        },
+        {
+          "time": "57|0",
+          "score": "1:4"
+        },
+        {
+          "time": "89|0",
+          "score": "1:5"
+        }
+      ]
+    },
+    {
+      "id": "706683",
+      "date": "2025-04-13",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Brest",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:2"
+        },
+        {
+          "time": "34|0",
+          "score": "2:2"
+        },
+        {
+          "time": "37|0",
+          "score": "2:3"
+        },
+        {
+          "time": "80|0",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "706685",
+      "date": "2025-04-13",
+      "home_team": "Angers",
+      "away_team": "Montpellier",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706694",
+      "date": "2025-04-18",
+      "home_team": "Stade Rennais",
+      "away_team": "Nantes",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "54|0",
+          "score": "1:1"
+        },
+        {
+          "time": "86|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706687",
+      "date": "2025-04-19",
+      "home_team": "Marseille",
+      "away_team": "Montpellier",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "67|0",
+          "score": "3:0"
+        },
+        {
+          "time": "74|0",
+          "score": "4:0"
+        },
+        {
+          "time": "83|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "706688",
+      "date": "2025-04-19",
+      "home_team": "AS Monaco",
+      "away_team": "Strasbourg",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706690",
+      "date": "2025-04-19",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Le Havre AC",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "50|0",
+          "score": "2:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706689",
+      "date": "2025-04-20",
+      "home_team": "Nice",
+      "away_team": "Angers",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "52|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706691",
+      "date": "2025-04-20",
+      "home_team": "Stade de Reims",
+      "away_team": "Toulouse",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706692",
+      "date": "2025-04-20",
+      "home_team": "Lille",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:1"
+        },
+        {
+          "time": "90|7",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706693",
+      "date": "2025-04-20",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Lyon",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "67|0",
+          "score": "2:0"
+        },
+        {
+          "time": "76|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706695",
+      "date": "2025-04-20",
+      "home_team": "Brest",
+      "away_team": "Lens",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "17|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|7",
+          "score": "1:2"
+        },
+        {
+          "time": "90|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706686",
+      "date": "2025-04-22",
+      "home_team": "Nantes",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "83|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706700",
+      "date": "2025-04-25",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "Nice",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "1:1"
+        },
+        {
+          "time": "46|0",
+          "score": "1:2"
+        },
+        {
+          "time": "70|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706698",
+      "date": "2025-04-26",
+      "home_team": "Le Havre AC",
+      "away_team": "AS Monaco",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706701",
+      "date": "2025-04-26",
+      "home_team": "Strasbourg",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "19|0",
+          "score": "1:1"
+        },
+        {
+          "time": "63|0",
+          "score": "2:1"
+        },
+        {
+          "time": "83|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706704",
+      "date": "2025-04-26",
+      "home_team": "Lyon",
+      "away_team": "Stade Rennais",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "25|0",
+          "score": "2:0"
+        },
+        {
+          "time": "39|0",
+          "score": "3:0"
+        },
+        {
+          "time": "50|0",
+          "score": "3:1"
+        },
+        {
+          "time": "77|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706696",
+      "date": "2025-04-27",
+      "home_team": "Angers",
+      "away_team": "Lille",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "45|1",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706697",
+      "date": "2025-04-27",
+      "home_team": "Marseille",
+      "away_team": "Brest",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "37|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|0",
+          "score": "3:1"
+        },
+        {
+          "time": "63|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "706699",
+      "date": "2025-04-27",
+      "home_team": "Lens",
+      "away_team": "AJ Auxerre",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "0:3"
+        },
+        {
+          "time": "73|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "706702",
+      "date": "2025-04-27",
+      "home_team": "Montpellier",
+      "away_team": "Stade de Reims",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706703",
+      "date": "2025-04-27",
+      "home_team": "Nantes",
+      "away_team": "Toulouse",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "706707",
+      "date": "2025-05-02",
+      "home_team": "Nice",
+      "away_team": "Stade de Reims",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706706",
+      "date": "2025-05-03",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "AS Monaco",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "1:2"
+        },
+        {
+          "time": "78|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706708",
+      "date": "2025-05-03",
+      "home_team": "Toulouse",
+      "away_team": "Stade Rennais",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706711",
+      "date": "2025-05-03",
+      "home_team": "Strasbourg",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|3",
+          "score": "2:0"
+        },
+        {
+          "time": "46|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706705",
+      "date": "2025-05-04",
+      "home_team": "Nantes",
+      "away_team": "Angers",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "52|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "706709",
+      "date": "2025-05-04",
+      "home_team": "AJ Auxerre",
+      "away_team": "Le Havre AC",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "62|0",
+          "score": "1:0"
+        },
+        {
+          "time": "79|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|2",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706710",
+      "date": "2025-05-04",
+      "home_team": "Brest",
+      "away_team": "Montpellier",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "706712",
+      "date": "2025-05-04",
+      "home_team": "Lyon",
+      "away_team": "Lens",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "79|0",
+          "score": "1:1"
+        },
+        {
+          "time": "85|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "706713",
+      "date": "2025-05-04",
+      "home_team": "Lille",
+      "away_team": "Marseille",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "57|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706714",
+      "date": "2025-05-10",
+      "home_team": "Montpellier",
+      "away_team": "Paris Saint-Germain",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "0:2"
+        },
+        {
+          "time": "59|0",
+          "score": "0:3"
+        },
+        {
+          "time": "64|0",
+          "score": "1:3"
+        },
+        {
+          "time": "65|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "706715",
+      "date": "2025-05-10",
+      "home_team": "Stade de Reims",
+      "away_team": "Saint-\u00c9tienne",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "706716",
+      "date": "2025-05-10",
+      "home_team": "Stade Rennais",
+      "away_team": "Nice",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "80|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706717",
+      "date": "2025-05-10",
+      "home_team": "Toulouse",
+      "away_team": "Lens",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706718",
+      "date": "2025-05-10",
+      "home_team": "AS Monaco",
+      "away_team": "Lyon",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "62|0",
+          "score": "1:0"
+        },
+        {
+          "time": "68|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706719",
+      "date": "2025-05-10",
+      "home_team": "Le Havre AC",
+      "away_team": "Marseille",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "56|0",
+          "score": "0:1"
+        },
+        {
+          "time": "66|0",
+          "score": "1:1"
+        },
+        {
+          "time": "85|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|9",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "706720",
+      "date": "2025-05-10",
+      "home_team": "AJ Auxerre",
+      "away_team": "Nantes",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "1:0"
+        },
+        {
+          "time": "62|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "706721",
+      "date": "2025-05-10",
+      "home_team": "Angers",
+      "away_team": "Strasbourg",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        },
+        {
+          "time": "48|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706722",
+      "date": "2025-05-10",
+      "home_team": "Brest",
+      "away_team": "Lille",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "1:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "706723",
+      "date": "2025-05-17",
+      "home_team": "Nice",
+      "away_team": "Brest",
+      "final_score": "6:0",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "19|0",
+          "score": "2:0"
+        },
+        {
+          "time": "28|0",
+          "score": "3:0"
+        },
+        {
+          "time": "75|0",
+          "score": "4:0"
+        },
+        {
+          "time": "82|0",
+          "score": "5:0"
+        },
+        {
+          "time": "90|4",
+          "score": "6:0"
+        }
+      ]
+    },
+    {
+      "id": "706724",
+      "date": "2025-05-17",
+      "home_team": "Paris Saint-Germain",
+      "away_team": "AJ Auxerre",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "59|0",
+          "score": "1:1"
+        },
+        {
+          "time": "67|0",
+          "score": "2:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "706725",
+      "date": "2025-05-17",
+      "home_team": "Strasbourg",
+      "away_team": "Le Havre AC",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        },
+        {
+          "time": "53|0",
+          "score": "2:1"
+        },
+        {
+          "time": "70|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|9",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "706726",
+      "date": "2025-05-17",
+      "home_team": "Marseille",
+      "away_team": "Stade Rennais",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "1:1"
+        },
+        {
+          "time": "38|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|1",
+          "score": "3:1"
+        },
+        {
+          "time": "77|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|2",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "706727",
+      "date": "2025-05-17",
+      "home_team": "Saint-\u00c9tienne",
+      "away_team": "Toulouse",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "15|0",
+          "score": "0:2"
+        },
+        {
+          "time": "38|0",
+          "score": "1:2"
+        },
+        {
+          "time": "58|0",
+          "score": "1:3"
+        },
+        {
+          "time": "63|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "706728",
+      "date": "2025-05-17",
+      "home_team": "Lille",
+      "away_team": "Stade de Reims",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "1:1"
+        },
+        {
+          "time": "86|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "706729",
+      "date": "2025-05-17",
+      "home_team": "Lens",
+      "away_team": "AS Monaco",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:0"
+        },
+        {
+          "time": "73|0",
+          "score": "3:0"
+        },
+        {
+          "time": "78|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "706730",
+      "date": "2025-05-17",
+      "home_team": "Nantes",
+      "away_team": "Montpellier",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "2:0"
+        },
+        {
+          "time": "79|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "706731",
+      "date": "2025-05-17",
+      "home_team": "Lyon",
+      "away_team": "Angers",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "72|0",
+          "score": "2:0"
+        }
+      ]
+    }
+  ]
+}

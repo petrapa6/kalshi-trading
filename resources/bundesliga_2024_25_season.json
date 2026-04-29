@@ -1,0 +1,6572 @@
+{
+  "matches": [
+    {
+      "id": "711729",
+      "date": "2024-08-23",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "38|0",
+          "score": "0:2"
+        },
+        {
+          "time": "59|0",
+          "score": "1:2"
+        },
+        {
+          "time": "85|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|11",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711433",
+      "date": "2024-08-24",
+      "home_team": "Mainz",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711435",
+      "date": "2024-08-24",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:0"
+        },
+        {
+          "time": "63|0",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "3:1"
+        },
+        {
+          "time": "89|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711436",
+      "date": "2024-08-24",
+      "home_team": "SC Freiburg",
+      "away_team": "VfB Stuttgart",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        },
+        {
+          "time": "61|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711437",
+      "date": "2024-08-24",
+      "home_team": "RB Leipzig",
+      "away_team": "VfL Bochum",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711439",
+      "date": "2024-08-24",
+      "home_team": "FC Augsburg",
+      "away_team": "Werder Bremen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "35|0",
+          "score": "2:1"
+        },
+        {
+          "time": "58|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711440",
+      "date": "2024-08-24",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "72|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|3",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711434",
+      "date": "2024-08-25",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Bayern Munich",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        },
+        {
+          "time": "65|0",
+          "score": "2:2"
+        },
+        {
+          "time": "82|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711438",
+      "date": "2024-08-25",
+      "home_team": "St. Pauli",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "66|0",
+          "score": "0:1"
+        },
+        {
+          "time": "82|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711448",
+      "date": "2024-08-30",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "St. Pauli",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711442",
+      "date": "2024-08-31",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Mainz",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "15|0",
+          "score": "2:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:2"
+        },
+        {
+          "time": "88|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|4",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "711443",
+      "date": "2024-08-31",
+      "home_team": "Werder Bremen",
+      "away_team": "Borussia Dortmund",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711444",
+      "date": "2024-08-31",
+      "home_team": "Holstein Kiel",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711445",
+      "date": "2024-08-31",
+      "home_team": "VfL Bochum",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711446",
+      "date": "2024-08-31",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "2:0"
+        },
+        {
+          "time": "54|0",
+          "score": "2:1"
+        },
+        {
+          "time": "56|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711447",
+      "date": "2024-08-31",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "RB Leipzig",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|7",
+          "score": "2:1"
+        },
+        {
+          "time": "57|0",
+          "score": "2:2"
+        },
+        {
+          "time": "80|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711441",
+      "date": "2024-09-01",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "FC Augsburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "2:0"
+        },
+        {
+          "time": "69|0",
+          "score": "3:0"
+        },
+        {
+          "time": "73|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711449",
+      "date": "2024-09-01",
+      "home_team": "Bayern Munich",
+      "away_team": "SC Freiburg",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        },
+        {
+          "time": "78|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711452",
+      "date": "2024-09-13",
+      "home_team": "Borussia Dortmund",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "17|0",
+          "score": "2:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:1"
+        },
+        {
+          "time": "41|0",
+          "score": "3:1"
+        },
+        {
+          "time": "74|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|3",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "711451",
+      "date": "2024-09-14",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "VfB Stuttgart",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:2"
+        },
+        {
+          "time": "61|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711454",
+      "date": "2024-09-14",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "76|0",
+          "score": "1:1"
+        },
+        {
+          "time": "82|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711455",
+      "date": "2024-09-14",
+      "home_team": "RB Leipzig",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711456",
+      "date": "2024-09-14",
+      "home_team": "SC Freiburg",
+      "away_team": "VfL Bochum",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        },
+        {
+          "time": "61|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711457",
+      "date": "2024-09-14",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "0:2"
+        },
+        {
+          "time": "37|0",
+          "score": "1:2"
+        },
+        {
+          "time": "72|0",
+          "score": "1:3"
+        },
+        {
+          "time": "75|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "711458",
+      "date": "2024-09-14",
+      "home_team": "Holstein Kiel",
+      "away_team": "Bayern Munich",
+      "final_score": "1:6",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "7|0",
+          "score": "0:2"
+        },
+        {
+          "time": "13|0",
+          "score": "0:3"
+        },
+        {
+          "time": "43|0",
+          "score": "0:4"
+        },
+        {
+          "time": "65|0",
+          "score": "0:5"
+        },
+        {
+          "time": "82|0",
+          "score": "1:5"
+        },
+        {
+          "time": "90|1",
+          "score": "1:6"
+        }
+      ]
+    },
+    {
+      "id": "711450",
+      "date": "2024-09-15",
+      "home_team": "FC Augsburg",
+      "away_team": "St. Pauli",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "47|0",
+          "score": "1:0"
+        },
+        {
+          "time": "66|0",
+          "score": "2:0"
+        },
+        {
+          "time": "74|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|6",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711453",
+      "date": "2024-09-15",
+      "home_team": "Mainz",
+      "away_team": "Werder Bremen",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "69|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711463",
+      "date": "2024-09-20",
+      "home_team": "FC Augsburg",
+      "away_team": "Mainz",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "15|0",
+          "score": "0:2"
+        },
+        {
+          "time": "25|0",
+          "score": "1:2"
+        },
+        {
+          "time": "49|0",
+          "score": "1:3"
+        },
+        {
+          "time": "57|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711459",
+      "date": "2024-09-21",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "80|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711461",
+      "date": "2024-09-21",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "6|0",
+          "score": "2:0"
+        },
+        {
+          "time": "67|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711462",
+      "date": "2024-09-21",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "SC Freiburg",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "54|0",
+          "score": "0:1"
+        },
+        {
+          "time": "59|0",
+          "score": "0:2"
+        },
+        {
+          "time": "65|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711464",
+      "date": "2024-09-21",
+      "home_team": "VfL Bochum",
+      "away_team": "Holstein Kiel",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "35|0",
+          "score": "2:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711466",
+      "date": "2024-09-21",
+      "home_team": "Werder Bremen",
+      "away_team": "Bayern Munich",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "0:2"
+        },
+        {
+          "time": "57|0",
+          "score": "0:3"
+        },
+        {
+          "time": "60|0",
+          "score": "0:4"
+        },
+        {
+          "time": "65|0",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "711460",
+      "date": "2024-09-22",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "14|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        },
+        {
+          "time": "37|0",
+          "score": "2:2"
+        },
+        {
+          "time": "45|1",
+          "score": "2:3"
+        },
+        {
+          "time": "48|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|3",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "711465",
+      "date": "2024-09-22",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Borussia Dortmund",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "21|0",
+          "score": "2:0"
+        },
+        {
+          "time": "62|0",
+          "score": "3:0"
+        },
+        {
+          "time": "75|0",
+          "score": "3:1"
+        },
+        {
+          "time": "80|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "711467",
+      "date": "2024-09-22",
+      "home_team": "St. Pauli",
+      "away_team": "RB Leipzig",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711469",
+      "date": "2024-09-27",
+      "home_team": "Borussia Dortmund",
+      "away_team": "VfL Bochum",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "0:2"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "62|0",
+          "score": "2:2"
+        },
+        {
+          "time": "75|0",
+          "score": "3:2"
+        },
+        {
+          "time": "81|0",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "711468",
+      "date": "2024-09-28",
+      "home_team": "Mainz",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "86|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711470",
+      "date": "2024-09-28",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "90|6",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711471",
+      "date": "2024-09-28",
+      "home_team": "Bayern Munich",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "0:1"
+        },
+        {
+          "time": "39|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711472",
+      "date": "2024-09-28",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "VfB Stuttgart",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "68|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|7",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711473",
+      "date": "2024-09-28",
+      "home_team": "SC Freiburg",
+      "away_team": "St. Pauli",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|0",
+          "score": "0:2"
+        },
+        {
+          "time": "72|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711474",
+      "date": "2024-09-28",
+      "home_team": "RB Leipzig",
+      "away_team": "FC Augsburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "15|0",
+          "score": "2:0"
+        },
+        {
+          "time": "46|0",
+          "score": "3:0"
+        },
+        {
+          "time": "57|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711475",
+      "date": "2024-09-29",
+      "home_team": "Holstein Kiel",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:2"
+        },
+        {
+          "time": "50|0",
+          "score": "2:2"
+        },
+        {
+          "time": "65|0",
+          "score": "2:3"
+        },
+        {
+          "time": "74|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "711476",
+      "date": "2024-09-29",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Werder Bremen",
+      "final_score": "3:4",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "8|0",
+          "score": "2:0"
+        },
+        {
+          "time": "12|0",
+          "score": "3:0"
+        },
+        {
+          "time": "21|0",
+          "score": "3:1"
+        },
+        {
+          "time": "26|0",
+          "score": "3:2"
+        },
+        {
+          "time": "39|0",
+          "score": "3:3"
+        },
+        {
+          "time": "49|0",
+          "score": "3:4"
+        }
+      ]
+    },
+    {
+      "id": "711485",
+      "date": "2024-10-04",
+      "home_team": "FC Augsburg",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "2:0"
+        },
+        {
+          "time": "72|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711477",
+      "date": "2024-10-05",
+      "home_team": "VfL Bochum",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        },
+        {
+          "time": "72|0",
+          "score": "1:2"
+        },
+        {
+          "time": "88|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711479",
+      "date": "2024-10-05",
+      "home_team": "Werder Bremen",
+      "away_team": "SC Freiburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "75|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711480",
+      "date": "2024-10-05",
+      "home_team": "St. Pauli",
+      "away_team": "Mainz",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "16|0",
+          "score": "0:2"
+        },
+        {
+          "time": "62|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711483",
+      "date": "2024-10-05",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Holstein Kiel",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "8|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|5",
+          "score": "2:1"
+        },
+        {
+          "time": "69|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711484",
+      "date": "2024-10-05",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "2:0"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711478",
+      "date": "2024-10-06",
+      "home_team": "VfB Stuttgart",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|9",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711481",
+      "date": "2024-10-06",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "RB Leipzig",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "59|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711482",
+      "date": "2024-10-06",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Bayern Munich",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "35|0",
+          "score": "2:1"
+        },
+        {
+          "time": "38|0",
+          "score": "2:2"
+        },
+        {
+          "time": "53|0",
+          "score": "2:3"
+        },
+        {
+          "time": "90|4",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "711492",
+      "date": "2024-10-18",
+      "home_team": "Borussia Dortmund",
+      "away_team": "St. Pauli",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "43|0",
+          "score": "1:0"
+        },
+        {
+          "time": "78|0",
+          "score": "1:1"
+        },
+        {
+          "time": "83|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711487",
+      "date": "2024-10-19",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "VfL Bochum",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:0"
+        },
+        {
+          "time": "76|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|3",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711488",
+      "date": "2024-10-19",
+      "home_team": "SC Freiburg",
+      "away_team": "FC Augsburg",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|1",
+          "score": "3:0"
+        },
+        {
+          "time": "65|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711490",
+      "date": "2024-10-19",
+      "home_team": "Bayern Munich",
+      "away_team": "VfB Stuttgart",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "57|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "80|0",
+          "score": "3:0"
+        },
+        {
+          "time": "89|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711491",
+      "date": "2024-10-19",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "22|0",
+          "score": "1:1"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        },
+        {
+          "time": "75|0",
+          "score": "3:1"
+        },
+        {
+          "time": "80|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711493",
+      "date": "2024-10-19",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711494",
+      "date": "2024-10-19",
+      "home_team": "Mainz",
+      "away_team": "RB Leipzig",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711486",
+      "date": "2024-10-20",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Werder Bremen",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|5",
+          "score": "1:1"
+        },
+        {
+          "time": "51|0",
+          "score": "1:2"
+        },
+        {
+          "time": "67|0",
+          "score": "1:3"
+        },
+        {
+          "time": "72|0",
+          "score": "1:4"
+        },
+        {
+          "time": "79|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "711489",
+      "date": "2024-10-20",
+      "home_team": "Holstein Kiel",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "89|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711497",
+      "date": "2024-10-25",
+      "home_team": "Mainz",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711498",
+      "date": "2024-10-26",
+      "home_team": "FC Augsburg",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "25|0",
+          "score": "1:1"
+        },
+        {
+          "time": "50|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711500",
+      "date": "2024-10-26",
+      "home_team": "RB Leipzig",
+      "away_team": "SC Freiburg",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "47|0",
+          "score": "1:1"
+        },
+        {
+          "time": "58|0",
+          "score": "2:1"
+        },
+        {
+          "time": "78|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711501",
+      "date": "2024-10-26",
+      "home_team": "Werder Bremen",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        },
+        {
+          "time": "77|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711502",
+      "date": "2024-10-26",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Holstein Kiel",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "2:0"
+        },
+        {
+          "time": "84|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711503",
+      "date": "2024-10-26",
+      "home_team": "St. Pauli",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711495",
+      "date": "2024-10-27",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711496",
+      "date": "2024-10-27",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "66|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711499",
+      "date": "2024-10-27",
+      "home_team": "VfL Bochum",
+      "away_team": "Bayern Munich",
+      "final_score": "0:5",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "57|0",
+          "score": "0:3"
+        },
+        {
+          "time": "65|0",
+          "score": "0:4"
+        },
+        {
+          "time": "71|0",
+          "score": "0:5"
+        }
+      ]
+    },
+    {
+      "id": "711504",
+      "date": "2024-11-01",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "VfB Stuttgart",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711505",
+      "date": "2024-11-02",
+      "home_team": "Borussia Dortmund",
+      "away_team": "RB Leipzig",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "65|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711506",
+      "date": "2024-11-02",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "FC Augsburg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "82|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711507",
+      "date": "2024-11-02",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "St. Pauli",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|3",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711509",
+      "date": "2024-11-02",
+      "home_team": "Holstein Kiel",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711510",
+      "date": "2024-11-02",
+      "home_team": "Bayern Munich",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:0"
+        },
+        {
+          "time": "51|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711511",
+      "date": "2024-11-02",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "VfL Bochum",
+      "final_score": "7:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "1:0"
+        },
+        {
+          "time": "18|0",
+          "score": "2:0"
+        },
+        {
+          "time": "20|0",
+          "score": "3:0"
+        },
+        {
+          "time": "32|0",
+          "score": "4:0"
+        },
+        {
+          "time": "35|0",
+          "score": "4:1"
+        },
+        {
+          "time": "51|0",
+          "score": "4:2"
+        },
+        {
+          "time": "61|0",
+          "score": "5:2"
+        },
+        {
+          "time": "66|0",
+          "score": "6:2"
+        },
+        {
+          "time": "69|0",
+          "score": "7:2"
+        }
+      ]
+    },
+    {
+      "id": "711508",
+      "date": "2024-11-03",
+      "home_team": "SC Freiburg",
+      "away_team": "Mainz",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711512",
+      "date": "2024-11-03",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Werder Bremen",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "12|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|0",
+          "score": "3:0"
+        },
+        {
+          "time": "66|0",
+          "score": "4:0"
+        },
+        {
+          "time": "75|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "711520",
+      "date": "2024-11-08",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "SC Freiburg",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711515",
+      "date": "2024-11-09",
+      "home_team": "Werder Bremen",
+      "away_team": "Holstein Kiel",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "1:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711516",
+      "date": "2024-11-09",
+      "home_team": "RB Leipzig",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711517",
+      "date": "2024-11-09",
+      "home_team": "VfL Bochum",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "89|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711519",
+      "date": "2024-11-09",
+      "home_team": "Mainz",
+      "away_team": "Borussia Dortmund",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "36|0",
+          "score": "1:0"
+        },
+        {
+          "time": "40|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|3",
+          "score": "2:1"
+        },
+        {
+          "time": "54|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711521",
+      "date": "2024-11-09",
+      "home_team": "St. Pauli",
+      "away_team": "Bayern Munich",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711513",
+      "date": "2024-11-10",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "42|0",
+          "score": "0:2"
+        },
+        {
+          "time": "64|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711514",
+      "date": "2024-11-10",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "0:1"
+        },
+        {
+          "time": "55|0",
+          "score": "0:2"
+        },
+        {
+          "time": "62|0",
+          "score": "0:3"
+        },
+        {
+          "time": "86|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711518",
+      "date": "2024-11-10",
+      "home_team": "FC Augsburg",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711526",
+      "date": "2024-11-22",
+      "home_team": "Bayern Munich",
+      "away_team": "FC Augsburg",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "63|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|3",
+          "score": "2:0"
+        },
+        {
+          "time": "90|5",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711522",
+      "date": "2024-11-23",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "5:2",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "21|0",
+          "score": "0:2"
+        },
+        {
+          "time": "30|0",
+          "score": "1:2"
+        },
+        {
+          "time": "32|0",
+          "score": "2:2"
+        },
+        {
+          "time": "52|0",
+          "score": "3:2"
+        },
+        {
+          "time": "71|0",
+          "score": "4:2"
+        },
+        {
+          "time": "82|0",
+          "score": "5:2"
+        }
+      ]
+    },
+    {
+      "id": "711523",
+      "date": "2024-11-23",
+      "home_team": "Borussia Dortmund",
+      "away_team": "SC Freiburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "40|0",
+          "score": "2:0"
+        },
+        {
+          "time": "66|0",
+          "score": "3:0"
+        },
+        {
+          "time": "77|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711525",
+      "date": "2024-11-23",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Werder Bremen",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "45|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711528",
+      "date": "2024-11-23",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "RB Leipzig",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "17|0",
+          "score": "1:1"
+        },
+        {
+          "time": "19|0",
+          "score": "1:2"
+        },
+        {
+          "time": "50|0",
+          "score": "2:2"
+        },
+        {
+          "time": "67|0",
+          "score": "2:3"
+        },
+        {
+          "time": "82|0",
+          "score": "3:3"
+        },
+        {
+          "time": "86|0",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "711529",
+      "date": "2024-11-23",
+      "home_team": "VfB Stuttgart",
+      "away_team": "VfL Bochum",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        },
+        {
+          "time": "78|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711530",
+      "date": "2024-11-23",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "71|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711524",
+      "date": "2024-11-24",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "St. Pauli",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "44|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711527",
+      "date": "2024-11-24",
+      "home_team": "Holstein Kiel",
+      "away_team": "Mainz",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "0:2"
+        },
+        {
+          "time": "53|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711539",
+      "date": "2024-11-29",
+      "home_team": "St. Pauli",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:0"
+        },
+        {
+          "time": "85|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711532",
+      "date": "2024-11-30",
+      "home_team": "Werder Bremen",
+      "away_team": "VfB Stuttgart",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "20|0",
+          "score": "1:1"
+        },
+        {
+          "time": "77|0",
+          "score": "2:1"
+        },
+        {
+          "time": "85|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711533",
+      "date": "2024-11-30",
+      "home_team": "SC Freiburg",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "41|0",
+          "score": "1:0"
+        },
+        {
+          "time": "49|0",
+          "score": "2:0"
+        },
+        {
+          "time": "61|0",
+          "score": "2:1"
+        },
+        {
+          "time": "62|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711534",
+      "date": "2024-11-30",
+      "home_team": "RB Leipzig",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:5",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "0:1"
+        },
+        {
+          "time": "5|0",
+          "score": "0:2"
+        },
+        {
+          "time": "16|0",
+          "score": "0:3"
+        },
+        {
+          "time": "64|0",
+          "score": "0:4"
+        },
+        {
+          "time": "82|0",
+          "score": "1:4"
+        },
+        {
+          "time": "90|1",
+          "score": "1:5"
+        }
+      ]
+    },
+    {
+      "id": "711535",
+      "date": "2024-11-30",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "29|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711536",
+      "date": "2024-11-30",
+      "home_team": "FC Augsburg",
+      "away_team": "VfL Bochum",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711537",
+      "date": "2024-11-30",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Bayern Munich",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "85|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711531",
+      "date": "2024-12-01",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "22|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "0:2"
+        },
+        {
+          "time": "58|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|4",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "711538",
+      "date": "2024-12-01",
+      "home_team": "Mainz",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "24|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711545",
+      "date": "2024-12-06",
+      "home_team": "VfB Stuttgart",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "0:2"
+        },
+        {
+          "time": "51|0",
+          "score": "1:2"
+        },
+        {
+          "time": "59|0",
+          "score": "2:2"
+        },
+        {
+          "time": "69|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711540",
+      "date": "2024-12-07",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "St. Pauli",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "21|0",
+          "score": "2:0"
+        },
+        {
+          "time": "84|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711541",
+      "date": "2024-12-07",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "FC Augsburg",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:2"
+        },
+        {
+          "time": "74|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711542",
+      "date": "2024-12-07",
+      "home_team": "Bayern Munich",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "84|0",
+          "score": "3:1"
+        },
+        {
+          "time": "85|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|1",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "711543",
+      "date": "2024-12-07",
+      "home_team": "Holstein Kiel",
+      "away_team": "RB Leipzig",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "69|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711546",
+      "date": "2024-12-07",
+      "home_team": "VfL Bochum",
+      "away_team": "Werder Bremen",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "56|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711547",
+      "date": "2024-12-07",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Borussia Dortmund",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "65|0",
+          "score": "0:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711544",
+      "date": "2024-12-08",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "SC Freiburg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "68|0",
+          "score": "0:1"
+        },
+        {
+          "time": "73|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711548",
+      "date": "2024-12-08",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Mainz",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "19|0",
+          "score": "1:1"
+        },
+        {
+          "time": "39|0",
+          "score": "1:2"
+        },
+        {
+          "time": "57|0",
+          "score": "2:2"
+        },
+        {
+          "time": "66|0",
+          "score": "2:3"
+        },
+        {
+          "time": "83|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|4",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "711557",
+      "date": "2024-12-13",
+      "home_team": "SC Freiburg",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "61|0",
+          "score": "3:0"
+        },
+        {
+          "time": "75|0",
+          "score": "3:1"
+        },
+        {
+          "time": "83|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711550",
+      "date": "2024-12-14",
+      "home_team": "Mainz",
+      "away_team": "Bayern Munich",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "41|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "87|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711552",
+      "date": "2024-12-14",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Holstein Kiel",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "26|0",
+          "score": "2:0"
+        },
+        {
+          "time": "30|0",
+          "score": "2:1"
+        },
+        {
+          "time": "43|0",
+          "score": "3:1"
+        },
+        {
+          "time": "79|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "711553",
+      "date": "2024-12-14",
+      "home_team": "FC Augsburg",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711554",
+      "date": "2024-12-14",
+      "home_team": "St. Pauli",
+      "away_team": "Werder Bremen",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "54|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711556",
+      "date": "2024-12-14",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "VfL Bochum",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "33|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711549",
+      "date": "2024-12-15",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "VfB Stuttgart",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "1:1"
+        },
+        {
+          "time": "45|2",
+          "score": "1:2"
+        },
+        {
+          "time": "85|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711551",
+      "date": "2024-12-15",
+      "home_team": "Borussia Dortmund",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "46|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|1",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711555",
+      "date": "2024-12-15",
+      "home_team": "RB Leipzig",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "40|0",
+          "score": "1:1"
+        },
+        {
+          "time": "51|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711565",
+      "date": "2024-12-20",
+      "home_team": "Bayern Munich",
+      "away_team": "RB Leipzig",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "2|0",
+          "score": "1:1"
+        },
+        {
+          "time": "25|0",
+          "score": "2:1"
+        },
+        {
+          "time": "36|0",
+          "score": "3:1"
+        },
+        {
+          "time": "75|0",
+          "score": "4:1"
+        },
+        {
+          "time": "78|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "711558",
+      "date": "2024-12-21",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "SC Freiburg",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "45|1",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "55|0",
+          "score": "2:1"
+        },
+        {
+          "time": "67|0",
+          "score": "3:1"
+        },
+        {
+          "time": "74|0",
+          "score": "4:1"
+        },
+        {
+          "time": "77|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "711561",
+      "date": "2024-12-21",
+      "home_team": "VfB Stuttgart",
+      "away_team": "St. Pauli",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711562",
+      "date": "2024-12-21",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711563",
+      "date": "2024-12-21",
+      "home_team": "Werder Bremen",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "17|0",
+          "score": "2:0"
+        },
+        {
+          "time": "23|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|0",
+          "score": "3:1"
+        },
+        {
+          "time": "87|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "711564",
+      "date": "2024-12-21",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Mainz",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "27|0",
+          "score": "0:2"
+        },
+        {
+          "time": "58|0",
+          "score": "0:3"
+        },
+        {
+          "time": "75|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711566",
+      "date": "2024-12-21",
+      "home_team": "Holstein Kiel",
+      "away_team": "FC Augsburg",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "12|0",
+          "score": "1:1"
+        },
+        {
+          "time": "32|0",
+          "score": "2:1"
+        },
+        {
+          "time": "35|0",
+          "score": "3:1"
+        },
+        {
+          "time": "39|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|1",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "711559",
+      "date": "2024-12-22",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Borussia Dortmund",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "28|0",
+          "score": "0:2"
+        },
+        {
+          "time": "30|0",
+          "score": "0:3"
+        },
+        {
+          "time": "58|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711560",
+      "date": "2024-12-22",
+      "home_team": "VfL Bochum",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711572",
+      "date": "2025-01-10",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "0:1"
+        },
+        {
+          "time": "8|0",
+          "score": "0:2"
+        },
+        {
+          "time": "12|0",
+          "score": "1:2"
+        },
+        {
+          "time": "19|0",
+          "score": "1:3"
+        },
+        {
+          "time": "79|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711567",
+      "date": "2025-01-11",
+      "home_team": "SC Freiburg",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "38|0",
+          "score": "2:0"
+        },
+        {
+          "time": "74|0",
+          "score": "3:0"
+        },
+        {
+          "time": "85|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711569",
+      "date": "2025-01-11",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711570",
+      "date": "2025-01-11",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "83|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711571",
+      "date": "2025-01-11",
+      "home_team": "Mainz",
+      "away_team": "VfL Bochum",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711573",
+      "date": "2025-01-11",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Bayern Munich",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "68|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711575",
+      "date": "2025-01-11",
+      "home_team": "St. Pauli",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711568",
+      "date": "2025-01-12",
+      "home_team": "RB Leipzig",
+      "away_team": "Werder Bremen",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "1:0"
+        },
+        {
+          "time": "26|0",
+          "score": "1:1"
+        },
+        {
+          "time": "35|0",
+          "score": "2:1"
+        },
+        {
+          "time": "47|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|3",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "711574",
+      "date": "2025-01-12",
+      "home_team": "FC Augsburg",
+      "away_team": "VfB Stuttgart",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "65|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711580",
+      "date": "2025-01-14",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "5:1",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:0"
+        },
+        {
+          "time": "75|0",
+          "score": "3:0"
+        },
+        {
+          "time": "84|0",
+          "score": "4:0"
+        },
+        {
+          "time": "87|0",
+          "score": "5:0"
+        },
+        {
+          "time": "89|0",
+          "score": "5:1"
+        }
+      ]
+    },
+    {
+      "id": "711582",
+      "date": "2025-01-14",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "SC Freiburg",
+      "final_score": "4:1",
+      "goals": [
+        {
+          "time": "37|0",
+          "score": "0:1"
+        },
+        {
+          "time": "43|0",
+          "score": "1:1"
+        },
+        {
+          "time": "65|0",
+          "score": "2:1"
+        },
+        {
+          "time": "71|0",
+          "score": "3:1"
+        },
+        {
+          "time": "81|0",
+          "score": "4:1"
+        }
+      ]
+    },
+    {
+      "id": "711583",
+      "date": "2025-01-14",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Mainz",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "48|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711584",
+      "date": "2025-01-14",
+      "home_team": "Holstein Kiel",
+      "away_team": "Borussia Dortmund",
+      "final_score": "4:2",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|4",
+          "score": "3:0"
+        },
+        {
+          "time": "72|0",
+          "score": "3:1"
+        },
+        {
+          "time": "78|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|9",
+          "score": "4:2"
+        }
+      ]
+    },
+    {
+      "id": "711576",
+      "date": "2025-01-15",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "FC Augsburg",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711577",
+      "date": "2025-01-15",
+      "home_team": "VfL Bochum",
+      "away_team": "St. Pauli",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "66|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711578",
+      "date": "2025-01-15",
+      "home_team": "VfB Stuttgart",
+      "away_team": "RB Leipzig",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711579",
+      "date": "2025-01-15",
+      "home_team": "Werder Bremen",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "61|0",
+          "score": "2:2"
+        },
+        {
+          "time": "79|0",
+          "score": "3:2"
+        },
+        {
+          "time": "90|5",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "711581",
+      "date": "2025-01-15",
+      "home_team": "Bayern Munich",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "5:0",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "1:0"
+        },
+        {
+          "time": "12|0",
+          "score": "2:0"
+        },
+        {
+          "time": "26|0",
+          "score": "3:0"
+        },
+        {
+          "time": "48|0",
+          "score": "4:0"
+        },
+        {
+          "time": "66|0",
+          "score": "5:0"
+        }
+      ]
+    },
+    {
+      "id": "711589",
+      "date": "2025-01-17",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|2",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711585",
+      "date": "2025-01-18",
+      "home_team": "VfB Stuttgart",
+      "away_team": "SC Freiburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "1:0"
+        },
+        {
+          "time": "17|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|5",
+          "score": "3:0"
+        },
+        {
+          "time": "80|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711587",
+      "date": "2025-01-18",
+      "home_team": "Holstein Kiel",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "0:2"
+        },
+        {
+          "time": "56|0",
+          "score": "0:3"
+        },
+        {
+          "time": "84|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711588",
+      "date": "2025-01-18",
+      "home_team": "Bayern Munich",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "24|0",
+          "score": "1:1"
+        },
+        {
+          "time": "39|0",
+          "score": "2:1"
+        },
+        {
+          "time": "62|0",
+          "score": "3:1"
+        },
+        {
+          "time": "88|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711590",
+      "date": "2025-01-18",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "1:0"
+        },
+        {
+          "time": "62|0",
+          "score": "2:0"
+        },
+        {
+          "time": "74|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|1",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711592",
+      "date": "2025-01-18",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "St. Pauli",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|2",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711593",
+      "date": "2025-01-18",
+      "home_team": "VfL Bochum",
+      "away_team": "RB Leipzig",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "13|0",
+          "score": "0:2"
+        },
+        {
+          "time": "21|0",
+          "score": "0:3"
+        },
+        {
+          "time": "48|0",
+          "score": "1:3"
+        },
+        {
+          "time": "56|0",
+          "score": "2:3"
+        },
+        {
+          "time": "61|0",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "711586",
+      "date": "2025-01-19",
+      "home_team": "Werder Bremen",
+      "away_team": "FC Augsburg",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|1",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711591",
+      "date": "2025-01-19",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Mainz",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "5|0",
+          "score": "1:1"
+        },
+        {
+          "time": "24|0",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711598",
+      "date": "2025-01-24",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Holstein Kiel",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "50|0",
+          "score": "1:1"
+        },
+        {
+          "time": "53|0",
+          "score": "2:1"
+        },
+        {
+          "time": "80|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711594",
+      "date": "2025-01-25",
+      "home_team": "FC Augsburg",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "2:1",
+      "goals": [
+        {
+          "time": "45|1",
+          "score": "1:0"
+        },
+        {
+          "time": "76|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|2",
+          "score": "2:1"
+        }
+      ]
+    },
+    {
+      "id": "711595",
+      "date": "2025-01-25",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "VfL Bochum",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "55|0",
+          "score": "2:0"
+        },
+        {
+          "time": "86|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711596",
+      "date": "2025-01-25",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Werder Bremen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "64|0",
+          "score": "2:1"
+        },
+        {
+          "time": "72|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711597",
+      "date": "2025-01-25",
+      "home_team": "Mainz",
+      "away_team": "VfB Stuttgart",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "86|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711599",
+      "date": "2025-01-25",
+      "home_team": "RB Leipzig",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "0:1"
+        },
+        {
+          "time": "36|0",
+          "score": "0:2"
+        },
+        {
+          "time": "41|0",
+          "score": "1:2"
+        },
+        {
+          "time": "84|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711600",
+      "date": "2025-01-25",
+      "home_team": "SC Freiburg",
+      "away_team": "Bayern Munich",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "54|0",
+          "score": "0:2"
+        },
+        {
+          "time": "68|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711601",
+      "date": "2025-01-26",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|5",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711602",
+      "date": "2025-01-26",
+      "home_team": "St. Pauli",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|3",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711610",
+      "date": "2025-01-31",
+      "home_team": "Werder Bremen",
+      "away_team": "Mainz",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711605",
+      "date": "2025-02-01",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "RB Leipzig",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711606",
+      "date": "2025-02-01",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Borussia Dortmund",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "63|0",
+          "score": "0:2"
+        },
+        {
+          "time": "64|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711607",
+      "date": "2025-02-01",
+      "home_team": "Bayern Munich",
+      "away_team": "Holstein Kiel",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|3",
+          "score": "2:0"
+        },
+        {
+          "time": "46|0",
+          "score": "3:0"
+        },
+        {
+          "time": "54|0",
+          "score": "4:0"
+        },
+        {
+          "time": "62|0",
+          "score": "4:1"
+        },
+        {
+          "time": "90|1",
+          "score": "4:2"
+        },
+        {
+          "time": "90|3",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "711608",
+      "date": "2025-02-01",
+      "home_team": "VfL Bochum",
+      "away_team": "SC Freiburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711609",
+      "date": "2025-02-01",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "1:1"
+        },
+        {
+          "time": "81|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711611",
+      "date": "2025-02-01",
+      "home_team": "St. Pauli",
+      "away_team": "FC Augsburg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "83|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711603",
+      "date": "2025-02-02",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "0:1"
+        },
+        {
+          "time": "81|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711604",
+      "date": "2025-02-02",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "19|0",
+          "score": "2:0"
+        },
+        {
+          "time": "51|0",
+          "score": "3:0"
+        },
+        {
+          "time": "62|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711615",
+      "date": "2025-02-07",
+      "home_team": "Bayern Munich",
+      "away_team": "Werder Bremen",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "56|0",
+          "score": "1:0"
+        },
+        {
+          "time": "82|0",
+          "score": "2:0"
+        },
+        {
+          "time": "90|7",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711612",
+      "date": "2025-02-08",
+      "home_team": "Mainz",
+      "away_team": "FC Augsburg",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711613",
+      "date": "2025-02-08",
+      "home_team": "Borussia Dortmund",
+      "away_team": "VfB Stuttgart",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        },
+        {
+          "time": "81|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711614",
+      "date": "2025-02-08",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "1:0"
+        },
+        {
+          "time": "31|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711616",
+      "date": "2025-02-08",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711617",
+      "date": "2025-02-08",
+      "home_team": "SC Freiburg",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711620",
+      "date": "2025-02-08",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "0:3"
+        },
+        {
+          "time": "87|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "711618",
+      "date": "2025-02-09",
+      "home_team": "RB Leipzig",
+      "away_team": "St. Pauli",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "1:0"
+        },
+        {
+          "time": "35|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711619",
+      "date": "2025-02-09",
+      "home_team": "Holstein Kiel",
+      "away_team": "VfL Bochum",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "1:1"
+        },
+        {
+          "time": "39|0",
+          "score": "1:2"
+        },
+        {
+          "time": "50|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711626",
+      "date": "2025-02-14",
+      "home_team": "FC Augsburg",
+      "away_team": "RB Leipzig",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711621",
+      "date": "2025-02-15",
+      "home_team": "VfL Bochum",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "1:0"
+        },
+        {
+          "time": "35|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711623",
+      "date": "2025-02-15",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "63|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711624",
+      "date": "2025-02-15",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Bayern Munich",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711627",
+      "date": "2025-02-15",
+      "home_team": "St. Pauli",
+      "away_team": "SC Freiburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "88|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711629",
+      "date": "2025-02-15",
+      "home_team": "VfB Stuttgart",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "72|0",
+          "score": "1:0"
+        },
+        {
+          "time": "77|0",
+          "score": "1:1"
+        },
+        {
+          "time": "87|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711622",
+      "date": "2025-02-16",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Mainz",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "0:1"
+        },
+        {
+          "time": "49|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711625",
+      "date": "2025-02-16",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "37|0",
+          "score": "2:0"
+        },
+        {
+          "time": "60|0",
+          "score": "3:0"
+        },
+        {
+          "time": "73|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711628",
+      "date": "2025-02-16",
+      "home_team": "Werder Bremen",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "1:2"
+        },
+        {
+          "time": "63|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711636",
+      "date": "2025-02-21",
+      "home_team": "SC Freiburg",
+      "away_team": "Werder Bremen",
+      "final_score": "5:0",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "2:0"
+        },
+        {
+          "time": "57|0",
+          "score": "3:0"
+        },
+        {
+          "time": "76|0",
+          "score": "4:0"
+        },
+        {
+          "time": "90|2",
+          "score": "5:0"
+        }
+      ]
+    },
+    {
+      "id": "711630",
+      "date": "2025-02-22",
+      "home_team": "Mainz",
+      "away_team": "St. Pauli",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "67|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|5",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711631",
+      "date": "2025-02-22",
+      "home_team": "Borussia Dortmund",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "6:0",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "1:0"
+        },
+        {
+          "time": "40|0",
+          "score": "2:0"
+        },
+        {
+          "time": "75|0",
+          "score": "3:0"
+        },
+        {
+          "time": "80|0",
+          "score": "4:0"
+        },
+        {
+          "time": "83|0",
+          "score": "5:0"
+        },
+        {
+          "time": "89|0",
+          "score": "6:0"
+        }
+      ]
+    },
+    {
+      "id": "711632",
+      "date": "2025-02-22",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "FC Augsburg",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "55|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "0:2"
+        },
+        {
+          "time": "70|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711634",
+      "date": "2025-02-22",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "VfL Bochum",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "0:1"
+        },
+        {
+          "time": "81|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711638",
+      "date": "2025-02-22",
+      "home_team": "Holstein Kiel",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "45|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711633",
+      "date": "2025-02-23",
+      "home_team": "Bayern Munich",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "1:0"
+        },
+        {
+          "time": "61|0",
+          "score": "2:0"
+        },
+        {
+          "time": "82|0",
+          "score": "3:0"
+        },
+        {
+          "time": "90|2",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711635",
+      "date": "2025-02-23",
+      "home_team": "RB Leipzig",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "13|0",
+          "score": "0:2"
+        },
+        {
+          "time": "45|2",
+          "score": "1:2"
+        },
+        {
+          "time": "64|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711637",
+      "date": "2025-02-23",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "VfB Stuttgart",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "9|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711639",
+      "date": "2025-02-28",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Bayern Munich",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|0",
+          "score": "1:1"
+        },
+        {
+          "time": "64|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711640",
+      "date": "2025-03-01",
+      "home_team": "Werder Bremen",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "6|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711641",
+      "date": "2025-03-01",
+      "home_team": "RB Leipzig",
+      "away_team": "Mainz",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "52|0",
+          "score": "1:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711642",
+      "date": "2025-03-01",
+      "home_team": "St. Pauli",
+      "away_team": "Borussia Dortmund",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "0:1"
+        },
+        {
+          "time": "58|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711643",
+      "date": "2025-03-01",
+      "home_team": "VfL Bochum",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "72|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711644",
+      "date": "2025-03-01",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "26|0",
+          "score": "0:1"
+        },
+        {
+          "time": "29|0",
+          "score": "0:2"
+        },
+        {
+          "time": "33|0",
+          "score": "0:3"
+        },
+        {
+          "time": "37|0",
+          "score": "1:3"
+        },
+        {
+          "time": "62|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "711646",
+      "date": "2025-03-01",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "18|0",
+          "score": "0:2"
+        },
+        {
+          "time": "59|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711645",
+      "date": "2025-03-02",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Holstein Kiel",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "42|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711647",
+      "date": "2025-03-02",
+      "home_team": "FC Augsburg",
+      "away_team": "SC Freiburg",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711653",
+      "date": "2025-03-07",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "Mainz",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "0:1"
+        },
+        {
+          "time": "48|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "1:2"
+        },
+        {
+          "time": "77|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711649",
+      "date": "2025-03-08",
+      "home_team": "SC Freiburg",
+      "away_team": "RB Leipzig",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711650",
+      "date": "2025-03-08",
+      "home_team": "Holstein Kiel",
+      "away_team": "VfB Stuttgart",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "0:1"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "46|0",
+          "score": "2:1"
+        },
+        {
+          "time": "55|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711651",
+      "date": "2025-03-08",
+      "home_team": "Bayern Munich",
+      "away_team": "VfL Bochum",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "28|0",
+          "score": "2:0"
+        },
+        {
+          "time": "31|0",
+          "score": "2:1"
+        },
+        {
+          "time": "51|0",
+          "score": "2:2"
+        },
+        {
+          "time": "71|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711654",
+      "date": "2025-03-08",
+      "home_team": "Borussia Dortmund",
+      "away_team": "FC Augsburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "23|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711655",
+      "date": "2025-03-08",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Werder Bremen",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "90|4",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711656",
+      "date": "2025-03-08",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "St. Pauli",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "38|0",
+          "score": "0:1"
+        },
+        {
+          "time": "70|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711648",
+      "date": "2025-03-09",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711652",
+      "date": "2025-03-09",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "62|0",
+          "score": "1:1"
+        },
+        {
+          "time": "78|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711663",
+      "date": "2025-03-14",
+      "home_team": "St. Pauli",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "51|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711658",
+      "date": "2025-03-15",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Bayern Munich",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "75|0",
+          "score": "0:1"
+        },
+        {
+          "time": "83|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711661",
+      "date": "2025-03-15",
+      "home_team": "Werder Bremen",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "7|0",
+          "score": "0:1"
+        },
+        {
+          "time": "28|0",
+          "score": "0:2"
+        },
+        {
+          "time": "38|0",
+          "score": "1:2"
+        },
+        {
+          "time": "45|1",
+          "score": "2:2"
+        },
+        {
+          "time": "47|0",
+          "score": "2:3"
+        },
+        {
+          "time": "81|0",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "711662",
+      "date": "2025-03-15",
+      "home_team": "RB Leipzig",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "18|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711664",
+      "date": "2025-03-15",
+      "home_team": "FC Augsburg",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "53|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711665",
+      "date": "2025-03-15",
+      "home_team": "Mainz",
+      "away_team": "SC Freiburg",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "1:0"
+        },
+        {
+          "time": "58|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "2:1"
+        },
+        {
+          "time": "79|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711657",
+      "date": "2025-03-16",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "87|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|3",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711659",
+      "date": "2025-03-16",
+      "home_team": "VfL Bochum",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "0:1"
+        },
+        {
+          "time": "32|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|6",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711660",
+      "date": "2025-03-16",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "3:4",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:0"
+        },
+        {
+          "time": "56|0",
+          "score": "2:1"
+        },
+        {
+          "time": "62|0",
+          "score": "3:1"
+        },
+        {
+          "time": "67|0",
+          "score": "3:2"
+        },
+        {
+          "time": "88|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|4",
+          "score": "3:4"
+        }
+      ]
+    },
+    {
+      "id": "711666",
+      "date": "2025-03-28",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "VfL Bochum",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "1:0"
+        },
+        {
+          "time": "26|0",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        },
+        {
+          "time": "87|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711667",
+      "date": "2025-03-29",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "FC Augsburg",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "46|0",
+          "score": "0:1"
+        },
+        {
+          "time": "71|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711669",
+      "date": "2025-03-29",
+      "home_team": "Holstein Kiel",
+      "away_team": "Werder Bremen",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "59|0",
+          "score": "0:2"
+        },
+        {
+          "time": "90|3",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711670",
+      "date": "2025-03-29",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711671",
+      "date": "2025-03-29",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "VfB Stuttgart",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "70|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711672",
+      "date": "2025-03-29",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "RB Leipzig",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "56|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711674",
+      "date": "2025-03-29",
+      "home_team": "Bayern Munich",
+      "away_team": "St. Pauli",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "1:0"
+        },
+        {
+          "time": "27|0",
+          "score": "1:1"
+        },
+        {
+          "time": "53|0",
+          "score": "2:1"
+        },
+        {
+          "time": "71|0",
+          "score": "3:1"
+        },
+        {
+          "time": "90|3",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711668",
+      "date": "2025-03-30",
+      "home_team": "SC Freiburg",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "29|0",
+          "score": "1:0"
+        },
+        {
+          "time": "30|0",
+          "score": "1:1"
+        },
+        {
+          "time": "48|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711673",
+      "date": "2025-03-30",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Mainz",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "39|0",
+          "score": "1:0"
+        },
+        {
+          "time": "42|0",
+          "score": "2:0"
+        },
+        {
+          "time": "72|0",
+          "score": "3:0"
+        },
+        {
+          "time": "76|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711683",
+      "date": "2025-04-04",
+      "home_team": "FC Augsburg",
+      "away_team": "Bayern Munich",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "42|0",
+          "score": "1:1"
+        },
+        {
+          "time": "60|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|3",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711675",
+      "date": "2025-04-05",
+      "home_team": "Werder Bremen",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "84|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711676",
+      "date": "2025-04-05",
+      "home_team": "SC Freiburg",
+      "away_team": "Borussia Dortmund",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "51|0",
+          "score": "0:2"
+        },
+        {
+          "time": "68|0",
+          "score": "0:3"
+        },
+        {
+          "time": "78|0",
+          "score": "0:4"
+        },
+        {
+          "time": "88|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "711677",
+      "date": "2025-04-05",
+      "home_team": "RB Leipzig",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "3:1",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "24|0",
+          "score": "1:1"
+        },
+        {
+          "time": "43|0",
+          "score": "2:1"
+        },
+        {
+          "time": "84|0",
+          "score": "3:1"
+        }
+      ]
+    },
+    {
+      "id": "711679",
+      "date": "2025-04-05",
+      "home_team": "VfL Bochum",
+      "away_team": "VfB Stuttgart",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "0:1"
+        },
+        {
+          "time": "11|0",
+          "score": "0:2"
+        },
+        {
+          "time": "48|0",
+          "score": "0:3"
+        },
+        {
+          "time": "85|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "711680",
+      "date": "2025-04-05",
+      "home_team": "Mainz",
+      "away_team": "Holstein Kiel",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "34|0",
+          "score": "0:1"
+        },
+        {
+          "time": "75|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711682",
+      "date": "2025-04-05",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "90|1",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711678",
+      "date": "2025-04-06",
+      "home_team": "St. Pauli",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "45|2",
+          "score": "0:1"
+        },
+        {
+          "time": "85|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711681",
+      "date": "2025-04-06",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "63|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711692",
+      "date": "2025-04-11",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "RB Leipzig",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "0:1"
+        },
+        {
+          "time": "26|0",
+          "score": "0:2"
+        },
+        {
+          "time": "49|0",
+          "score": "0:3"
+        },
+        {
+          "time": "58|0",
+          "score": "1:3"
+        },
+        {
+          "time": "75|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711684",
+      "date": "2025-04-12",
+      "home_team": "VfL Bochum",
+      "away_team": "FC Augsburg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "60|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711686",
+      "date": "2025-04-12",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Mainz",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "4|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711687",
+      "date": "2025-04-12",
+      "home_team": "Holstein Kiel",
+      "away_team": "St. Pauli",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "34|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|2",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711688",
+      "date": "2025-04-12",
+      "home_team": "Bayern Munich",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "48|0",
+          "score": "0:1"
+        },
+        {
+          "time": "65|0",
+          "score": "1:1"
+        },
+        {
+          "time": "69|0",
+          "score": "2:1"
+        },
+        {
+          "time": "75|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711690",
+      "date": "2025-04-12",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "SC Freiburg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "1:0"
+        },
+        {
+          "time": "16|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711691",
+      "date": "2025-04-12",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711685",
+      "date": "2025-04-13",
+      "home_team": "VfB Stuttgart",
+      "away_team": "Werder Bremen",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "19|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711689",
+      "date": "2025-04-13",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "1:0"
+        },
+        {
+          "time": "42|0",
+          "score": "2:0"
+        },
+        {
+          "time": "71|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711693",
+      "date": "2025-04-19",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Bayern Munich",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "0:1"
+        },
+        {
+          "time": "19|0",
+          "score": "0:2"
+        },
+        {
+          "time": "36|0",
+          "score": "0:3"
+        },
+        {
+          "time": "56|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "711694",
+      "date": "2025-04-19",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "VfB Stuttgart",
+      "final_score": "4:4",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "19|0",
+          "score": "2:0"
+        },
+        {
+          "time": "23|0",
+          "score": "2:1"
+        },
+        {
+          "time": "29|0",
+          "score": "2:2"
+        },
+        {
+          "time": "38|0",
+          "score": "3:2"
+        },
+        {
+          "time": "43|0",
+          "score": "3:3"
+        },
+        {
+          "time": "45|1",
+          "score": "3:4"
+        },
+        {
+          "time": "45|6",
+          "score": "4:4"
+        }
+      ]
+    },
+    {
+      "id": "711695",
+      "date": "2025-04-19",
+      "home_team": "Werder Bremen",
+      "away_team": "VfL Bochum",
+      "final_score": "1:0",
+      "goals": [
+        {
+          "time": "80|0",
+          "score": "1:0"
+        }
+      ]
+    },
+    {
+      "id": "711696",
+      "date": "2025-04-19",
+      "home_team": "SC Freiburg",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "28|0",
+          "score": "1:0"
+        },
+        {
+          "time": "36|0",
+          "score": "2:0"
+        },
+        {
+          "time": "45|2",
+          "score": "2:1"
+        },
+        {
+          "time": "45|5",
+          "score": "2:2"
+        },
+        {
+          "time": "57|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711697",
+      "date": "2025-04-19",
+      "home_team": "RB Leipzig",
+      "away_team": "Holstein Kiel",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "0:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711701",
+      "date": "2025-04-19",
+      "home_team": "Mainz",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "0:1"
+        },
+        {
+          "time": "37|0",
+          "score": "1:1"
+        },
+        {
+          "time": "40|0",
+          "score": "2:1"
+        },
+        {
+          "time": "89|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711698",
+      "date": "2025-04-20",
+      "home_team": "St. Pauli",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "32|0",
+          "score": "0:1"
+        },
+        {
+          "time": "78|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711699",
+      "date": "2025-04-20",
+      "home_team": "FC Augsburg",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711700",
+      "date": "2025-04-20",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "3:2",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "0:1"
+        },
+        {
+          "time": "41|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "2:1"
+        },
+        {
+          "time": "45|4",
+          "score": "3:1"
+        },
+        {
+          "time": "56|0",
+          "score": "3:2"
+        }
+      ]
+    },
+    {
+      "id": "711704",
+      "date": "2025-04-25",
+      "home_team": "VfB Stuttgart",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "89|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711702",
+      "date": "2025-04-26",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "FC Augsburg",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "13|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|1",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711705",
+      "date": "2025-04-26",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "20|0",
+          "score": "0:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:1"
+        },
+        {
+          "time": "74|0",
+          "score": "1:2"
+        },
+        {
+          "time": "90|0",
+          "score": "2:2"
+        },
+        {
+          "time": "90|5",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711706",
+      "date": "2025-04-26",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "SC Freiburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "49|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711707",
+      "date": "2025-04-26",
+      "home_team": "Holstein Kiel",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "4:3",
+      "goals": [
+        {
+          "time": "15|0",
+          "score": "1:0"
+        },
+        {
+          "time": "23|0",
+          "score": "2:0"
+        },
+        {
+          "time": "60|0",
+          "score": "2:1"
+        },
+        {
+          "time": "69|0",
+          "score": "2:2"
+        },
+        {
+          "time": "76|0",
+          "score": "3:2"
+        },
+        {
+          "time": "86|0",
+          "score": "3:3"
+        },
+        {
+          "time": "90|1",
+          "score": "4:3"
+        }
+      ]
+    },
+    {
+      "id": "711708",
+      "date": "2025-04-26",
+      "home_team": "Bayern Munich",
+      "away_team": "Mainz",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "40|0",
+          "score": "2:0"
+        },
+        {
+          "time": "84|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711709",
+      "date": "2025-04-26",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "RB Leipzig",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "21|0",
+          "score": "1:0"
+        },
+        {
+          "time": "53|0",
+          "score": "2:0"
+        },
+        {
+          "time": "67|0",
+          "score": "3:0"
+        },
+        {
+          "time": "71|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711703",
+      "date": "2025-04-27",
+      "home_team": "VfL Bochum",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "17|0",
+          "score": "0:1"
+        },
+        {
+          "time": "68|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711710",
+      "date": "2025-04-27",
+      "home_team": "Werder Bremen",
+      "away_team": "St. Pauli",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711714",
+      "date": "2025-05-02",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "VfL Bochum",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711711",
+      "date": "2025-05-03",
+      "home_team": "Borussia Dortmund",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "59|0",
+          "score": "2:0"
+        },
+        {
+          "time": "69|0",
+          "score": "3:0"
+        },
+        {
+          "time": "73|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711713",
+      "date": "2025-05-03",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "Werder Bremen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "2|0",
+          "score": "0:1"
+        },
+        {
+          "time": "15|0",
+          "score": "0:2"
+        },
+        {
+          "time": "37|0",
+          "score": "1:2"
+        },
+        {
+          "time": "84|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711717",
+      "date": "2025-05-03",
+      "home_team": "St. Pauli",
+      "away_team": "VfB Stuttgart",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "88|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711718",
+      "date": "2025-05-03",
+      "home_team": "RB Leipzig",
+      "away_team": "Bayern Munich",
+      "final_score": "3:3",
+      "goals": [
+        {
+          "time": "11|0",
+          "score": "1:0"
+        },
+        {
+          "time": "39|0",
+          "score": "2:0"
+        },
+        {
+          "time": "62|0",
+          "score": "2:1"
+        },
+        {
+          "time": "63|0",
+          "score": "2:2"
+        },
+        {
+          "time": "83|0",
+          "score": "2:3"
+        },
+        {
+          "time": "90|4",
+          "score": "3:3"
+        }
+      ]
+    },
+    {
+      "id": "711719",
+      "date": "2025-05-03",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "4:4",
+      "goals": [
+        {
+          "time": "5|0",
+          "score": "1:0"
+        },
+        {
+          "time": "32|0",
+          "score": "2:0"
+        },
+        {
+          "time": "43|0",
+          "score": "2:1"
+        },
+        {
+          "time": "54|0",
+          "score": "2:2"
+        },
+        {
+          "time": "64|0",
+          "score": "3:2"
+        },
+        {
+          "time": "73|0",
+          "score": "3:3"
+        },
+        {
+          "time": "81|0",
+          "score": "3:4"
+        },
+        {
+          "time": "90|1",
+          "score": "4:4"
+        }
+      ]
+    },
+    {
+      "id": "711712",
+      "date": "2025-05-04",
+      "home_team": "Mainz",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:1",
+      "goals": [
+        {
+          "time": "16|0",
+          "score": "0:1"
+        },
+        {
+          "time": "57|0",
+          "score": "1:1"
+        }
+      ]
+    },
+    {
+      "id": "711715",
+      "date": "2025-05-04",
+      "home_team": "SC Freiburg",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "44|0",
+          "score": "1:0"
+        },
+        {
+          "time": "48|0",
+          "score": "2:0"
+        },
+        {
+          "time": "82|0",
+          "score": "2:1"
+        },
+        {
+          "time": "90|3",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711716",
+      "date": "2025-05-04",
+      "home_team": "FC Augsburg",
+      "away_team": "Holstein Kiel",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "25|0",
+          "score": "0:1"
+        },
+        {
+          "time": "40|0",
+          "score": "0:2"
+        },
+        {
+          "time": "51|0",
+          "score": "0:3"
+        },
+        {
+          "time": "90|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711725",
+      "date": "2025-05-09",
+      "home_team": "VfL Wolfsburg",
+      "away_team": "TSG Hoffenheim",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "34|0",
+          "score": "1:1"
+        },
+        {
+          "time": "81|0",
+          "score": "2:1"
+        },
+        {
+          "time": "84|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711720",
+      "date": "2025-05-10",
+      "home_team": "Bayern Munich",
+      "away_team": "Borussia M\u00f6nchengladbach",
+      "final_score": "2:0",
+      "goals": [
+        {
+          "time": "31|0",
+          "score": "1:0"
+        },
+        {
+          "time": "90|0",
+          "score": "2:0"
+        }
+      ]
+    },
+    {
+      "id": "711723",
+      "date": "2025-05-10",
+      "home_team": "1. FC Union Berlin",
+      "away_team": "1. FC Heidenheim 1846",
+      "final_score": "0:3",
+      "goals": [
+        {
+          "time": "12|0",
+          "score": "0:1"
+        },
+        {
+          "time": "56|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "0:3"
+        }
+      ]
+    },
+    {
+      "id": "711724",
+      "date": "2025-05-10",
+      "home_team": "Holstein Kiel",
+      "away_team": "SC Freiburg",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "24|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|2",
+          "score": "1:1"
+        },
+        {
+          "time": "58|0",
+          "score": "1:2"
+        }
+      ]
+    },
+    {
+      "id": "711726",
+      "date": "2025-05-10",
+      "home_team": "VfL Bochum",
+      "away_team": "Mainz",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "45|3",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "0:2"
+        },
+        {
+          "time": "73|0",
+          "score": "0:3"
+        },
+        {
+          "time": "84|0",
+          "score": "1:3"
+        },
+        {
+          "time": "90|3",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "711728",
+      "date": "2025-05-10",
+      "home_team": "Werder Bremen",
+      "away_team": "RB Leipzig",
+      "final_score": "0:0",
+      "goals": []
+    },
+    {
+      "id": "711721",
+      "date": "2025-05-11",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "St. Pauli",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "1|0",
+          "score": "1:0"
+        },
+        {
+          "time": "4|0",
+          "score": "1:1"
+        },
+        {
+          "time": "15|0",
+          "score": "1:2"
+        },
+        {
+          "time": "71|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711722",
+      "date": "2025-05-11",
+      "home_team": "Bayer Leverkusen",
+      "away_team": "Borussia Dortmund",
+      "final_score": "2:4",
+      "goals": [
+        {
+          "time": "30|0",
+          "score": "1:0"
+        },
+        {
+          "time": "33|0",
+          "score": "1:1"
+        },
+        {
+          "time": "43|0",
+          "score": "1:2"
+        },
+        {
+          "time": "73|0",
+          "score": "1:3"
+        },
+        {
+          "time": "77|0",
+          "score": "1:4"
+        },
+        {
+          "time": "90|2",
+          "score": "2:4"
+        }
+      ]
+    },
+    {
+      "id": "711727",
+      "date": "2025-05-11",
+      "home_team": "VfB Stuttgart",
+      "away_team": "FC Augsburg",
+      "final_score": "4:0",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "51|0",
+          "score": "2:0"
+        },
+        {
+          "time": "80|0",
+          "score": "3:0"
+        },
+        {
+          "time": "87|0",
+          "score": "4:0"
+        }
+      ]
+    },
+    {
+      "id": "711730",
+      "date": "2025-05-17",
+      "home_team": "1. FC Heidenheim 1846",
+      "away_team": "Werder Bremen",
+      "final_score": "1:4",
+      "goals": [
+        {
+          "time": "14|0",
+          "score": "0:1"
+        },
+        {
+          "time": "33|0",
+          "score": "0:2"
+        },
+        {
+          "time": "66|0",
+          "score": "0:3"
+        },
+        {
+          "time": "80|0",
+          "score": "1:3"
+        },
+        {
+          "time": "86|0",
+          "score": "1:4"
+        }
+      ]
+    },
+    {
+      "id": "711731",
+      "date": "2025-05-17",
+      "home_team": "Mainz",
+      "away_team": "Bayer Leverkusen",
+      "final_score": "2:2",
+      "goals": [
+        {
+          "time": "35|0",
+          "score": "1:0"
+        },
+        {
+          "time": "49|0",
+          "score": "1:1"
+        },
+        {
+          "time": "54|0",
+          "score": "1:2"
+        },
+        {
+          "time": "63|0",
+          "score": "2:2"
+        }
+      ]
+    },
+    {
+      "id": "711732",
+      "date": "2025-05-17",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Holstein Kiel",
+      "final_score": "3:0",
+      "goals": [
+        {
+          "time": "3|0",
+          "score": "1:0"
+        },
+        {
+          "time": "47|0",
+          "score": "2:0"
+        },
+        {
+          "time": "72|0",
+          "score": "3:0"
+        }
+      ]
+    },
+    {
+      "id": "711733",
+      "date": "2025-05-17",
+      "home_team": "Borussia M\u00f6nchengladbach",
+      "away_team": "VfL Wolfsburg",
+      "final_score": "0:1",
+      "goals": [
+        {
+          "time": "50|0",
+          "score": "0:1"
+        }
+      ]
+    },
+    {
+      "id": "711734",
+      "date": "2025-05-17",
+      "home_team": "SC Freiburg",
+      "away_team": "Eintracht Frankfurt",
+      "final_score": "1:3",
+      "goals": [
+        {
+          "time": "27|0",
+          "score": "1:0"
+        },
+        {
+          "time": "45|4",
+          "score": "1:1"
+        },
+        {
+          "time": "61|0",
+          "score": "1:2"
+        },
+        {
+          "time": "63|0",
+          "score": "1:3"
+        }
+      ]
+    },
+    {
+      "id": "711735",
+      "date": "2025-05-17",
+      "home_team": "St. Pauli",
+      "away_team": "VfL Bochum",
+      "final_score": "0:2",
+      "goals": [
+        {
+          "time": "10|0",
+          "score": "0:1"
+        },
+        {
+          "time": "66|0",
+          "score": "0:2"
+        }
+      ]
+    },
+    {
+      "id": "711736",
+      "date": "2025-05-17",
+      "home_team": "RB Leipzig",
+      "away_team": "VfB Stuttgart",
+      "final_score": "2:3",
+      "goals": [
+        {
+          "time": "8|0",
+          "score": "1:0"
+        },
+        {
+          "time": "23|0",
+          "score": "1:1"
+        },
+        {
+          "time": "44|0",
+          "score": "2:1"
+        },
+        {
+          "time": "57|0",
+          "score": "2:2"
+        },
+        {
+          "time": "78|0",
+          "score": "2:3"
+        }
+      ]
+    },
+    {
+      "id": "711737",
+      "date": "2025-05-17",
+      "home_team": "TSG Hoffenheim",
+      "away_team": "Bayern Munich",
+      "final_score": "0:4",
+      "goals": [
+        {
+          "time": "33|0",
+          "score": "0:1"
+        },
+        {
+          "time": "53|0",
+          "score": "0:2"
+        },
+        {
+          "time": "80|0",
+          "score": "0:3"
+        },
+        {
+          "time": "86|0",
+          "score": "0:4"
+        }
+      ]
+    },
+    {
+      "id": "711738",
+      "date": "2025-05-17",
+      "home_team": "FC Augsburg",
+      "away_team": "1. FC Union Berlin",
+      "final_score": "1:2",
+      "goals": [
+        {
+          "time": "41|0",
+          "score": "1:0"
+        },
+        {
+          "time": "69|0",
+          "score": "1:1"
+        },
+        {
+          "time": "90|4",
+          "score": "1:2"
+        }
+      ]
+    }
+  ]
+}
