@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-29)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** v1.1 Local-JSON Backtest (quick tasks `260429-h5z`, `260429-jtl` complete)
+**Current focus:** v1.1 Local-JSON Backtest (quick tasks `260429-h5z`, `260429-jtl`, `260429-k1c` complete)
 
 ## Current Position
 
-Phase: v1.1 quick task `260429-jtl` — Backtest capital-simulation strategy
-Plan: 260429-jtl-01 (complete)
+Phase: v1.1 quick task `260429-k1c` — Configurable Avg win yield
+Plan: 260429-k1c-01 (complete)
 Status: Quick task complete; v1.1 milestone done unless additional work scoped.
-Last activity: 2026-04-29 — Completed quick task 260429-jtl: backtest page strategy (initial capital, bet size, final capital + gain analytics).
+Last activity: 2026-04-29 — Completed quick task 260429-k1c: lift hard-coded WIN_YIELD into a `avg_win_yield` strategy input (default 0.03).
 
 Progress: [██████████] 100% (v1.1 milestone — 1 quick task complete)
 
@@ -47,6 +47,7 @@ None.
 |---|-------------|------|--------|-----------|
 | 260429-h5z | Local-JSON backtest page (BT-03..05): dropdown over `resources/*.json`, drop API+price wiring | 2026-04-29 | 01381c6 | [260429-h5z-update-soccer-backtest-page-to-load-leag](./quick/260429-h5z-update-soccer-backtest-page-to-load-leag/) |
 | 260429-jtl | Backtest page strategy: capital + bet size inputs, final capital + gain analytics, newest-first trade list | 2026-04-29 | a25e1a5 | [260429-jtl-backtest-page-strategy-order-matches-new](./quick/260429-jtl-backtest-page-strategy-order-matches-new/) |
+| 260429-k1c | Backtest page: configurable Avg win yield input replacing hard-coded WIN_YIELD constant | 2026-04-29 | 1344495 | [260429-k1c-backtest-page-configurable-avg-win-yield](./quick/260429-k1c-backtest-page-configurable-avg-win-yield/) |
 
 ## Deferred Items
 
