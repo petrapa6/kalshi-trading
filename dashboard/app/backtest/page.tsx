@@ -38,16 +38,25 @@ function SummaryCard({
 }
 
 function TradeRow({ trade }: { trade: BacktestTrade }) {
+  const isZero = trade.contracts === 0;
   const won = trade.result === "win";
-  const emoji = won ? "✅" : "❌";
+  const bgClass = isZero
+    ? "bg-orange-900/30"
+    : won
+      ? "bg-green-900/30"
+      : "bg-red-900/30";
+  // Zero-contract rows render no icon — they were not real bets, so the
+  // win/loss verdict from `result` is hypothetical, not earned.
+  const emoji = isZero ? "" : won ? "✅" : "❌";
   const cost_cents = trade.contracts * trade.contract_price_cents;
   const pnlSign = trade.pnl_cents >= 0 ? "+" : "−";
   const pnlClass = trade.pnl_cents >= 0 ? "text-green-400" : "text-red-400";
   return (
-    <div className={`p-2 rounded ${won ? "bg-green-900/30" : "bg-red-900/30"}`}>
+    <div className={`p-2 rounded ${bgClass}`}>
       <div className="text-sm">
         {trade.date} · {trade.home_team} {trade.final_home} – {trade.final_away}{" "}
-        {trade.away_team} {emoji}
+        {trade.away_team}
+        {emoji ? ` ${emoji}` : ""}
       </div>
       <div className="text-xs text-gray-400">
         Fired min {trade.fired_at_minute} @ {trade.score_at_fire_home}-
