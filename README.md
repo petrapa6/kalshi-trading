@@ -35,7 +35,7 @@ The scanner runs four concurrent async loops inside a single FastAPI process:
 | WebSocket listener | Kalshi WS   | real-time | Streaming price ticks + settlement events        |
 | DB backup          | S3          | 30 min    | SQLite snapshot upload                           |
 
-See [`docs/project.md`](docs/project.md) for the full architecture + trading data flow.
+For deeper architecture detail (scanner loops, settlement duality, integration surfaces), see [`.planning/codebase/ARCHITECTURE.md`](.planning/codebase/ARCHITECTURE.md) and the rest of [`.planning/codebase/`](.planning/codebase/).
 
 ---
 
