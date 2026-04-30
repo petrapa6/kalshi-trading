@@ -1,12 +1,6 @@
-"""Tests for the YAML strategy loader (src/predictions/strategies.py).
-
-Stubs are xfail-marked; Wave 1 (plan 02-01) flips them to passing.
-"""
-
-import pytest
+"""Tests for the YAML strategy loader (src/predictions/strategies.py)."""
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_load_empty_file(tmp_path):
     """STR-01: an empty file logs a warning and returns []."""
     from predictions.strategies import load_strategies
@@ -17,7 +11,6 @@ def test_load_empty_file(tmp_path):
     assert result == []
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_missing_file_returns_empty():
     """STR-01: a missing file logs a warning and returns []."""
     from predictions.strategies import load_strategies
@@ -26,7 +19,6 @@ def test_missing_file_returns_empty():
     assert result == []
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_valid_file_loads(tmp_path):
     """STR-01: a well-formed file produces a non-empty list."""
     from predictions.strategies import load_strategies
@@ -45,7 +37,6 @@ def test_valid_file_loads(tmp_path):
     assert result[0].name == "s"
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_strategies_path_env(tmp_path, monkeypatch):
     """STR-01 / D-08: STRATEGIES_PATH env var overrides the default path."""
     from predictions.strategies import load_strategies
@@ -58,7 +49,6 @@ def test_strategies_path_env(tmp_path, monkeypatch):
     assert result[0].name == "envstrat"
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_empty_triggers_rejected(tmp_path):
     """STR-02: triggers: [] must be rejected (min_length=1)."""
     from predictions.strategies import load_strategies
@@ -69,7 +59,6 @@ def test_empty_triggers_rejected(tmp_path):
     assert result == []
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_unknown_field_rejected(tmp_path):
     """STR-02 / D-06: extra="forbid" rejects unknown fields (typos)."""
     from predictions.strategies import load_strategies
@@ -82,7 +71,6 @@ def test_unknown_field_rejected(tmp_path):
     assert result == []
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_one_bad_strategy_rejects_file(tmp_path):
     """D-07: any error in any strategy rejects the entire file."""
     from predictions.strategies import load_strategies
@@ -101,7 +89,6 @@ def test_one_bad_strategy_rejects_file(tmp_path):
     assert result == []  # entire file rejected, NOT just the bad strategy
 
 
-@pytest.mark.xfail(reason="Wave 1 (02-01) implements load_strategies")
 def test_yaml_safe_load_rejects_python_object_tags(tmp_path):
     """T-02-03: yaml.safe_load (not yaml.load) prevents arbitrary code via !!python/object."""
     from predictions.strategies import load_strategies
