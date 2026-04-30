@@ -5,7 +5,11 @@
 # fires the strategy. Missing fields = no constraint on that dimension.
 #
 # Supported trigger fields:
-#   sport          ESPN sport_path (e.g. soccer/eng.1, basketball/nba)
+#   sport          Sport family (e.g. football, baseball, tennis). UK terminology:
+#                  use "football" (not "soccer"). The page-level Sport dropdown in
+#                  the dashboard backtest filters strategies and leagues by this
+#                  family; the live scanner (Phase 3) maps it to its per-league
+#                  taxonomy.
 #   min_minute     Game-clock minutes elapsed since start (sport-aware)
 #   min_lead       Minimum score lead in goals/points
 #   min_yes_price  Minimum YES ask in cents (live scanner only — info text in backtest)
@@ -19,22 +23,22 @@ strategies:
   conservative_late_lead:
     description: "Late game, modest lead, premium price — lowest variance preset"
     triggers:
-      - sport: soccer/eng.1
+      - sport: football
         min_minute: 80
         min_lead: 2
         min_yes_price: 92
         max_yes_price: 99
 
   early_value:
-    description: "Earlier entry; requires bigger lead to compensate"
+    description: "Earlier entry; requires bigger lead to compensate. Two-trigger OR-of-AND: a 65' / +3 entry OR a 75' / +4 stretch entry."
     triggers:
-      - sport: soccer/eng.1
+      - sport: football
         min_minute: 65
         min_lead: 3
         min_yes_price: 88
-      - sport: soccer/esp.1
-        min_minute: 65
-        min_lead: 3
+      - sport: football
+        min_minute: 75
+        min_lead: 4
         min_yes_price: 88
 
   # ---------------------------------------------------------------------------
@@ -42,13 +46,13 @@ strategies:
   # Uncomment and tune to enable. Notes:
   #   - countup_secs 4500 = 75 min elapsed; 3900 = 65 min elapsed.
   #   - lead_pct does not translate cleanly; pick a representative flat
-  #     `min_lead` per league or use multiple per-sport triggers.
+  #     `min_lead` per family or use multiple triggers.
   # ---------------------------------------------------------------------------
   #
   # low_price:
   #   description: "Lower Price (90 cents) — WHAT_IF low_price translation"
   #   triggers:
-  #     - sport: soccer/eng.1
+  #     - sport: football
   #       min_minute: 75
   #       min_lead: 2
   #       min_yes_price: 90
@@ -56,7 +60,7 @@ strategies:
   # lower_price:
   #   description: "Lower Price (88 cents) — WHAT_IF lower_price translation"
   #   triggers:
-  #     - sport: soccer/eng.1
+  #     - sport: football
   #       min_minute: 75
   #       min_lead: 2
   #       min_yes_price: 88
@@ -64,7 +68,7 @@ strategies:
   # loose_leads:
   #   description: "Loose Leads (50 percent) — WHAT_IF loose_leads translation"
   #   triggers:
-  #     - sport: soccer/eng.1
+  #     - sport: football
   #       min_minute: 75
   #       min_lead: 1
   #       min_yes_price: 92
@@ -72,7 +76,7 @@ strategies:
   # early_entry:
   #   description: "Early Entry (10 min before final whistle) — WHAT_IF early_entry translation"
   #   triggers:
-  #     - sport: soccer/eng.1
+  #     - sport: football
   #       min_minute: 65
   #       min_lead: 2
   #       min_yes_price: 92
@@ -80,7 +84,7 @@ strategies:
   # yolo:
   #   description: "YOLO (85 cents + loose + early) — WHAT_IF yolo translation"
   #   triggers:
-  #     - sport: soccer/eng.1
+  #     - sport: football
   #       min_minute: 65
   #       min_lead: 1
   #       min_yes_price: 85

@@ -28,7 +28,7 @@ def test_valid_file_loads(tmp_path):
         "strategies:\n"
         "  s:\n"
         "    triggers:\n"
-        "      - sport: soccer/eng.1\n"
+        "      - sport: football\n"
         "        min_minute: 80\n"
         "        min_lead: 2\n"
     )

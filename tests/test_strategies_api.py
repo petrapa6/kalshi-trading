@@ -26,7 +26,7 @@ def test_endpoint_response_shape(client, tmp_path, monkeypatch):
         "  alpha:\n"
         '    description: "A strategy"\n'
         "    triggers:\n"
-        "      - sport: soccer/eng.1\n"
+        "      - sport: football\n"
         "        min_minute: 80\n"
         "        min_lead: 2\n"
     )

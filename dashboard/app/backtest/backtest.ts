@@ -5,8 +5,12 @@ import type { Match, SeasonFile } from "./seasons";
 // A single OR-of-AND trigger: ALL fields set on one trigger must match a goal
 // for it to fire. Multiple triggers in BacktestParams.triggers compose with OR
 // semantics (first trigger that matches a goal fires the bet for that match).
-// Sport mismatch (trigger.sport defined and != season's sport_path) silently
-// skips the trigger during evaluation (D-12, D-15).
+//
+// Phase 2 revision (2026-04-30): trigger.sport is a sport-family literal
+// ("football", "baseball", …), not the previous ESPN sport_path. The page-level
+// Sport dropdown enforces that every trigger handed to the engine matches the
+// chosen Sport, so engine-side sport filtering is a single equality check.
+//
 // min_yes_price / max_yes_price are accepted in the type but NOT used by the
 // backtest engine (D-11 — backtest has no Kalshi prices; these are info only).
 export interface Trigger {
@@ -136,13 +140,18 @@ export function detectFire(
 }
 
 // Multi-trigger variant: walks goals chronologically and fires on the first
-// goal where ANY trigger's AND-conditions are satisfied. Sport-mismatched
-// triggers (trigger.sport set and != season_sport_path) are silently skipped
-// — D-12 / D-15. min_yes_price / max_yes_price are info-only in backtest.
+// goal where ANY trigger's AND-conditions are satisfied.
+//
+// Phase 2 revision (2026-04-30): the page-level Sport dropdown guarantees
+// every trigger has `sport === league_sport` (or `sport === undefined`). A
+// defensive equality check skips any straggler whose family differs; the
+// previous "graying / silently skipped" UX is dead code under the new model.
+//
+// min_yes_price / max_yes_price are info-only in backtest (D-11).
 function detectFireMulti(
   match: Match,
   triggers: Trigger[],
-  season_sport_path: string,
+  league_sport: string,
 ): FireOutcome | null {
   const { home: finalHome, away: finalAway } = parseScore(match.final_score);
 
@@ -152,7 +161,7 @@ function detectFireMulti(
     const lead = Math.abs(home - away);
 
     for (const trigger of triggers) {
-      if (trigger.sport !== undefined && trigger.sport !== season_sport_path) {
+      if (trigger.sport !== undefined && trigger.sport !== league_sport) {
         continue;
       }
       const minuteOk =
@@ -186,7 +195,7 @@ function detectFireMulti(
 export function runBacktest(
   file: SeasonFile,
   params: BacktestParams,
-  season_sport_path: string,
+  league_sport: string,
 ): BacktestResult {
   const { triggers, initial_capital, bet_fraction, contract_price_cents } =
     params;
@@ -202,7 +211,7 @@ export function runBacktest(
   let capital_cents = initial_capital_cents;
 
   for (const match of chronological) {
-    const fire = detectFireMulti(match, triggers, season_sport_path);
+    const fire = detectFireMulti(match, triggers, league_sport);
     if (fire === null) continue;
 
     const bet_amount_cents = Math.floor(capital_cents * bet_fraction);

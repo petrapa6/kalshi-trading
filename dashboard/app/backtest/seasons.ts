@@ -10,10 +10,10 @@
 // Webpack configuration without a custom loader plugin.
 //
 // We sidestep both by importing the JSONs at module scope so Webpack bundles them with
-// the client component. No fs, no server actions. Adding a new season requires editing
+// the client component. No fs, no server actions. Adding a new league requires editing
 // the IMPORTS array below — see the TODO comment.
 //
-// TODO: when a new season JSON is added to resources/, add a corresponding entry to
+// TODO: when a new league JSON is added to resources/, add a corresponding entry to
 // IMPORTS below, following the same pattern.
 
 import bundesliga_2024_25 from "../../../resources/bundesliga_2024_25_season.json";
@@ -65,17 +65,17 @@ const LEAGUE_NAMES: Record<string, string> = {
   seriea: "Serie A",
 };
 
-// Maps a league key (from the season filename) to the ESPN sport_path notation
-// used by the scanner (KALSHI_TO_ESPN, lead:<path> config keys). Phase 2 D-02:
-// trigger.sport in strategies.yaml uses this same notation, so a backtest can
-// silently skip triggers whose sport doesn't match the loaded season.
-export const LEAGUE_SPORT_PATH: Record<string, string> = {
-  bundesliga: "soccer/ger.1",
-  epl: "soccer/eng.1",
-  laliga: "soccer/esp.1",
-  ligue1: "soccer/fra.1",
-  mls: "soccer/usa.1",
-  seriea: "soccer/ita.1",
+// Sport family per league key. Phase 2 revision (2026-04-30): the page-level
+// Sport dropdown filters leagues and strategies by family. UK terminology:
+// "football" (not "soccer"). Adding a new family (e.g. "baseball") requires
+// adding entries here and to the page-level Sport dropdown in page.tsx.
+const LEAGUE_SPORT: Record<string, string> = {
+  bundesliga: "football",
+  epl: "football",
+  laliga: "football",
+  ligue1: "football",
+  mls: "football",
+  seriea: "football",
 };
 
 export function parseSeasonFilename(name: string): ParsedFilename | null {
@@ -99,13 +99,17 @@ export function parseSeasonFilename(name: string): ParsedFilename | null {
   return { league, startYear, endYear, label };
 }
 
-// ---- Season catalog --------------------------------------------------------
+// ---- League catalog --------------------------------------------------------
 
-export interface SeasonOption {
+// Phase 2 revision (2026-04-30): renamed from SeasonOption → LeagueOption.
+// `sport` is now a sport-family literal ("football", "baseball", …) rather
+// than the previous ESPN sport_path string. The dashboard sidebar groups by
+// Sport → League → Strategy.
+export interface LeagueOption {
   key: string; // basename, e.g. "epl_2024_25_season.json"
   parsed: ParsedFilename;
   data: SeasonFile;
-  sport_path: string; // "" if league not in LEAGUE_SPORT_PATH (D-02)
+  sport: string; // sport family, e.g. "football"
 }
 
 // Hand-maintained list of (filename, imported data) pairs.
@@ -131,11 +135,11 @@ const IMPORTS: Array<{ filename: string; data: SeasonFile }> = [
   },
 ];
 
-export const SEASONS: SeasonOption[] = IMPORTS.flatMap(({ filename, data }) => {
+export const LEAGUES: LeagueOption[] = IMPORTS.flatMap(({ filename, data }) => {
   const parsed = parseSeasonFilename(filename);
   if (!parsed) {
     if (process.env.NODE_ENV !== "production") {
-      console.warn(`[seasons] Skipping unrecognised filename: ${filename}`);
+      console.warn(`[leagues] Skipping unrecognised filename: ${filename}`);
     }
     return [];
   }
@@ -144,7 +148,7 @@ export const SEASONS: SeasonOption[] = IMPORTS.flatMap(({ filename, data }) => {
       key: filename,
       parsed,
       data,
-      sport_path: LEAGUE_SPORT_PATH[parsed.league] ?? "",
+      sport: LEAGUE_SPORT[parsed.league] ?? "football",
     },
   ];
 }).sort((a, b) => {

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { checkAuth } from "../actions";
-import { LEAGUE_SPORT_PATH, SEASONS, type SeasonOption } from "./seasons";
+import { LEAGUES, type LeagueOption } from "./seasons";
 import { runBacktest, type BacktestTrade, type Trigger } from "./backtest";
 
 interface ApiTrigger {
@@ -99,12 +99,12 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
 
 export default function BacktestPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
-  const [selectedKey, setSelectedKey] = useState<string>(SEASONS[0]?.key ?? "");
+  const [selectedKey, setSelectedKey] = useState<string>(LEAGUES[0]?.key ?? "");
   const [strategies, setStrategies] = useState<ApiStrategy[]>([]);
   const [selectedStrategy, setSelectedStrategy] = useState<string>(CUSTOM_KEY);
   const [triggers, setTriggers] = useState<Trigger[]>(() => [
     {
-      sport: SEASONS[0]?.sport_path ?? "soccer/eng.1",
+      sport: LEAGUES[0]?.sport ?? "football",
       min_minute: 75,
       min_lead: 2,
     },
@@ -131,8 +131,8 @@ export default function BacktestPage() {
       });
   }, []);
 
-  const selected: SeasonOption | undefined = useMemo(
-    () => SEASONS.find((s) => s.key === selectedKey),
+  const selected: LeagueOption | undefined = useMemo(
+    () => LEAGUES.find((s) => s.key === selectedKey),
     [selectedKey],
   );
 
@@ -176,7 +176,7 @@ export default function BacktestPage() {
               bet_fraction: betFractionPct / 100,
               contract_price_cents: contractPriceCents,
             },
-            selected.sport_path,
+            selected.sport,
           )
         : null,
     [selected, triggers, initialCapital, betFractionPct, contractPriceCents],
@@ -184,9 +184,9 @@ export default function BacktestPage() {
 
   if (!authed) return <div className="min-h-screen bg-black" />;
 
-  const seasonSportPath = selected?.sport_path ?? "";
+  const leagueSport = selected?.sport ?? "";
   const skippedTriggers = triggers.filter(
-    (t) => t.sport !== undefined && t.sport !== seasonSportPath,
+    (t) => t.sport !== undefined && t.sport !== leagueSport,
   );
   const skippedSports = Array.from(
     new Set(
@@ -212,13 +212,13 @@ export default function BacktestPage() {
       <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
         <aside className="space-y-4 bg-gray-900 p-4 rounded">
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Season</label>
-            {SEASONS.length === 0 ? (
+            <label className="block text-sm text-gray-300 mb-1">League</label>
+            {LEAGUES.length === 0 ? (
               <select
                 disabled
                 className="w-full bg-black border border-gray-700 rounded px-2 py-1"
               >
-                <option>No seasons in resources/</option>
+                <option>No leagues in resources/</option>
               </select>
             ) : (
               <select
@@ -226,7 +226,7 @@ export default function BacktestPage() {
                 onChange={(e) => setSelectedKey(e.target.value)}
                 className="w-full bg-black border border-gray-700 rounded px-2 py-1"
               >
-                {SEASONS.map((s) => (
+                {LEAGUES.map((s) => (
                   <option key={s.key} value={s.key}>
                     {s.parsed.label}
                   </option>
@@ -311,8 +311,7 @@ export default function BacktestPage() {
             <div className="text-sm text-gray-300">Triggers</div>
             {triggers.map((trigger, idx) => {
               const mismatched =
-                trigger.sport !== undefined &&
-                trigger.sport !== seasonSportPath;
+                trigger.sport !== undefined && trigger.sport !== leagueSport;
               return (
                 <div
                   key={idx}
@@ -344,11 +343,7 @@ export default function BacktestPage() {
                       className="w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
                     >
                       <option value="">(any)</option>
-                      {Object.entries(LEAGUE_SPORT_PATH).map(([, path]) => (
-                        <option key={path} value={path}>
-                          {path}
-                        </option>
-                      ))}
+                      <option value="football">football</option>
                     </select>
                   </div>
                   <div>
@@ -428,10 +423,10 @@ export default function BacktestPage() {
           </p>
         </aside>
         <main className="space-y-6">
-          {SEASONS.length === 0 ? (
+          {LEAGUES.length === 0 ? (
             <div className="bg-gray-900 rounded p-6 text-sm text-gray-400">
               <p className="font-semibold text-white mb-2">
-                No season data available
+                No league data available
               </p>
               <p>
                 Run the{" "}
