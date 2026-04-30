@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategy Engine
-status: executing
-stopped_at: Completed 02-04-PLAN.md (strategy-driven backtest sidebar with D-02 override)
-last_updated: "2026-04-30T12:33:26.324Z"
-last_activity: 2026-04-30
+status: milestone-progress
+stopped_at: Phase 2 complete; ready to plan Phase 3
+last_updated: "2026-04-30T13:13:48.713Z"
+last_activity: "2026-04-30 -- Phase 2 (Strategy Engine Core) shipped: STR-01/02/03 + BT-07 closed"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
   completed_plans: 7
-  percent: 88
+  percent: 50
 ---
 
 # Project State
@@ -25,12 +25,14 @@ See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 
 ## Current Position
 
-Phase: 02 (strategy-engine-core) — EXECUTING
-Plan: 6 of 6
-Status: Ready to execute
-Last activity: 2026-04-30
+Phase: 01 (backtest-p-l-math) — ✅ COMPLETE
+Phase: 02 (strategy-engine-core) — ✅ COMPLETE
+Phase: 03 (scanner-integration) — Ready to plan
+Plan: 6 of 6 (Phase 2)
+Status: Phase 2 shipped; Phase 3 ready to plan
+Last activity: 2026-04-30 -- Phase 2 (Strategy Engine Core) shipped: STR-01/02/03 + BT-07 closed
 
-Progress: [█████████░] 88%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -47,6 +49,7 @@ Progress: [█████████░] 88%
 | Phase 02 P02 | ~2.5min | 2 tasks | 3 files |
 | Phase 02 P03 | ~5min | 2 tasks | 3 files |
 | Phase 02 P04 | ~30min | 2 tasks | 9 files |
+| Phase 02 P05 | ~25min | 3 tasks | 4 files (planning) + 5 files (side lint chore) |
 
 ## Accumulated Context
 
@@ -65,18 +68,24 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 02-03] Backtest engine refactored to OR-of-AND multi-trigger evaluation: BacktestParams.triggers: Trigger[] replaces flat min_minute/min_lead; runBacktest gains season_sport_path third arg; sport-mismatched triggers silently skip; Phase 1 capital math preserved verbatim
 - [Phase ?]: [Phase 02-03] LEAGUE_SPORT_PATH constant + sport_path field on SeasonOption (D-02): season catalog now carries ESPN sport_path (soccer/eng.1, soccer/esp.1, etc) so the backtest engine can filter sport-mismatched triggers without a second lookup
 - [Phase 02-04]: D-02 OVERRIDE: trigger.sport is a sport-family literal (football, baseball, …) NOT the ESPN sport_path; UK terminology (football, never soccer); Sport→League→Strategy hierarchy in dashboard sidebar; per-trigger Sport dropdown removed; sport-mismatch graying + skipped-triggers UI deleted (structurally impossible under hierarchy). Phase 3 scanner port must read 02-CONTEXT.md addendum, NOT original D-02.
+- PHASE2-01: PyYAML added (`pyyaml>=6.0`) — first new Python dep in Phase 2; only one allowed since YAML is locked in D-05.
+- PHASE2-02: `STRATEGIES_PATH` env var read in exactly one site (`load_strategies` in `src/predictions/strategies.py`). Phase 3 scanner must follow the same pattern — no parallel env var reads.
+- PHASE2-03: `extra="forbid"` + `min_length=1` + all-or-nothing validation. Phase 3 scanner imports `load_strategies` directly; it does NOT re-parse YAML.
+- PHASE2-VERIFY-01: deferred-items.md baseline understated lint debt (claimed 16 E501s in scanner.py; actual repo-wide was 4 in scanner.py + 2 in api.py + 1 in config_cli.py + 9 in fetch_football_season.py). All cleared in chore commit `613f7e4` to make Criterion #4 pass at the full-repo level. config_cli.py:14 was undocumented but verified pre-existing via `git log`.
+- PHASE2-VERIFY-02: Future YAML inputs that ever become user-editable (e.g., a Phase 4 strategy editor) must add a max-file-size check before `safe_load` to mitigate alias amplification (per 02-RESEARCH.md security domain). Not needed today (file is hand-edited).
 
 ### Pending Todos
 
 | File | Title | Area |
 |------|-------|------|
-| [2026-04-29-backtest-contract-based-pnl.md](./todos/pending/2026-04-29-backtest-contract-based-pnl.md) | Backtest page: rework trading mechanism for contract-based P&L | ui |
+| *(none — `2026-04-29-backtest-contract-based-pnl.md` resolved by Phase 1; moved to `todos/completed/`)* | | |
 
 ### Blockers/Concerns
 
-- [Phase 2] YAML field vocabulary: resolved by D-01..D-03 in 02-CONTEXT.md (`min_minute` = elapsed game-clock minutes, sport = ESPN sport_path, exact match). Phase 3 still needs per-sport `total_game_seconds` lookup for the live scanner path.
+- ~~[Phase 2] YAML field vocabulary~~ — RESOLVED by D-01..D-03 + the 02-CONTEXT.md `Revision — 2026-04-30` D-02 override (sport is now a family literal `football`, not ESPN sport_path). Phase 3 still needs a per-sport `total_game_seconds` / period-length lookup for the scanner's `elapsed = total_game_seconds − clock_seconds` derivation, but that's tracked under D-01 implementation in Phase 3.
 - ~~[Phase 2] PyYAML is NOT in pyproject.toml~~ — RESOLVED by Plan 02-00 (`uv add pyyaml>=6.0`, locked at 6.0.3 in uv.lock).
 - [Phase 3] Settlement reconciliation currently filters `dry_run == False` — DRY-02 must add a parallel path for `dry_run=True AND strategy_name IS NOT NULL` trades or P&L will never compute.
+- [Phase 4-or-later, low-priority] If a strategy editor is ever added (deferred per REQUIREMENTS.md Future Requirements), add a max-file-size check before `safe_load` to mitigate alias amplification (per 02-RESEARCH.md security domain). Not relevant today (file is hand-edited).
 
 ## Deferred Items
 
@@ -86,6 +95,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-30T12:33:26.308Z
-Stopped at: Completed 02-04-PLAN.md (strategy-driven backtest sidebar with D-02 override)
-Resume: `/gsd-execute-phase 02-strategy-engine-core` (6 plans: bootstrap → loader → API → engine → UI → verify)
+Last session: 2026-04-30T16:30:00.000Z
+Stopped at: Phase 2 complete; ready to plan Phase 3
+Resume: `/gsd-plan-phase 3` (Scanner Integration — STR-04, DRY-01, DRY-02). Critical Phase 3 reading: 02-CONTEXT.md `Revision — 2026-04-30` addendum for the D-02 override (trigger.sport is a family literal, not ESPN sport_path).

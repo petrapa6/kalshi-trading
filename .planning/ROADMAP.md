@@ -43,7 +43,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 **Milestone Goal:** Replace the hardcoded strategy list with a file-driven engine supporting multi-trigger conditions, power both backtest and live dry-run trading, and surface per-strategy analytics in the dashboard.
 
 - [x] **Phase 1: Backtest P&L Math** - Replace yield-based math with contract-based P&L in the backtest engine — completed 2026-04-30
-- [ ] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest
+- [x] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest — completed 2026-04-30
 - [ ] **Phase 3: Scanner Integration** - DB migration, strategy evaluation in live scanner, stretch system removal
 - [ ] **Phase 4: Analytics Dashboard** - Per-strategy analytics API endpoints and dashboard page
 
@@ -76,7 +76,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 - [x] 02-02-PLAN.md — `GET /api/strategies` Bearer-auth endpoint + STR-03 tests (Wave 2)
 - [x] 02-03-PLAN.md — Multi-trigger backtest engine + season sport_path mapping (Wave 2)
 - [x] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
-- [ ] 02-05-PLAN.md — Goal-backward verification + STATE.md update (Wave 4, has manual checkpoint)
+- [x] 02-05-PLAN.md — Goal-backward verification + STATE.md update (Wave 4, has manual checkpoint)
 **UI hint**: yes
 
 ### Phase 3: Scanner Integration
@@ -112,7 +112,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | v1.0 Production Scanner (aggregate) | v1.0 | — | ✅ Complete | pre-GSD |
 | v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | 4/4 | ✅ Complete | 2026-04-29 |
 | 1. Backtest P&L Math | v1.2 | 2/2 | ✅ Complete | 2026-04-30 |
-| 2. Strategy Engine Core | v1.2 | 1/6 | In Progress | - |
+| 2. Strategy Engine Core | v1.2 | 6/6 | Complete   | 2026-04-30 |
 | 3. Scanner Integration | v1.2 | 0/? | Not started | - |
 | 4. Analytics Dashboard | v1.2 | 0/? | Not started | - |
 
