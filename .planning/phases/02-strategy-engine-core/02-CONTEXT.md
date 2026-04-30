@@ -494,3 +494,26 @@ This rewrites strategies.yaml data values (not the loader schema), the fixture Y
 - `docs(02-rev): record cross-plan revision and D-02 override`
 
 The original D-02 above is preserved verbatim for audit trail. Phase 3's live scanner must read THIS revision, not D-02.
+
+## Revision — 2026-04-30 (D-11 UI retraction, post-UAT)
+
+**D-11 UI-SURFACING HALF RETRACTED.** The original D-11 (lines 137–152 above) had two halves:
+
+1. **Engine-side narrowing:** the backtest engine does NOT consume `min_yes_price` / `max_yes_price`; the page-level `contract_price_cents` slider drives all capital math. **This half remains in force** — `detectFireMulti` in `dashboard/app/backtest/backtest.ts:151–193` continues to ignore those fields, and `runBacktest` continues to drive capital math from `BacktestParams.contract_price_cents` (slider at `page.tsx:344–361`).
+2. **UI-surfacing recommendation:** YAML `min_yes_price` / `max_yes_price` were rendered as a read-only "Live trading: X¢–Y¢ (info only — backtest uses contract price slider)" text block under each trigger card. **This half is retracted.** The block at `dashboard/app/backtest/page.tsx:404–417` is deleted in plan 02-06 (commit message: `refactor(02-06): drop Live-trading info text from backtest trigger cards`).
+
+**Trigger:** UAT Test 7 (see `02-UAT.md` Gaps section). User passed Test 7 on its literal acceptance criteria, then immediately rejected the design choice in the same line: *"pass, but this text should not be here, it's confusing — remove it and use `contract_price` for backtesting."* Diagnosed in `.planning/debug/live-trading-info-text-ux.md` 2026-04-30; user confirmed interpretation (a) UI-only deletion. The page-level Contract price slider already drives 100% of backtest capital math, so "use `contract_price` for backtesting" is satisfied by the status quo — no engine change needed.
+
+**What stays unchanged:**
+
+- `strategies.yaml` — `min_yes_price` / `max_yes_price` remain on both active strategies (`conservative_late_lead`, `early_value`) and on the 5 commented-out WHAT_IF translations. Phase 3's live scanner WILL filter on these fields against the live YES ask price.
+- `src/predictions/strategies.py` — Pydantic `Trigger` schema continues to declare both fields as `Optional[int]`.
+- `GET /api/strategies` — JSON response continues to include both fields when set in YAML.
+- `tests/test_strategies.py` and `tests/test_strategies_api.py` — assertions on `min_yes_price` / `max_yes_price` presence are untouched.
+- `dashboard/app/backtest/backtest.ts` — the `Trigger` TypeScript interface keeps both fields and the JSDoc explanation that the engine ignores them. `ApiTrigger` in `page.tsx:8-14` likewise keeps both fields (mirrors API JSON shape).
+
+**What this means for Phase 3 readers:** D-11 still tells you the truth about the BACKTEST engine — the backtest will never read `min_yes_price` / `max_yes_price`, regardless of what the YAML says. The LIVE scanner you're building is the consumer of those fields. Nothing about the live-scanner contract changes here; only the backtest UI presentation changes.
+
+**What this means for any future backtest UI work:** Do not reintroduce read-only price-bounds rendering inside trigger cards. If a future feature genuinely needs to show YAML-driven price thresholds in the backtest UI, gather it as a fresh discussion at that time — D-11's UI-surfacing recommendation is dead.
+
+The original D-11 above (lines 137–152) is preserved verbatim for audit trail. This addendum is the authoritative reference for current backtest UI state.
