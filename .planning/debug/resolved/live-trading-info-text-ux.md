@@ -1,8 +1,9 @@
 ---
-status: diagnosed
+status: resolved
 trigger: "UAT Test 7 (phase 02): user reports 'pass, but this text should not be here, it's confusing - remove it and use `contract_price` for backtesting'. Read-only 'Live trading: X¢–Y¢' info text inside each trigger card reflecting YAML min_yes_price/max_yes_price."
 created: 2026-04-30T19:14:02Z
-updated: 2026-04-30T19:14:02Z
+updated: 2026-04-30T22:32:11Z
+resolved_by: "02-06 (gap-closure plan, 2026-04-30) — commits 4d4f29d (page.tsx:404–417 deletion), f5fa435 (02-CONTEXT.md D-11 UI-retraction addendum)"
 ---
 
 ## Current Focus

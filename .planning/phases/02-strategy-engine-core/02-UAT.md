@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: resolved
 phase: 02-strategy-engine-core
-source: [02-00-SUMMARY.md, 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md, 02-04-SUMMARY.md, 02-05-SUMMARY.md]
+source: [02-00-SUMMARY.md, 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md, 02-04-SUMMARY.md, 02-05-SUMMARY.md, 02-06-SUMMARY.md]
 started: 2026-04-30T00:00:00Z
-updated: 2026-04-30T00:00:03Z
+updated: 2026-04-30T22:32:11Z
 ---
 
 ## Current Test
@@ -87,9 +87,10 @@ expected: |
   max_yes_price from the YAML. There is NO min_yes_price slider
   inside the card and NO max_yes_price slider inside the card —
   these are info-only at the trigger level.
-result: issue
-reported: "pass, but this text should not be here, it's confusing - remove it and use `contract_price` for backtesting"
+result: pass
+note: "Original UAT outcome was 'issue' (severity: minor) — user requested removal of the Live trading info text. Closed by gap-closure plan 02-06: the conditional <p> block at page.tsx:404–417 is deleted (commit 4d4f29d) and D-11's UI-surfacing half is retracted in 02-CONTEXT.md (commit f5fa435). Engine-side narrowing of D-11 (engine ignores min_yes_price/max_yes_price) remains in force. Trigger cards no longer render the Live trading text — there are no per-trigger price sliders either, so the no-slider half of the original Test 7 acceptance criterion still holds."
 severity: minor
+resolution: "interpretation (a) UI-only deletion — see 02-06-SUMMARY.md"
 
 ### 8. Single contract-price slider
 expected: |
@@ -119,8 +120,8 @@ result: pass
 ## Summary
 
 total: 10
-passed: 9
-issues: 1
+passed: 10
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
@@ -128,7 +129,8 @@ blocked: 0
 ## Gaps
 
 - truth: "Trigger card shows read-only Live trading info text reflecting YAML min_yes_price/max_yes_price"
-  status: failed
+  status: resolved
+  resolved_by: "02-06 (gap-closure plan, 2026-04-30) — commits 4d4f29d (page.tsx deletion), f5fa435 (CONTEXT.md retraction addendum)"
   reason: "User reported: pass, but this text should not be here, it's confusing - remove it and use `contract_price` for backtesting"
   severity: minor
   test: 7
