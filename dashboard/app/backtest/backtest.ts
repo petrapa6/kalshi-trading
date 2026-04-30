@@ -2,9 +2,23 @@ import type { Match, SeasonFile } from "./seasons";
 
 // ---- Types -----------------------------------------------------------------
 
+// A single OR-of-AND trigger: ALL fields set on one trigger must match a goal
+// for it to fire. Multiple triggers in BacktestParams.triggers compose with OR
+// semantics (first trigger that matches a goal fires the bet for that match).
+// Sport mismatch (trigger.sport defined and != season's sport_path) silently
+// skips the trigger during evaluation (D-12, D-15).
+// min_yes_price / max_yes_price are accepted in the type but NOT used by the
+// backtest engine (D-11 — backtest has no Kalshi prices; these are info only).
+export interface Trigger {
+  sport?: string;
+  min_minute?: number;
+  min_lead?: number;
+  min_yes_price?: number;
+  max_yes_price?: number;
+}
+
 export interface BacktestParams {
-  min_minute: number;
-  min_lead: number;
+  triggers: Trigger[];
   initial_capital: number;
   bet_fraction: number; // 0..1, fraction of current capital staked per bet
   contract_price_cents: number;
@@ -121,17 +135,61 @@ export function detectFire(
   return null;
 }
 
+// Multi-trigger variant: walks goals chronologically and fires on the first
+// goal where ANY trigger's AND-conditions are satisfied. Sport-mismatched
+// triggers (trigger.sport set and != season_sport_path) are silently skipped
+// — D-12 / D-15. min_yes_price / max_yes_price are info-only in backtest.
+function detectFireMulti(
+  match: Match,
+  triggers: Trigger[],
+  season_sport_path: string,
+): FireOutcome | null {
+  const { home: finalHome, away: finalAway } = parseScore(match.final_score);
+
+  for (const goal of match.goals) {
+    const { minute } = parseGoalTime(goal.time);
+    const { home, away } = parseScore(goal.score);
+    const lead = Math.abs(home - away);
+
+    for (const trigger of triggers) {
+      if (trigger.sport !== undefined && trigger.sport !== season_sport_path) {
+        continue;
+      }
+      const minuteOk =
+        trigger.min_minute === undefined || minute >= trigger.min_minute;
+      const leadOk = trigger.min_lead === undefined || lead >= trigger.min_lead;
+      if (minuteOk && leadOk) {
+        const leading_side: "home" | "away" = home > away ? "home" : "away";
+        const result: "win" | "loss" =
+          (leading_side === "home" && finalHome > finalAway) ||
+          (leading_side === "away" && finalAway > finalHome)
+            ? "win"
+            : "loss";
+
+        return {
+          match,
+          final_home: finalHome,
+          final_away: finalAway,
+          fired_at_minute: minute,
+          score_at_fire_home: home,
+          score_at_fire_away: away,
+          leading_side,
+          result,
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 export function runBacktest(
   file: SeasonFile,
   params: BacktestParams,
+  season_sport_path: string,
 ): BacktestResult {
-  const {
-    min_minute,
-    min_lead,
-    initial_capital,
-    bet_fraction,
-    contract_price_cents,
-  } = params;
+  const { triggers, initial_capital, bet_fraction, contract_price_cents } =
+    params;
 
   // Walk matches chronologically (oldest first) so capital accumulates in time order.
   // YYYY-MM-DD strings are lexicographically sortable.
@@ -144,7 +202,7 @@ export function runBacktest(
   let capital_cents = initial_capital_cents;
 
   for (const match of chronological) {
-    const fire = detectFire(match, min_minute, min_lead);
+    const fire = detectFireMulti(match, triggers, season_sport_path);
     if (fire === null) continue;
 
     const bet_amount_cents = Math.floor(capital_cents * bet_fraction);

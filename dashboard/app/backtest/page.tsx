@@ -104,13 +104,22 @@ export default function BacktestPage() {
   const result = useMemo(
     () =>
       selected
-        ? runBacktest(selected.data, {
-            min_minute: minMinute,
-            min_lead: minLead,
-            initial_capital: initialCapital,
-            bet_fraction: betFractionPct / 100,
-            contract_price_cents: contractPriceCents,
-          })
+        ? runBacktest(
+            selected.data,
+            {
+              triggers: [
+                {
+                  sport: selected.sport_path,
+                  min_minute: minMinute,
+                  min_lead: minLead,
+                },
+              ],
+              initial_capital: initialCapital,
+              bet_fraction: betFractionPct / 100,
+              contract_price_cents: contractPriceCents,
+            },
+            selected.sport_path,
+          )
         : null,
     [
       selected,
