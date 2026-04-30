@@ -22,6 +22,25 @@ interface ApiStrategy {
 const CUSTOM_KEY = "__custom__";
 const CUSTOM_LABEL = "— Custom —";
 
+// Sport family options. Currently only football is in active use; baseball /
+// tennis / etc. drop in by adding rows here. The dropdown renders even with
+// one option so the UX is structurally ready for more families.
+const SPORTS: Array<{ value: string; label: string }> = [
+  { value: "football", label: "Football" },
+];
+
+function defaultTriggerForSport(sport: string): Trigger {
+  return { sport, min_minute: 75, min_lead: 2 };
+}
+
+function strategyMatchesSport(strat: ApiStrategy, sport: string): boolean {
+  // ALL triggers must match the page-level sport. Triggers with no sport set
+  // are treated as wildcards and pass.
+  return strat.triggers.every(
+    (t) => t.sport === undefined || t.sport === sport,
+  );
+}
+
 function formatEuro(value: number): string {
   return value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
@@ -99,15 +118,20 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
 
 export default function BacktestPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
-  const [selectedKey, setSelectedKey] = useState<string>(LEAGUES[0]?.key ?? "");
+  const [selectedSport, setSelectedSport] = useState<string>(
+    SPORTS[0]?.value ?? "football",
+  );
+  const initialLeagueKey = useMemo(() => {
+    const initial = LEAGUES.find(
+      (l) => l.sport === (SPORTS[0]?.value ?? "football"),
+    );
+    return initial?.key ?? LEAGUES[0]?.key ?? "";
+  }, []);
+  const [selectedKey, setSelectedKey] = useState<string>(initialLeagueKey);
   const [strategies, setStrategies] = useState<ApiStrategy[]>([]);
   const [selectedStrategy, setSelectedStrategy] = useState<string>(CUSTOM_KEY);
   const [triggers, setTriggers] = useState<Trigger[]>(() => [
-    {
-      sport: LEAGUES[0]?.sport ?? "football",
-      min_minute: 75,
-      min_lead: 2,
-    },
+    defaultTriggerForSport(SPORTS[0]?.value ?? "football"),
   ]);
   const [initialCapital, setInitialCapital] = useState(1000);
   const [betFractionPct, setBetFractionPct] = useState(2);
@@ -131,10 +155,36 @@ export default function BacktestPage() {
       });
   }, []);
 
-  const selected: LeagueOption | undefined = useMemo(
-    () => LEAGUES.find((s) => s.key === selectedKey),
-    [selectedKey],
+  // Leagues filtered to the page-level Sport. Renders the League dropdown
+  // and gates the runBacktest selection.
+  const leaguesForSport = useMemo(
+    () => LEAGUES.filter((l) => l.sport === selectedSport),
+    [selectedSport],
   );
+
+  const selected: LeagueOption | undefined = useMemo(
+    () => leaguesForSport.find((l) => l.key === selectedKey),
+    [leaguesForSport, selectedKey],
+  );
+
+  // Strategies filtered to the page-level Sport. Hidden entirely when a
+  // strategy has any non-matching trigger (no graying).
+  const strategiesForSport = useMemo(
+    () => strategies.filter((s) => strategyMatchesSport(s, selectedSport)),
+    [strategies, selectedSport],
+  );
+
+  function handleSportChange(sport: string) {
+    setSelectedSport(sport);
+    // Reset Strategy to Custom and replace triggers with one default for the
+    // new sport. Filter League list and auto-pick first match.
+    setSelectedStrategy(CUSTOM_KEY);
+    setTriggers([defaultTriggerForSport(sport)]);
+    const firstMatchingLeague = LEAGUES.find((l) => l.sport === sport);
+    if (firstMatchingLeague) {
+      setSelectedKey(firstMatchingLeague.key);
+    }
+  }
 
   function updateTrigger(idx: number, patch: Partial<Trigger>) {
     setSelectedStrategy(CUSTOM_KEY);
@@ -145,7 +195,7 @@ export default function BacktestPage() {
 
   function addTrigger() {
     setSelectedStrategy(CUSTOM_KEY);
-    setTriggers((prev) => [...prev, { ...prev[prev.length - 1] }]);
+    setTriggers((prev) => [...prev, defaultTriggerForSport(selectedSport)]);
   }
 
   function removeTrigger(idx: number) {
@@ -184,17 +234,6 @@ export default function BacktestPage() {
 
   if (!authed) return <div className="min-h-screen bg-black" />;
 
-  const leagueSport = selected?.sport ?? "";
-  const skippedTriggers = triggers.filter(
-    (t) => t.sport !== undefined && t.sport !== leagueSport,
-  );
-  const skippedSports = Array.from(
-    new Set(
-      skippedTriggers
-        .map((t) => t.sport)
-        .filter((s): s is string => Boolean(s)),
-    ),
-  ).join(", ");
   const selectedDescription =
     selectedStrategy !== CUSTOM_KEY
       ? strategies.find((s) => s.name === selectedStrategy)?.description
@@ -212,13 +251,27 @@ export default function BacktestPage() {
       <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
         <aside className="space-y-4 bg-gray-900 p-4 rounded">
           <div>
+            <label className="block text-sm text-gray-300 mb-1">Sport</label>
+            <select
+              value={selectedSport}
+              onChange={(e) => handleSportChange(e.target.value)}
+              className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+            >
+              {SPORTS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="block text-sm text-gray-300 mb-1">League</label>
-            {LEAGUES.length === 0 ? (
+            {leaguesForSport.length === 0 ? (
               <select
                 disabled
                 className="w-full bg-black border border-gray-700 rounded px-2 py-1"
               >
-                <option>No leagues in resources/</option>
+                <option>No leagues for {selectedSport}</option>
               </select>
             ) : (
               <select
@@ -226,9 +279,9 @@ export default function BacktestPage() {
                 onChange={(e) => setSelectedKey(e.target.value)}
                 className="w-full bg-black border border-gray-700 rounded px-2 py-1"
               >
-                {LEAGUES.map((s) => (
-                  <option key={s.key} value={s.key}>
-                    {s.parsed.label}
+                {leaguesForSport.map((l) => (
+                  <option key={l.key} value={l.key}>
+                    {l.parsed.label}
                   </option>
                 ))}
               </select>
@@ -242,7 +295,7 @@ export default function BacktestPage() {
               className="w-full bg-black border border-gray-700 rounded px-2 py-1"
             >
               <option value={CUSTOM_KEY}>{CUSTOM_LABEL}</option>
-              {strategies.map((s) => (
+              {strategiesForSport.map((s) => (
                 <option key={s.name} value={s.name}>
                   {s.name}
                 </option>
@@ -309,103 +362,70 @@ export default function BacktestPage() {
           </div>
           <div className="border-t border-gray-800 pt-3 space-y-3">
             <div className="text-sm text-gray-300">Triggers</div>
-            {triggers.map((trigger, idx) => {
-              const mismatched =
-                trigger.sport !== undefined && trigger.sport !== leagueSport;
-              return (
-                <div
-                  key={idx}
-                  className={`p-3 rounded border space-y-2 ${
-                    mismatched
-                      ? "opacity-40 border-gray-700"
-                      : "border-gray-600"
-                  }`}
-                >
-                  {mismatched && (
-                    <p
-                      className="text-xs text-yellow-500"
-                      title={`Skipped — no ${trigger.sport} data loaded`}
-                    >
-                      Skipped — no {trigger.sport} data loaded
-                    </p>
-                  )}
-                  <div>
-                    <label className="block text-xs text-gray-300 mb-1">
-                      Sport
-                    </label>
-                    <select
-                      value={trigger.sport ?? ""}
-                      onChange={(e) =>
-                        updateTrigger(idx, {
-                          sport: e.target.value || undefined,
-                        })
-                      }
-                      className="w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
-                    >
-                      <option value="">(any)</option>
-                      <option value="football">football</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-300 mb-1">
-                      Min minute: {trigger.min_minute ?? "(any)"}
-                    </label>
-                    <input
-                      type="range"
-                      min={1}
-                      max={90}
-                      value={trigger.min_minute ?? 75}
-                      onChange={(e) =>
-                        updateTrigger(idx, {
-                          min_minute: Number(e.target.value),
-                        })
-                      }
-                      className="w-full"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-300 mb-1">
-                      Min lead: {trigger.min_lead ?? "(any)"}
-                    </label>
-                    <input
-                      type="range"
-                      min={1}
-                      max={5}
-                      value={trigger.min_lead ?? 2}
-                      onChange={(e) =>
-                        updateTrigger(idx, {
-                          min_lead: Number(e.target.value),
-                        })
-                      }
-                      className="w-full"
-                    />
-                  </div>
-                  {(trigger.min_yes_price !== undefined ||
-                    trigger.max_yes_price !== undefined) && (
-                    <p className="text-xs text-gray-400">
-                      Live trading:{" "}
-                      {trigger.min_yes_price !== undefined
-                        ? `${trigger.min_yes_price}¢`
-                        : "—"}
-                      –
-                      {trigger.max_yes_price !== undefined
-                        ? `${trigger.max_yes_price}¢`
-                        : "—"}{" "}
-                      (info only — backtest uses contract price slider)
-                    </p>
-                  )}
-                  {triggers.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeTrigger(idx)}
-                      className="text-xs text-red-400 hover:text-red-300"
-                    >
-                      Remove trigger
-                    </button>
-                  )}
+            {triggers.map((trigger, idx) => (
+              <div
+                key={idx}
+                className="p-3 rounded border border-gray-600 space-y-2"
+              >
+                <div>
+                  <label className="block text-xs text-gray-300 mb-1">
+                    Min minute: {trigger.min_minute ?? "(any)"}
+                  </label>
+                  <input
+                    type="range"
+                    min={1}
+                    max={90}
+                    value={trigger.min_minute ?? 75}
+                    onChange={(e) =>
+                      updateTrigger(idx, {
+                        min_minute: Number(e.target.value),
+                      })
+                    }
+                    className="w-full"
+                  />
                 </div>
-              );
-            })}
+                <div>
+                  <label className="block text-xs text-gray-300 mb-1">
+                    Min lead: {trigger.min_lead ?? "(any)"}
+                  </label>
+                  <input
+                    type="range"
+                    min={1}
+                    max={5}
+                    value={trigger.min_lead ?? 2}
+                    onChange={(e) =>
+                      updateTrigger(idx, {
+                        min_lead: Number(e.target.value),
+                      })
+                    }
+                    className="w-full"
+                  />
+                </div>
+                {(trigger.min_yes_price !== undefined ||
+                  trigger.max_yes_price !== undefined) && (
+                  <p className="text-xs text-gray-400">
+                    Live trading:{" "}
+                    {trigger.min_yes_price !== undefined
+                      ? `${trigger.min_yes_price}¢`
+                      : "—"}
+                    –
+                    {trigger.max_yes_price !== undefined
+                      ? `${trigger.max_yes_price}¢`
+                      : "—"}{" "}
+                    (info only — backtest uses contract price slider)
+                  </p>
+                )}
+                {triggers.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeTrigger(idx)}
+                    className="text-xs text-red-400 hover:text-red-300"
+                  >
+                    Remove trigger
+                  </button>
+                )}
+              </div>
+            ))}
             <div className="border-t border-gray-700 pt-3">
               <button
                 type="button"
@@ -418,22 +438,24 @@ export default function BacktestPage() {
           </div>
           <p className="text-xs text-gray-500">
             Triggers fire on the first goal where ALL conditions in any trigger
-            are met (OR-of-AND, first-fire-wins per match). Sport-mismatched
-            triggers are skipped silently. Stoppage time is ignored.
+            are met (OR-of-AND, first-fire-wins per match). Stoppage time is
+            ignored. All triggers inherit the page-level Sport.
           </p>
         </aside>
         <main className="space-y-6">
-          {LEAGUES.length === 0 ? (
+          {leaguesForSport.length === 0 ? (
             <div className="bg-gray-900 rounded p-6 text-sm text-gray-400">
               <p className="font-semibold text-white mb-2">
-                No league data available
+                No league data available for {selectedSport}
               </p>
               <p>
-                Run the{" "}
-                <code className="text-blue-400">fetch-football-season</code>{" "}
-                skill to populate{" "}
-                <code className="text-blue-400">resources/</code> with season
-                JSON files.
+                Add a JSON file under{" "}
+                <code className="text-blue-400">resources/</code> and a
+                corresponding entry in{" "}
+                <code className="text-blue-400">
+                  dashboard/app/backtest/seasons.ts
+                </code>
+                .
               </p>
             </div>
           ) : (
@@ -478,13 +500,6 @@ export default function BacktestPage() {
                     }
                   />
                 </section>
-                {skippedTriggers.length > 0 && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    {skippedTriggers.length} of {triggers.length} trigger
-                    {triggers.length !== 1 ? "s" : ""} skipped: {skippedSports}{" "}
-                    (no data for current season)
-                  </p>
-                )}
                 {result.trades.length > 0 ? (
                   <section className="space-y-2">
                     {result.trades.map((t) => (
