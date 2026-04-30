@@ -179,8 +179,14 @@ export function runBacktest(
     });
   }
 
-  const wins = trades.filter((t) => t.result === "win").length;
-  const losses = trades.filter((t) => t.result === "loss").length;
+  // Per 01-HUMAN-UAT.md Test 6 (Option A extended): zero-contract rows are
+  // capital-starvation events, not real bets. Exclude them from edge-captured
+  // tallies. `result` itself stays "win" | "loss" (driven by match outcome
+  // via detectFire) so future analytics can still ask "what fraction of
+  // would-have-bet fires were winners?" by gating on `contracts === 0`.
+  const placed = trades.filter((t) => t.contracts > 0);
+  const wins = placed.filter((t) => t.result === "win").length;
+  const losses = placed.filter((t) => t.result === "loss").length;
   const settled = wins + losses;
   const win_rate = settled === 0 ? 0 : Math.round((wins / settled) * 1e4) / 1e4;
   const final_capital_cents = capital_cents;
@@ -194,15 +200,16 @@ export function runBacktest(
             1e4,
         ) / 1e4;
 
-  // Display newest-first.
-  const display_trades = [...trades].sort((a, b) =>
-    b.date.localeCompare(a.date),
-  );
+  // Display newest-first. `trades` is built by walking `chronological` in
+  // ascending date order, so reversing the insertion order yields strict
+  // newest-first INCLUDING within-day (date-only sort would lose the
+  // within-day tiebreaker — see 01-HUMAN-UAT.md Test 3).
+  const display_trades = [...trades].reverse();
 
   return {
     summary: {
       matches_scanned: file.matches.length,
-      matches_bet_on: trades.length,
+      matches_bet_on: placed.length,
       wins,
       losses,
       win_rate,
