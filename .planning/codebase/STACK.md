@@ -1,138 +1,129 @@
 ---
-title: STACK
-focus: tech
-last_mapped: 2026-04-29
-last_mapped_commit: f2c2f78
+last_mapped: 2026-04-30
+last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 ---
 
 # Technology Stack
 
-Single-process FastAPI backend (with an embedded asyncio scanner) + Next.js dashboard + React-ink CLI, deployed on AWS via SST.
+**Analysis Date:** 2026-04-30
 
-## Languages & Runtimes
+## Languages
 
-| Layer | Language | Runtime | Pinned in |
-|---|---|---|---|
-| Backend | Python 3.13 | CPython 3.13.3-slim-bookworm | `pyproject.toml` (`requires-python = ">=3.13"`), `Dockerfile` |
-| Dashboard | TypeScript 5 | Node (Next.js 16 server) | `dashboard/package.json` |
-| CLI | TypeScript 5 (tsx loader) | Node (ESM) | `cli/package.json` (`"type": "module"`, runs via `tsx src/index.tsx`) |
-| Infra | TypeScript | SST v3 / Pulumi engine | `sst.config.ts` |
+**Primary:**
+- Python 3.13 - Backend API, scanner loop, database operations, Kalshi client, ESPN integration
+- TypeScript 5 - Dashboard (Next.js), CLI (React-ink)
+- JavaScript (JSX/TSX) - React frontend components
 
-## Backend (Python)
+**Secondary:**
+- Shell (bash/zsh) - Installation and deployment scripts
 
-Defined in `pyproject.toml`. Direct dependencies:
+## Runtime
 
-| Package | Min version | Purpose |
-|---|---|---|
-| `fastapi` | 0.135.1 | HTTP API |
-| `uvicorn` | 0.41.0 | ASGI server (`uv run uvicorn predictions.api:app …`) |
-| `sqlalchemy` | 2.0.48 | ORM over SQLite |
-| `httpx` | 0.28 | Async HTTP client (Kalshi REST + ESPN + API-Football) |
-| `websockets` | 16.0 | Kalshi v2 WS client |
-| `cryptography` | 46.0.5 | RSA-PSS signing for Kalshi auth |
-| `boto3` | 1.42.63 | S3 backup uploads / restore |
-| `python-dotenv` | 1.2.2 | Local `.env` loading at process start |
+**Environment:**
+- Python 3.13.3 slim (Debian Bookworm) - Docker container runtime
+- Node.js 20+ - Dashboard and CLI runtime (via pnpm)
 
-Pydantic is pulled in transitively by FastAPI (used for response models and the `BacktestRequest`/`BacktestResponse` schemas in `src/predictions/api.py` and `src/predictions/backtest.py`).
+**Package Manager:**
+- Python: `uv` (v1.x) — replaces pip/poetry, installed as standalone in Docker
+- JavaScript: `pnpm` 10.8.1 — monorepo package manager for root + workspace packages
 
-Dev deps (group `dev` in `pyproject.toml`): `ruff>=0.15.5`, `ty>=0.0.21`, `pytest>=8.0`, `pytest-asyncio>=0.24`.
+**Lockfiles:**
+- Python: `uv.lock` — deterministic dependency resolution
+- JavaScript: `pnpm-lock.yaml` — frozen lockfile
 
-Build system: **Hatchling** with src-layout. Wheel package is `predictions` rooted at `src/predictions` (`[tool.hatch.build.targets.wheel]`). Editable install via `uv sync`.
+## Frameworks
 
-## Dashboard (Next.js)
+**Core Backend:**
+- FastAPI 0.135.1 - RESTful API, CORS middleware, lifespan management
+- SQLAlchemy 2.0.48 - ORM for SQLite, models for trades/opportunities/config
+- Uvicorn 0.41.0 - ASGI server (0.0.0.0:8000 in containers)
 
-Defined in `dashboard/package.json`. Next.js 16 + React 19 + Tailwind 4.
+**Frontend:**
+- Next.js 16.1.6 - Dashboard SPA via OpenNext (Lambda/CloudFront on SST)
+- React 19.2.3 (dashboard) / 19.0.0 (CLI) - Component library
+- React-ink 6.8.0 - Terminal UI toolkit for CLI
+- Tailwind CSS 4 - Utility-first CSS (dashboard)
 
-| Package | Version | Purpose |
-|---|---|---|
-| `next` | 16.1.6 | App-router framework |
-| `react` / `react-dom` | 19.2.3 | UI runtime |
-| `recharts` | ^3.8.1 | Chart components (P&L curves, histograms, backtest bankroll) |
-| `react-tweet` | ^3.3.0 | Embedded tweet component |
-| `zod` | ^4.0.0-beta.20250305 | Runtime schema validation |
-| `tailwindcss` + `@tailwindcss/postcss` | ^4 | Styling (PostCSS pipeline via `dashboard/postcss.config.mjs`) |
-| `oxfmt` | ^0.7 | Formatter |
-| `oxlint` | ^0.16 | Linter |
-| `typescript` | ^5 | Type checker |
+**Testing:**
+- pytest 8.0 - Python test runner
+- pytest-asyncio 0.24 - Async test mode for `asyncio` tests
 
-Dashboard scripts (`dashboard/package.json`):
+**Build/Dev Tools:**
+- SST v4.2.2 - Infrastructure as code for AWS ECS, S3, Cloudflare DNS
 
-- `pnpm dev` → `next dev -p 3777`
-- `pnpm build` → `next build`
-- `pnpm lint` → `oxlint`
-- `pnpm fmt:check` → `oxfmt --check .`
+## Key Dependencies
 
-## CLI (React-ink)
+**Critical Backend:**
+- `httpx` 0.28 - Async HTTP client for ESPN API and Kalshi REST calls
+- `websockets` 16.0 - WebSocket client for Kalshi market lifecycle events (v2 protocol)
+- `cryptography` 46.0.5 - RSA signature generation for Kalshi API auth (PSS + SHA256)
+- `python-dotenv` 1.2.2 - `.env` file loading for local development
+- `boto3` 1.42.63 - AWS S3 client for database snapshots and recovery
 
-Defined in `cli/package.json`. ESM-only.
+**Frontend:**
+- `recharts` 3.8.1 - React charting library for dashboard visualizations
+- `zod` 4.0.0-beta - TypeScript schema validation for API responses
+- `react-tweet` 3.3.0 - Embedded Tweet component
 
-| Package | Version | Purpose |
-|---|---|---|
-| `ink` | ^6.8.0 | Terminal UI |
-| `ink-big-text` | ^2.0.0 | Banner |
-| `meow` | ^13.2.0 | Argument parsing |
-| `react` | ^19.0.0 | Component runtime |
-| `tsx` | ^4.19.0 (dev) | TypeScript loader |
+**CLI Tools:**
+- `meow` 13.2.0 - Argument parser for CLI
+- `ink-big-text` 2.0.0 - Large ASCII text rendering in terminal
 
-Entry: `cli/src/index.tsx` (parses args via `meow`, then renders `<App>` from `cli/src/app.tsx`).
+**Build/Formatting:**
+- `oxfmt` 0.7 - Fast TypeScript/JavaScript formatter (Rust-based)
+- `oxlint` 0.16 - Fast ESLint-compatible linter (Rust-based)
+- `tsx` 4.19.0 - TypeScript executor for Node.js (CLI runtime)
 
-## Infrastructure
+**Type Checking:**
+- `ruff` 0.15.5 - Python linter and formatter (Rust-based, replaces black/isort/flake8)
+- `ty` 0.0.21 - Lightweight Python type checker (replaces mypy/pyright)
+- TypeScript 5 - JavaScript type checking (CLI, dashboard)
 
-Defined in `sst.config.ts` and `Dockerfile`.
+## Configuration
 
-- **SST v3** (`sst@^4.2.2` in root `package.json`) drives infra.
-- **AWS region**: `us-east-2`.
-- **Compute**: `sst.aws.Cluster` → ECS Fargate task with `cpu: "0.25 vCPU"`, `memory: "0.5 GB"`. NAT EC2 `t3.micro`.
-- **Storage**: `sst.aws.Bucket("DbBackups")` (`linked` to the API service so it gets IAM access).
-- **Dashboard hosting**: `sst.aws.Nextjs("Dashboard", { path: "dashboard" })` (OpenNext).
-- **DNS / TLS**: Cloudflare via `sst.cloudflare.dns()` for both API and dashboard subdomains. Cloudflare provider is enabled (`cloudflare: true`).
-- **Container**: Two-step `Dockerfile` — `uv sync --frozen --no-dev --no-install-project` first (caches deps), then `COPY src/`, then a second `uv sync` to install the package itself. `CACHE_BUST` build-arg is bumped each `sst:deploy` (`Date.now().toString()`).
+**Environment:**
+- `.env.example` - Canonical schema; copy to `.env` for local development (gitignored)
+- `.env` file supports:
+  - Kalshi API credentials (key ID + RSA private key)
+  - Bearer token for API/dashboard auth
+  - Dashboard password (hashed server-side)
+  - Tuning parameters (min price, bet %, poll interval)
+  - S3 bucket for DB backups
+  - ESPN/API-Football API keys
+  - Database URL override (default: repo-root SQLite)
 
-Process command: `uv run uvicorn predictions.api:app --host 0.0.0.0 --port 8000`.
+**Runtime Config:**
+- SQLite `config` table in `predictions.db` — holds tunables read every scan loop (~5s)
+- Defaults in `src/predictions/db.py::_CONFIG_DEFAULTS`
+- Accessed via `get_config_int(key)` and `get_config(key)` helpers
 
-Public surface: `443/https → 8000/http`, attached to `api.your-domain.example` (placeholder in committed config).
+**Build Configuration:**
+- `pyproject.toml` - Python dependencies, ruff config (100-char line width, src layout), type checking rules
+- `tsconfig.json` (CLI: ES2022, dashboard: ES2017 + Next.js paths)
+- `oxfmt.json` (dashboard) - 4-space indent, 100-char line width
+- `oxlint.json` (dashboard) - warns on unused vars, allows console
+- `sst.config.ts` - AWS VPC, ECS Fargate service, S3 bucket, Cloudflare DNS, secrets injection
 
-## SST Secrets
+## Platform Requirements
 
-Created in `sst.config.ts::run`:
+**Development:**
+- Python 3.13+ (specified in `pyproject.toml`)
+- Node.js 18+ (for pnpm)
+- `uv` binary (installed via `install.sh`)
+- `.env` file with Kalshi API credentials
 
-- `DashboardPassword` → injected as `DASHBOARD_PASSWORD` env on the dashboard Nextjs service
-- `KalshiApiKey` → `KALSHI_API_KEY` on the API
-- `KalshiPrivateKey` → `KALSHI_PRIVATE_KEY` on the API
-- `ApiToken` → `API_TOKEN` on both API and dashboard
-- `ApiFootballKey` → `API_FOOTBALL_KEY` on the API
+**Production:**
+- AWS account (ECS Fargate container in us-east-2)
+- Cloudflare DNS for domain delegation
+- S3 bucket (DB backup durability)
+- SST v4 CLI for deployment
+- IAM roles/policies for ECS task (S3 read/write)
 
-Set per stage with `npx sst secret set <Name> <value>`.
+**Container:**
+- Multi-layer Docker build: (1) uv + Python deps, (2) src code copy + package install, (3) uvicorn startup
+- Base image: `python:3.13.3-slim-bookworm@sha256:…`
+- Entry: `uvicorn predictions.api:app --host 0.0.0.0 --port 8000`
 
-## Tooling Conventions
+---
 
-| Tool | Where | Notes |
-|---|---|---|
-| `uv` | Python deps + run | `uv sync`, `uv run …`. Lockfile `uv.lock` is committed. |
-| `pnpm@10.8.1` | JS workspace mgr | Pinned via `packageManager` in root `package.json`. Workspace declared in `pnpm-workspace.yaml`: `cli/`, `dashboard/`. |
-| `ruff` | Python format + lint | `line-length = 100`, `indent-width = 4`. Selected rules: `E`, `F`, `W`, `I`. Ignored: `E402`, `E712`. |
-| `ty` | Python type check | `python-version = "3.13"`, `python-platform = "linux"`, `root = ["src"]`. |
-| `pytest` + `pytest-asyncio` | Python tests | `asyncio_mode = "auto"`, `testpaths = ["tests"]`. |
-| `oxfmt` | TS format | `dashboard/oxfmt.json` and `cli/` use 4-space indent, line width 100. |
-| `oxlint` | TS lint | Config at `dashboard/oxlint.json` (`no-unused-vars: warn`, `no-console: off`). |
-
-`scripts/pre-commit-check.sh` runs ruff format + check + ty on staged Python, and oxfmt on staged dashboard TS. **Does not** run pytest, oxlint, or any secret scan.
-
-## Top-level Scripts (root `package.json`)
-
-- `pnpm dev` → `sst dev` (full stack via SST)
-- `pnpm dev:api` → uvicorn on `:8000` with `--reload`
-- `pnpm dev:dashboard` → Next.js on `:3777`
-- `pnpm sst:deploy` / `pnpm sst:remove` → AWS deploy/remove (assumes `smooai.dev` AWS profile via `assume`)
-- `pnpm cli` → run the CLI workspace (`pnpm --filter cli start`)
-- `pnpm pre-commit-check` → `bash scripts/pre-commit-check.sh`
-
-## Configuration Surfaces
-
-| Source | Lifecycle | Examples |
-|---|---|---|
-| Process env (`.env` locally, SST in prod) | Read at process start; some at every call | `KALSHI_API_KEY`, `KALSHI_PRIVATE_KEY[_PATH]`, `API_TOKEN`, `DRY_RUN`, `DATABASE_URL`, `DB_BACKUP_BUCKET`, `API_FOOTBALL_KEY`, `SOCCER_CACHE_DB_PATH`, `CORS_ORIGINS`, `MIN_YES_PRICE`, `BET_PERCENT`, `POLL_INTERVAL_SECONDS` |
-| SQLite `config` table (`predictions.db::config`) | Re-read every scan loop (~5 s) | `min_yes_price`, `bet_percent`, `max_positions`, `min_volume`, `stretch_price_min`, `trading_paused`, `lead:<sport>/<league>`, `final_seconds:<sport>/<league>`. Defaults in `src/predictions/db.py::_CONFIG_DEFAULTS`. |
-| In-code constants | Process start | `WHAT_IF_STRATEGIES` in `src/predictions/scanner.py:261-298`, `KALSHI_TO_ESPN` and `SPORT_FINAL_PERIOD` in `src/predictions/espn.py:16-44`. |
-
-The canonical env schema is `.env.example` at the repo root; `.env` is gitignored.
+*Stack analysis: 2026-04-30*

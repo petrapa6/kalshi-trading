@@ -1,137 +1,303 @@
 ---
-title: TESTING
-focus: quality
-last_mapped: 2026-04-29
-last_mapped_commit: f2c2f78
+last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
+last_mapped: 2026-04-30
 ---
 
-# Testing
+# Testing Patterns
 
-The Python backend has a small but real pytest suite focused on the soccer backtest module and its FastAPI endpoint. Two legacy tests pre-date the suite and are essentially manual scripts. The dashboard and CLI have no tests at all.
+**Analysis Date:** 2026-04-30
 
-## Backend (Python)
+## Test Framework
 
-### Framework
+**Runner:**
+- `pytest` (version >=8.0)
+  - Config: `pyproject.toml` `[tool.pytest.ini_options]`
+  - Async mode: `asyncio_mode = "auto"` (via `pytest-asyncio` >=0.24)
+  - Test paths: `tests/`
 
-- **`pytest>=8.0`** + **`pytest-asyncio>=0.24`** (dev group in `pyproject.toml`).
-- Async mode is **`auto`** — `async def test_*` functions run as coroutines automatically without an `@pytest.mark.asyncio` decorator. Configured at `pyproject.toml`:
-  ```toml
-  [tool.pytest.ini_options]
-  asyncio_mode = "auto"
-  testpaths = ["tests"]
-  ```
+**Assertion library:**
+- `pytest` built-in assert statements (no external assertion library needed)
+- Async support via `pytest-asyncio`
 
-### Run
-
-From the repo root:
-
+**Run commands:**
 ```bash
+uv run pytest tests/                    # Run all tests
+uv run pytest tests/ -v                 # Verbose (show each test)
+uv run pytest tests/ -k test_mlb        # Run tests matching pattern
+uv run pytest tests/test_ws.py          # Run single file
+uv run pytest tests/test_ws.py::test_ws_connects_and_receives  # Run single test
+```
+
+## Test File Organization
+
+**Location:**
+- Co-located in `tests/` directory (parallel to `src/`)
+- Structure: `tests/test_<module>.py` maps to `src/predictions/<module>.py`
+
+**Current test files:**
+- `tests/test_sport_stats.py` — Unit tests for stats aggregation
+- `tests/test_ws.py` — Integration test for WebSocket connectivity
+
+**Naming:**
+- Files: `test_<feature>.py`
+- Tests: `test_<what_is_being_tested>()`
+- Fixtures: lowercase, suffixed with `_fixture` if helper
+
+**Marked skips:**
+- `@pytest.mark.skipif()` for integration tests requiring external credentials
+  - Example: WebSocket test skipped if `KALSHI_API_KEY` not set
+
+## Test Structure
+
+**Basic unit test (from `test_sport_stats.py`):**
+```python
+def test_mlb_and_mlbst_are_kept_distinct():
+    """Document what this test verifies."""
+    # Setup: Create test data
+    session = get_session()
+    session.add(
+        Trade(
+            ticker="KXMLBSTGAME-TEST-BOS-NYY",
+            status="settled_win",
+            pnl_cents=100,
+            dry_run=False,
+        )
+    )
+    session.commit()
+    session.close()
+    
+    # Execute: Call the function under test
+    stats = get_total_sport_stats()["stats"]
+    
+    # Assert: Verify expectations
+    assert "MLBST" in stats
+    assert stats["MLBST"]["wins"] == 1
+    assert stats["MLBST"]["pnl"] == 100
+```
+
+**Async test structure (from `test_ws.py`):**
+```python
+@pytest.mark.skipif(not os.environ.get("KALSHI_API_KEY"), 
+                     reason="Needs live Kalshi credentials")
+async def test_ws_connects_and_receives():
+    """Mark as async; pytest-asyncio runs it automatically."""
+    client = _load_client()
+    if client is None:
+        pytest.skip("no Kalshi private key configured")
+    
+    # Execute async operations
+    balance = await client.get_balance()
+    
+    # Assert
+    assert "balance" in balance
+```
+
+**Pattern notes:**
+- No explicit `setUp`/`tearDown`; each test manages its own database session
+- Setup phase before execute; execute phase isolated from setup
+- Skip tests gracefully when external dependencies (credentials) are missing
+- Assertions are specific (check exact field values, not just truthy)
+
+## Mocking
+
+**Framework:** `unittest.mock` (Python standard library) — available but not heavily used in current tests
+
+**What is actually tested:**
+- `test_sport_stats.py`: Direct integration with SQLAlchemy models and API functions (no mocks)
+- `test_ws.py`: Real WebSocket connection to Kalshi (conditional on credentials)
+
+**What to mock in future tests:**
+- External HTTP calls (ESPN, Kalshi REST) → use `httpx.AsyncClient` mock or `pytest-httpx`
+- File I/O (loading private keys) → mock `open()` or use temporary files
+- Time-based logic (game clocks, timers) → mock `datetime.now()` or `time.time()`
+
+**What NOT to mock:**
+- Database access in unit tests of query logic (use in-memory SQLite if needed)
+- Core business logic (filtering, matching) — test with real data structures
+
+## Fixtures and Test Data
+
+**Current approach:**
+- No pytest fixtures defined; tests create their own data
+- Inline setup in test function bodies
+- Database access: `get_session()` from `db.py` module
+
+**Example from `test_sport_stats.py`:**
+```python
+session = get_session()
+session.add(Trade(...))
+session.add(StretchOpportunity(...))
+session.commit()
+session.close()
+```
+
+**Future fixture pattern (if needed):**
+```python
+@pytest.fixture
+def session():
+    """Provide a fresh SQLAlchemy session for each test."""
+    s = get_session()
+    yield s
+    s.rollback()
+    s.close()
+
+def test_something(session):
+    session.add(Trade(...))
+    session.commit()
+    # test assertions
+```
+
+**Location:** Fixtures can live in `tests/conftest.py` (pytest auto-imports)
+
+## Coverage
+
+**Requirements:** No explicit coverage target enforced in CI
+
+**View coverage:**
+```bash
+uv run pytest tests/ --cov=predictions --cov-report=html
+# Opens htmlcov/index.html in browser
+```
+
+**Coverage gaps (see CONCERNS.md):**
+- Scanner loop (`run_scanner()`) not unit-tested; runs in production via API lifespan
+- Kalshi WebSocket message handlers not exercised by unit tests
+- Settlement duality (WS vs REST) lacks regression tests
+- Dashboard `page.tsx` monolith has no component tests (102 KB file)
+
+## Test Types
+
+**Unit Tests:**
+- **Scope:** Individual functions, database queries
+- **Approach:** Call function with known inputs; verify output
+- **Example:** `test_mlb_and_mlbst_are_kept_distinct()` — calls `get_total_sport_stats()`, checks aggregation logic
+- **Database:** Uses real SQLite (in-memory not configured; uses default test DB path)
+
+**Integration Tests:**
+- **Scope:** External system interaction (Kalshi API, WebSocket, ESPN)
+- **Approach:** Conditional on credentials; verifies client behavior
+- **Example:** `test_ws_connects_and_receives()` — connects to live Kalshi WS, subscribes to markets, waits for messages
+- **Skip condition:** `@pytest.mark.skipif(not KALSHI_API_KEY)` allows CI to run without credentials
+
+**E2E Tests:**
+- **Framework:** Not used
+- **Alternative:** Manual testing via `pnpm dev:api` + dashboard
+- **Verification:** See CLAUDE.md "Verification before claiming done" section
+
+## Common Patterns
+
+**Async test with timeout:**
+```python
+try:
+    await asyncio.wait_for(ws.listen(), timeout=10)
+except asyncio.TimeoutError:
+    pass  # Expected if no messages arrive in 10 seconds
+finally:
+    await ws.close()
+```
+
+**Skip with custom message:**
+```python
+if client is None:
+    pytest.skip("no Kalshi private key configured")
+```
+
+**Assertion on collection membership:**
+```python
+got_subscribed = any(m.get("type") == "subscribed" for m in received)
+assert got_subscribed or received
+```
+
+## Pre-Commit Hook (Quality Gate)
+
+**Script location:** `scripts/pre-commit-check.sh`
+
+**What it does:**
+1. Formats Python files with `ruff format` (modifies in place)
+2. Lints Python files with `ruff check --fix` (auto-fixes where possible)
+3. Re-adds modified files to git staging
+4. Type-checks Python with `ty check` (no fixes, just reports)
+5. Formats TypeScript/TSX in dashboard with `oxfmt` (modifies in place)
+
+**What it does NOT do:**
+- Does NOT scan for secrets (API keys, tokens, credentials)
+- Does NOT run the test suite
+- Does NOT check for commented-out code
+
+**Manual steps required before commit:**
+```bash
+# Before committing, scan staged diff for secrets manually:
+git diff --cached | grep -i "api.key\|private\|secret\|password"
+
+# If found: abort and remove from staging
+git reset HEAD <file>
+
+# Then:
+pnpm pre-commit-check  # Runs the hook manually
+uv run pytest tests/    # Run tests (not automatic)
+```
+
+## Test Execution Checklist (CLAUDE.md verification gate)
+
+When claiming a change is done, verify:
+
+**Python:**
+```bash
+uv run ruff check .
+uv run ruff format --check .
+uv run ty check
 uv run pytest tests/
 ```
 
-Single file / single test:
-
+**Dashboard (if UI changes):**
 ```bash
-uv run pytest tests/test_backtest_api.py
-uv run pytest tests/test_simulate_match.py::test_<name>
+cd dashboard && pnpm lint && pnpm fmt:check && pnpm build
 ```
 
-### Layout
-
-| File | Type | What it covers |
-|---|---|---|
-| `tests/conftest.py` | fixtures | Auto-use `isolated_db` and `isolated_soccer_db` fixtures — both monkeypatch `engine` + `SessionLocal` to fresh in-memory SQLite per test |
-| `tests/test_simulate_match.py` | unit | `predictions.backtest.simulate_match` — strategy trigger logic |
-| `tests/test_find_observed_yes_ask.py` | unit | `predictions.backtest.find_observed_yes_ask` — Kalshi price lookup against historical opportunity rows |
-| `tests/test_run_backtest.py` | integration | `predictions.backtest.run_backtest` orchestrator end-to-end with mocked API-Football client |
-| `tests/test_soccer_cache.py` | integration | `predictions.soccer_cache` — DB round-trip; `ApiFootballClient` against `httpx.MockTransport`; rate-limit (429); batched fixture-detail chunking |
-| `tests/test_backtest_api.py` | integration | FastAPI `TestClient` against `POST /api/backtest/soccer` — auth (`401`), missing key (`503`), date validation (`422`), happy path (`200`) with patched `run_backtest` |
-| `tests/test_sport_stats.py` | legacy script | Standalone — predates the suite. Not currently exercised by the rest of the codebase. |
-| `tests/test_ws.py` | legacy script | Standalone Kalshi WS sanity check — talks to live Kalshi if creds present. Not a real unit test. |
-
-### Conftest pattern
-
-`tests/conftest.py` defines two **autouse** fixtures that swap the engine and `SessionLocal` for both DB modules to fresh in-memory SQLite per test, then create all tables:
-
-```python
-@pytest.fixture(autouse=True)
-def isolated_db(monkeypatch):
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
-    SessionLocal = sessionmaker(bind=engine)
-    monkeypatch.setattr(db_module, "engine", engine)
-    monkeypatch.setattr(db_module, "SessionLocal", SessionLocal)
-    db_module.Base.metadata.create_all(engine)
-    yield engine
-    engine.dispose()
+**Backend behavior (if API/scanner changes):**
+```bash
+pnpm dev:api
+# Hit endpoint with curl or browser:
+curl http://localhost:8000/
+# Should return {"status": "ok"}
 ```
 
-The same shape is repeated for `predictions.soccer_cache`. The `import predictions.soccer_cache as soccer_module` is wrapped in a `try/except ImportError` so tests still run if the soccer cache module changes.
+**Do NOT claim a UI change works without loading the dashboard in a browser** — type checking is not feature checking.
 
-**Why autouse:** the production modules bind their engine at import time via `DATABASE_URL`. Without monkeypatching, every test would scribble on the real `predictions.db` at the repo root.
+## Known Test Gaps
 
-### Mocking patterns
+**Not tested:**
+- Scanner lifespan (`run_scanner()` async loop) — runs live in production; no unit tests
+- WebSocket market lifecycle handlers (`on_lifecycle()`) — tested indirectly via integration test
+- Settlement duality race conditions (WS arrival vs REST poll) — no regression tests
+- Trade placement edge cases (order rejection, timeout, duplicate order ID) — needs mock Kalshi client
+- ESPN API timeouts and retries — currently swallows exceptions, no resilience test
+- Backtest settlement reconciliation for soccer matches — partial data not tested
 
-- **`httpx.MockTransport`** for upstream HTTP. Pattern: build a list of `(status, json_body)` tuples, hand them to a transport, inject the transport into the client under test. See `tests/test_soccer_cache.py:_mock_transport`.
-- **`unittest.mock.AsyncMock` + `patch`** for replacing `predictions.backtest.run_backtest` in the API test (`tests/test_backtest_api.py::test_backtest_200_happy_path`).
-- **Fake clients** that satisfy a Protocol (e.g. `_FakeApiFootballClient` implementing the `_SoccerClientLike` protocol from `soccer_cache.py:204`). Used to inject controlled match/goal data into `run_backtest` without going over the wire.
-- **`monkeypatch.setenv`** for `API_TOKEN`, `API_FOOTBALL_KEY`, etc. inside the test.
+**Why gaps exist:**
+- Scanner is a long-running background task (hard to unit test in isolation)
+- External APIs (Kalshi, ESPN) are non-deterministic; mocking required for reliability
+- Database state mutations are sequential and interdependent (reset between tests needed)
 
-### FastAPI testing
+## Future Testing Recommendations
 
-`tests/test_backtest_api.py` shows the canonical pattern:
+**Priority 1: Settlement edge cases**
+- Mock Kalshi API responses for order placement failures, timeouts
+- Test trade settlement when WS message arrives before REST query
+- Mock ESPN timeouts to verify backoff behavior
 
-```python
-@pytest.fixture
-def client(monkeypatch):
-    monkeypatch.setenv("API_TOKEN", "test-token")
-    from predictions.api import app
-    return TestClient(app)
-```
+**Priority 2: Scanner loop unit tests**
+- Extract core matching logic (`match_kalshi_to_espn()`) into pure function; unit test
+- Mock market data; test filters (price, lead, volume) in isolation
 
-The `from predictions.api import app` import happens **inside** the fixture so it runs *after* the env var is set. This matters because `_check_token` reads `os.getenv("API_TOKEN")` per request, but importing `api` early would still pull in dependencies that read env at import time (`scanner.py` calls `load_dotenv()` at import).
+**Priority 3: Dashboard component tests**
+- Break `dashboard/app/page.tsx` into smaller components
+- Unit test chart rendering, trade table sorting, auth flow
 
-### What is NOT tested
+**Priority 4: Backtest regression tests**
+- Add fixtures for historical soccer matches (canned data)
+- Verify backtests reproduce expected P&L for known scenarios
 
-- The four async loops in `scanner.run_scanner` (`espn_loop`, `kalshi_scan_loop`, `ws_loop`, `backup_loop`).
-- `KalshiClient` or `KalshiWebSocket` — no mocked transport, no signature verification test.
-- `extract_cents` / `extract_volume` (the integer-cents invariant boundary).
-- ESPN fetcher (`espn.get_scoreboard`, `match_kalshi_to_espn`).
-- The Bearer-auth dependency (`_check_token`) is covered indirectly by `test_backtest_api.py::test_backtest_requires_bearer` only.
-- Database migration logic (`_migrate_add_columns`).
-- `WHAT_IF_STRATEGIES` evaluation (`_evaluate_what_if_strategies`).
-- Settlement logic (`check_settlements`, `check_stretch_settlements`, `on_lifecycle`).
-- S3 backup / restore (`_download_db`, `_backup_db_sync`, `scanner.backup_db`).
+---
 
-### Coverage at a glance
-
-| Module | Has tests? |
-|---|---|
-| `src/predictions/backtest.py` | ✅ unit + integration |
-| `src/predictions/soccer_cache.py` | ✅ DB round-trip + mocked transport |
-| `src/predictions/api.py` | ⚠️ only `/api/backtest/soccer` + auth |
-| `src/predictions/scanner.py` | ❌ |
-| `src/predictions/kalshi_client.py` | ❌ |
-| `src/predictions/espn.py` | ❌ |
-| `src/predictions/db.py` | ⚠️ exercised transitively by other tests |
-| `src/predictions/config_cli.py` | ❌ |
-
-## Dashboard (Next.js)
-
-No tests committed. No test-runner dep in `dashboard/package.json`. CI gating is `pnpm lint && pnpm fmt:check && pnpm build` only (per `CLAUDE.md`).
-
-## CLI (React-ink)
-
-No tests committed. No test-runner dep in `cli/package.json`.
-
-## CI
-
-There is no CI test gate beyond the local pre-commit hook (`scripts/pre-commit-check.sh`), which **does not run pytest**. Tests are a developer responsibility on the way to a PR.
-
-## Conventions for new tests
-
-- Put new Python tests under `tests/` as `test_<thing>.py`. Conftest gives you isolated in-memory DBs for free.
-- For HTTP tests, use `httpx.MockTransport` (sync) — don't import requests-mock or responses.
-- For FastAPI endpoints, use `fastapi.testclient.TestClient` and import `app` *inside* the fixture after setting env.
-- Async tests need no decorator (asyncio_mode=auto); just `async def test_*`.
-- Reach for `unittest.mock.patch` only when you can't inject — prefer the Protocol + fake-client pattern from `tests/test_soccer_cache.py::_FakeApiFootballClient`.
-- Do not hit live Kalshi / ESPN / API-Football from tests. The two legacy files (`test_sport_stats.py`, `test_ws.py`) are exempt only because they predate the discipline.
+*Testing analysis: 2026-04-30*

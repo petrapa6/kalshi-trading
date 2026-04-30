@@ -1,102 +1,189 @@
 ---
-title: INTEGRATIONS
-focus: tech
-last_mapped: 2026-04-29
-last_mapped_commit: f2c2f78
+last_mapped: 2026-04-30
+last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 ---
 
 # External Integrations
 
-The system depends on four external services for data and one for storage. Each is encapsulated in a single Python module so the rest of the codebase doesn't see protocol details.
+**Analysis Date:** 2026-04-30
 
-## Map
+## APIs & External Services
 
-| Integration | Direction | Module / file | Auth | Notes |
-|---|---|---|---|---|
-| Kalshi REST v3.10 | outbound | `src/predictions/kalshi_client.py` (`KalshiClient`) | RSA-PSS-signed headers per request | Markets, events, orders, balance |
-| Kalshi WebSocket v2 | outbound (persistent) | `src/predictions/kalshi_client.py` (`KalshiWebSocket`) | RSA-PSS-signed handshake | Live ticker + `market_lifecycle_v2` |
-| ESPN scoreboards | outbound (read-only, undocumented) | `src/predictions/espn.py::get_scoreboard` | none | Polled every 10 s |
-| API-Football v3 | outbound (read-only) | `src/predictions/soccer_cache.py::ApiFootballClient` | `x-apisports-key` header | Backtest historical match data; rate-limited (free tier 100/day, 30/min) |
-| AWS S3 | outbound | `src/predictions/api.py::_download_db`, `_backup_db_sync`; `src/predictions/scanner.py::backup_db` | IAM via SST link to `DbBackups` bucket | DB snapshots every ~30 min + restore on container start |
-| AWS / Cloudflare (deploy) | infra | `sst.config.ts` | SST + `assume` for AWS profile | Cluster, Vpc, S3, Cloudflare DNS |
+**Kalshi Trading API:**
+- Async REST client: `src/predictions/kalshi_client.py` — `KalshiClient` class
+- Base URL: `https://api.elections.kalshi.com/trade-api/v2`
+- Auth: RSA-signed headers (KALSHI-ACCESS-KEY, KALSHI-ACCESS-SIGNATURE, KALSHI-ACCESS-TIMESTAMP)
+- Key methods: `get_events()`, `get_markets()`, `get_series()`, `create_order()`, `get_balance()`, `get_market()`
+- Price format: FixedPointDollars strings (e.g., `"0.9200"`) — normalized to integer cents in `extract_cents()`
+- Order placement: still accepts integer cents for `yes_price` / `no_price`
+- SDK: `httpx` (async HTTP client)
+- Credentials: `KALSHI_API_KEY` (key ID), `KALSHI_PRIVATE_KEY` (RSA PEM) or `KALSHI_PRIVATE_KEY_PATH`
 
-## Inbound HTTP
+**Kalshi WebSocket v2:**
+- Async WebSocket listener: `src/predictions/kalshi_client.py` — `KalshiWebSocket` class
+- Path: `wss://api.elections.kalshi.com/ws-api/v2` (authenticated with same RSA headers)
+- Handler: `on_lifecycle` in `src/predictions/scanner.py::run_scanner()` processes `market_lifecycle_v2` events
+- Updates live market prices into module-level `market_prices` dict
+- Triggers settlement checks when markets finalize
+- SDK: `websockets` 16.0
 
-The FastAPI app (`src/predictions/api.py`) is the only inbound surface:
+**ESPN Scoreboards API:**
+- Base URL: `https://site.api.elections.kalshi.com/apis/site/v2/sports/<path>/scoreboard`
+- Client: `src/predictions/espn.py` — `get_scoreboard()` function
+- Polling: 10-second intervals in `espn_loop()` within `run_scanner()`
+- Purpose: Real-time game state (period, clock, score) to verify game is in final minutes
+- Maps Kalshi series tickers to ESPN sport paths (e.g., `KXNBAGAME` → `basketball/nba`)
+- Returns: `GameState` dataclass with home/away scores, period, clock seconds, status
+- No auth required (undocumented public endpoint)
+- SDK: `httpx` (sync calls in ESPN loop)
 
-- Public health: `GET /` → `{"status":"ok"}` (no auth — `src/predictions/api.py:269-271`).
-- Everything else is protected by `_check_token` (`src/predictions/api.py:258-267`), a `Depends`-based Bearer-token check against `os.getenv("API_TOKEN")`.
-- CORS allows `http://localhost:3777`, `http://localhost:3000`, plus the comma-separated `CORS_ORIGINS` env (`src/predictions/api.py:248-256`).
+**API-Football v3:**
+- Base URL: `https://api-football.com/v3/…`
+- Purpose: Soccer match historical data and fixture details for backtest cache
+- Client: `src/predictions/soccer_cache.py` — fetches finished matches and goal events
+- Auth: `X-RapidAPI-Key: {API_FOOTBALL_KEY}` header
+- Key credential: `API_FOOTBALL_KEY` (from `.env` or SST secrets)
+- Plans quota: Free plan = 100 requests/day, 30 req/min
+- Cached responses stored in separate SQLite DB (`soccer-cache.db`)
+- SDK: `httpx` (async calls)
 
-Endpoints (all `Depends(_check_token)` unless noted):
+## Data Storage
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/api/stats` | Aggregate trade stats |
-| GET | `/api/trades?limit&offset` | Paginated trades |
-| GET | `/api/histogram-trades?limit` | Bulk trades for histograms |
-| GET | `/api/sport-stats` | Per-sport breakdown |
-| GET | `/api/opportunities?limit&offset` | Recent opportunities (incl. near-misses) |
-| GET | `/api/balance-history?limit` | Balance snapshots |
-| GET | `/api/scans?limit` | Scan loop telemetry |
-| GET | `/api/live-games` | Live game state (joins ESPN + Kalshi market) |
-| GET | `/api/stretch-stats` | Backtested what-if strategies |
-| DELETE | `/api/stretch` | Wipe `stretch_opportunities` |
-| GET | `/api/config` | Runtime config (DB) |
-| PUT | `/api/config` | Update one config key |
-| DELETE | `/api/config` | Reset all config to defaults |
-| POST | `/api/backtest/soccer` | Run a soccer backtest (`BacktestRequest` → `BacktestResponse`) |
+**Databases:**
 
-## Kalshi (REST + WebSocket)
+**Main DB — SQLite:**
+- Location: `predictions.db` (repo root in dev), `/tmp/predictions.db` (ECS production)
+- Connection: `src/predictions/db.py`
+- ORM: SQLAlchemy 2 declarative models
+- Tables:
+  - `trades` — placed bets, settlement status, P&L
+  - `opportunities` — detected high-probability markets
+  - `stretch_opportunities` — near-misses for what-if analysis
+  - `scans` — aggregated scan runs
+  - `balance_snapshots` — portfolio balance history
+  - `config` — runtime-tunable parameters (re-read every scan loop)
+- Inline migrations: `_migrate_add_columns()` in `db.py` for schema evolution
+- Durability: Snapshot via S3 every 30 minutes (see S3 Backups below)
 
-`src/predictions/kalshi_client.py` is the **single drift point** between Kalshi's wire format and the rest of the codebase.
+**Soccer Cache DB — SQLite:**
+- Location: `soccer-cache.db` (repo root in dev), `/tmp/soccer-cache.db` (ECS production)
+- Connection: `src/predictions/soccer_cache.py`
+- ORM: SQLAlchemy 2
+- Tables:
+  - `soccer_matches` — finished match results (home/away scores, kickoff time)
+  - `soccer_goals` — chronological goal sequence per match (minute, scorer side, own-goal flag)
+- Purpose: Backtesting historical soccer markets against API-Football
+- No S3 backup — ephemeral (rebuilds on container start)
 
-- Base URL `https://api.elections.kalshi.com`, path prefix `/trade-api/v2`.
-- Auth: every request is signed by an RSA-PSS signature over `<timestamp_ms> + <method> + <path>`, base64-encoded into `KALSHI-ACCESS-SIGNATURE`. Key is loaded from PEM in `from_key_file` or `from_key_string` (`src/predictions/kalshi_client.py:54-71`).
-- Price normalization: `extract_cents(d, prefix)` (lines 19-27) reads `<prefix>_dollars` (string, e.g. `"0.9200"`) and rounds to integer cents; falls back to legacy integer `<prefix>` if present. `extract_volume` (lines 30-38) does the same via `volume_fp`. **Internal code only ever sees integer cents.**
-- WebSocket: `KalshiWebSocket` (line 209) connects to `wss://api.elections.kalshi.com/trade-api/ws/v2`. Subscriptions used by the scanner: `ticker` and `market_lifecycle_v2` (`src/predictions/scanner.py:894-906`). Reconnection / resubscribe handled in `ws_loop` inside `run_scanner`.
-- Order placement: `POST /portfolio/orders` still takes integer `yes_price`/`no_price` despite reads being dollar strings — see `src/predictions/scanner.py::place_bet` (line 127).
+## File Storage
 
-## ESPN
+**S3 Bucket (DB Backups):**
+- Service: AWS S3
+- Bucket name: `{app_name}-DbBackups` (defined in `sst.config.ts`)
+- Backup strategy:
+  - **30-minute snapshots**: `backup_loop()` in `scanner.py` uploads to `backups/YYYY-MM-DD/HHMM-predictions.db`
+  - **Latest symlink**: Also uploaded to `backups/latest.db` for quick recovery
+  - **Startup**: `_download_db()` in `api.py` fetches `latest.db` before initializing
+  - **Graceful shutdown**: `_backup_db_sync()` uploads final snapshot on container stop
+- SDK: `boto3` (S3 client)
+- Environment: `DB_BACKUP_BUCKET` env var (set in `sst.config.ts`)
+- Access: IAM role attached to ECS task (S3 read/write permissions)
 
-`src/predictions/espn.py`. Undocumented public scoreboard:
+## Caching
 
-`https://site.api.espn.com/apis/site/v2/sports/<sport_path>/scoreboard`
+**Module-level Dict:**
+- `market_prices` dict in `src/predictions/scanner.py` — shared live market price cache
+- Populated by WebSocket handler (`on_lifecycle`)
+- Read by scanner loop to avoid re-fetching from REST API
+- Ephemeral (lost on process restart)
 
-- `KALSHI_TO_ESPN` map (lines 16-29) connects Kalshi series tickers (e.g. `KXNBAGAME`) to ESPN sport paths (e.g. `basketball/nba`).
-- `SPORT_FINAL_PERIOD` (lines 31-44) tells the scanner which period number is "final" per sport (4 for NBA, 9 for MLB, etc).
-- `get_scoreboard(sport_path)` returns a `list[GameState]` (`espn.py:104`).
-- `match_kalshi_to_espn(ticker, game)` (line 232) is the fuzzy team-abbrev matcher.
-- No auth, no rate-limit hint — caller's only protection is the 10 s polling cadence.
+## Authentication & Identity
 
-## API-Football v3 (soccer backtest)
+**Kalshi API Auth:**
+- Mechanism: RSA PSS + SHA256 signature on timestamp + HTTP method + path
+- Headers: KALSHI-ACCESS-KEY (public key ID), KALSHI-ACCESS-SIGNATURE (base64-encoded signature), KALSHI-ACCESS-TIMESTAMP (milliseconds)
+- Implementation: `_sign()` and `_headers()` in `KalshiClient`
+- Credentials sourced: `KALSHI_API_KEY`, `KALSHI_PRIVATE_KEY` (or `KALSHI_PRIVATE_KEY_PATH`)
 
-`src/predictions/soccer_cache.py`. Used only by the `/api/backtest/soccer` endpoint via `src/predictions/backtest.py`.
+**Dashboard/API Auth:**
+- Mechanism: Bearer token (shared secret)
+- Header: `Authorization: Bearer {API_TOKEN}`
+- Validation: `_check_token()` dependency in FastAPI endpoints
+- Token storage: `.env` (local), SST secrets (production)
+- Endpoints protected: All `/api/…` mutating endpoints (config set, backtest) require Bearer
+- Public endpoints: `GET /` (health), `GET /api/stats` (read-only, but Bearer-gated per code)
 
-- Base URL `https://v3.football.api-sports.io`, header `x-apisports-key: <API_FOOTBALL_KEY>`.
-- Free-tier limits: 100 requests/day, 30/min. The client raises `RateLimitedError` on HTTP 429 (`soccer_cache.py:96`).
-- Cache: a separate SQLite at `SOCCER_CACHE_DB_PATH` (default `./soccer-cache.db`, `/tmp/soccer-cache.db` in production via SST). Tables `soccer_matches`, `soccer_goals` defined at `soccer_cache.py:36-61`.
-- Provider was swapped from football-data.org to API-Football on branch `feat/soccer-backtest` (commits `e82a4c4`, `2e0c2c5`, `86604b4`, `cb60e60`, `f2c2f78`). The new provider supports batched fixture-detail calls (up to 20 ids per request).
+**Dashboard Password:**
+- Mechanism: Client-side form submission to server action (`login()` in `dashboard/app/actions.ts`)
+- Hash: bcrypt (server-side, not exposed to client)
+- Storage: `DASHBOARD_PASSWORD` env var (SST secret in production)
+- Session: Next.js cookies after login
+- Purpose: Single-user access control for read-only UI
 
-## S3 backups (durability)
+## Monitoring & Observability
 
-The production SQLite lives at `/tmp/predictions.db` (ECS task-local, lost on restart), so durability is provided by S3 snapshots.
+**Error Tracking:**
+- Not integrated (no Sentry/DataDog)
+- Errors logged to `scanner.log` file (streams to container stdout + file)
 
-- Bucket name comes from env `DB_BACKUP_BUCKET` (set by SST link to `DbBackups`).
-- `src/predictions/scanner.py::backup_db` (line 747) copies the DB to a tmp file (so SQLite isn't read mid-write), then uploads to `s3://<bucket>/backups/YYYY-MM-DD/HHMM-predictions.db` and overwrites `backups/latest.db`.
-- The backup loop runs every ~30 minutes (interval inside `run_scanner`).
-- On startup, `_download_db()` (`src/predictions/api.py:176`) restores from `backups/latest.db` before `init_db()` runs.
-- `_backup_db_sync()` (`src/predictions/api.py:192`) also runs in the lifespan `finally` to flush on graceful shutdown.
+**Logs:**
+- Python: `logging.basicConfig()` in `scanner.py` — StreamHandler + FileHandler (`scanner.log`)
+- Format: `[TIMESTAMP] [LEVEL] message`
+- Dashboard: Next.js server logs to stdout
+- Production: Container logs streamed to ECS CloudWatch (via SST)
 
-## Auth Surfaces (summary)
+**Metrics:**
+- No external metrics service (no Prometheus/CloudWatch)
+- Balance snapshots recorded every scan loop for manual analysis
 
-| Caller | Credential | Where it's read |
-|---|---|---|
-| Dashboard browser → Next.js | Password cookie (sha256 of `DASHBOARD_PASSWORD + "salt123"`) | `dashboard/app/actions.ts` (`login`, `checkAuth`) |
-| Next.js server → API | `Authorization: Bearer ${API_TOKEN}` | `dashboard/app/api/[...path]/route.ts:18-21` and `dashboard/app/actions.ts::updateConfig` |
-| CLI → API | `Authorization: Bearer <token>` (env `API_TOKEN` or `--token`) | `cli/src/api.ts` |
-| API → Kalshi | RSA-PSS signature header | `src/predictions/kalshi_client.py::_sign` |
-| API → ESPN | none | n/a |
-| API → API-Football | `x-apisports-key` | `src/predictions/soccer_cache.py::ApiFootballClient` |
+## CI/CD & Deployment
 
-The browser **never** sees `API_TOKEN`; the dashboard server-side proxy at `dashboard/app/api/[...path]/route.ts` injects it.
+**Hosting:**
+- AWS ECS Fargate (us-east-2 region, via SST v4)
+- Container: Python 3.13-slim with uv, deployed from Dockerfile
+- Service: Single ECS task (API + scanner both in one container) to save ~$9/month
+- Load balancing: CloudFront (dashboard) + ALB (API)
+- DNS: Cloudflare (pointed via `sst.cloudflare.dns()`)
+
+**CI Pipeline:**
+- Not integrated (no GitHub Actions/GitLab CI)
+- Manual deployment: `pnpm sst:deploy` (uses `assume` + `direnv` for AWS credentials)
+- Pre-commit hook: `scripts/pre-commit-check.sh` runs linting + formatting locally before push
+
+## Environment Configuration
+
+**Required env vars (local .env or SST secrets):**
+- `KALSHI_API_KEY` — API key ID from Kalshi
+- `KALSHI_PRIVATE_KEY` — RSA private key PEM (or `KALSHI_PRIVATE_KEY_PATH` to file)
+- `API_TOKEN` — Bearer token for API/dashboard
+- `DASHBOARD_PASSWORD` — Login password
+- `DRY_RUN` — "true" for shadow trades, "false" for real
+- `DATABASE_URL` — SQLite path (default: `sqlite:///predictions.db`)
+- `DB_BACKUP_BUCKET` — S3 bucket name (optional; empty = no backups)
+- `NEXT_PUBLIC_API_URL` — Dashboard API endpoint (e.g., `http://localhost:8000`)
+- `API_FOOTBALL_KEY` — API-Football v3 key for soccer backtests
+
+**Build-time env vars:**
+- `CACHE_BUST` — Docker arg to bust build cache (set to current timestamp)
+
+**Secrets location:**
+- Local: `.env` file (gitignored)
+- Production: SST secrets (set via `npx sst secret set KEY value`)
+- Dashboard backend: Never exposes secrets to browser; server-side proxy injects Bearer token
+
+## Webhooks & Callbacks
+
+**Incoming:**
+- None implemented — scanner pulls from Kalshi REST + WS
+
+**Outgoing:**
+- None implemented — no external notifications (email, Slack, etc.)
+
+**Lifespan Hooks:**
+- FastAPI lifespan context manager (`lifespan()` in `api.py`):
+  - Startup: Download DB from S3, init schema, init soccer cache, spawn scanner loop
+  - Shutdown: Upload final DB backup to S3
+
+---
+
+*Integration audit: 2026-04-30*
