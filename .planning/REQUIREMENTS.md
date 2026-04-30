@@ -20,7 +20,7 @@
 
 - [x] **STR-02**: Each strategy in `strategies.yaml` supports multi-trigger (OR-of-AND) conditions: a `triggers` list where each entry is a flat dict of AND conditions, and any one entry matching fires the strategy; supported trigger fields: `sport`, `min_lead`, `min_minute`, `min_yes_price`, `max_yes_price`; missing field in a trigger = no constraint on that dimension
 
-- [ ] **STR-03**: Strategy definitions in `strategies.yaml` drive both the backtest simulator and the live scanner (single source of truth for strategy logic)
+- [x] **STR-03**: Strategy definitions in `strategies.yaml` drive both the backtest simulator and the live scanner (single source of truth for strategy logic)
 
 - [ ] **STR-04**: The `stretch_opportunities` DB table is dropped and `WHAT_IF_STRATEGIES` is removed from `scanner.py`; the existing `GET /api/sport-stats` endpoint is updated to derive game counts from the `opportunities` table instead
 

@@ -21,3 +21,10 @@ Pre-existing issues discovered during execution. Not in scope for this plan.
   pre-dates Plan 02-00). Mostly `unresolved-import` warnings.
 - Scope: defer to a typed-environment cleanup task; ty is a young checker
   and most diagnostics are about optional dependencies it cannot resolve.
+
+## Pre-existing ruff E501 errors in src/predictions/api.py
+
+- 2 E501 (line too long) errors in `src/predictions/api.py` at lines 489
+  and 495 (a comment and a SQL string literal in `get_total_sport_stats`).
+- Verified pre-existing via `git stash` baseline check during Plan 02-02.
+- Scope: stand-alone lint cleanup pass; not in 02-02's blast radius.
