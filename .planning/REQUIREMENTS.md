@@ -12,13 +12,13 @@
 
 - [ ] **BT-06**: User backtests use contract-based P&L math: `contracts = floor(stake_cents / price_cents)`, win profit = `contracts × (100 − price_cents)`, loss = `contracts × price_cents`; the `avg_win_yield` input is removed from the backtest UI
 
-- [ ] **BT-07**: The backtest page has a strategy selector dropdown populated from `strategies.yaml`; selecting a strategy pre-populates the parameter sliders (sport, min_lead, min_minute, min_yes_price, max_yes_price) with that strategy's first trigger values; sliders remain fully editable so users can explore custom variations after loading a preset
+- [x] **BT-07**: The backtest page has a strategy selector dropdown populated from `strategies.yaml`; selecting a strategy pre-populates the parameter sliders (sport, min_lead, min_minute, min_yes_price, max_yes_price) with that strategy's first trigger values; sliders remain fully editable so users can explore custom variations after loading a preset
 
 ### Strategy Definition
 
-- [ ] **STR-01**: Named strategies are defined in a `strategies.yaml` file at the repo root (path overridable via `STRATEGIES_PATH` env var), replacing the hardcoded `WHAT_IF_STRATEGIES` list in `scanner.py`; missing file → scanner logs a warning and proceeds with no strategies
+- [x] **STR-01**: Named strategies are defined in a `strategies.yaml` file at the repo root (path overridable via `STRATEGIES_PATH` env var), replacing the hardcoded `WHAT_IF_STRATEGIES` list in `scanner.py`; missing file → scanner logs a warning and proceeds with no strategies
 
-- [ ] **STR-02**: Each strategy in `strategies.yaml` supports multi-trigger (OR-of-AND) conditions: a `triggers` list where each entry is a flat dict of AND conditions, and any one entry matching fires the strategy; supported trigger fields: `sport`, `min_lead`, `min_minute`, `min_yes_price`, `max_yes_price`; missing field in a trigger = no constraint on that dimension
+- [x] **STR-02**: Each strategy in `strategies.yaml` supports multi-trigger (OR-of-AND) conditions: a `triggers` list where each entry is a flat dict of AND conditions, and any one entry matching fires the strategy; supported trigger fields: `sport`, `min_lead`, `min_minute`, `min_yes_price`, `max_yes_price`; missing field in a trigger = no constraint on that dimension
 
 - [ ] **STR-03**: Strategy definitions in `strategies.yaml` drive both the backtest simulator and the live scanner (single source of truth for strategy logic)
 
