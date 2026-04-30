@@ -4,14 +4,14 @@ milestone: v1.2
 milestone_name: Strategy Engine
 status: executing
 stopped_at: Completed 02-00-PLAN.md (bootstrap)
-last_updated: "2026-04-30T11:17:01.644Z"
+last_updated: "2026-04-30T11:26:12.884Z"
 last_activity: 2026-04-30
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 3
-  percent: 38
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 ## Current Position
 
 Phase: 02 (strategy-engine-core) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-04-30
 
-Progress: [████░░░░░░] 38%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [████░░░░░░] 38%
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 02 | 00 | ~5 min | 3 | 11 |
+| Phase 02 P01 | ~3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,7 @@ Recent decisions affecting current work:
 - [Phase 02-00]: PyYAML 6.0+ added as the only justified Python dependency for Phase 2 (no stdlib YAML alternative); locked into uv.lock as 6.0.3
 - [Phase 02-00]: Wave 0 bootstrap pattern: ship deps + fixtures + xfail-marked stubs together so Wave 1 plans have green-feedback test infrastructure already in place when they begin
 - [Phase 02-00]: STRATEGIES_PATH stays commented out in .env.example: default 'strategies.yaml' relative to CWD already resolves correctly in dev (repo root) and prod (Dockerfile WORKDIR=/app)
+- [Phase 02]: [Phase 02-01] Strategy loader uses yaml.safe_load + Pydantic v2 ConfigDict(extra=forbid) + Field(min_length=1) — strict, all-or-nothing validation — Single boundary mirrors kalshi_client extract_cents 'single drift point' convention; STRATEGIES_PATH read at single site inside load_strategies() avoids env-var drift across two read sites
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-30T11:17:01.632Z
+Last session: 2026-04-30T11:25:29.359Z
 Stopped at: Completed 02-00-PLAN.md (bootstrap)
 Resume: `/gsd-execute-phase 02-strategy-engine-core` (6 plans: bootstrap → loader → API → engine → UI → verify)

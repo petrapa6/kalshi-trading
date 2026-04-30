@@ -72,7 +72,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   4. `uv run ruff check . && uv run ruff format --check . && uv run ty check` passes clean
 **Plans**: 6 plans
 - [x] 02-00-PLAN.md — Bootstrap: pyyaml dep, .env.example, starter strategies.yaml, test fixtures + xfail stubs (Wave 0)
-- [ ] 02-01-PLAN.md — Pydantic loader (`src/predictions/strategies.py`) + STR-01/STR-02 tests (Wave 1)
+- [x] 02-01-PLAN.md — Pydantic loader (`src/predictions/strategies.py`) + STR-01/STR-02 tests (Wave 1)
 - [ ] 02-02-PLAN.md — `GET /api/strategies` Bearer-auth endpoint + STR-03 tests (Wave 2)
 - [ ] 02-03-PLAN.md — Multi-trigger backtest engine + season sport_path mapping (Wave 2)
 - [ ] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
