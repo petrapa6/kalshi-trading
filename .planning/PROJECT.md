@@ -30,16 +30,16 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 - ✓ **BT-05**: Backtest page renders graphs and strategy config purely from local JSON; the `/api/backtest/soccer` integration and the Kalshi-price-based bankroll chart are removed from the page — v1.1
 - ✓ **INFRA-01**: SST v3 deploys API to ECS Fargate + dashboard via OpenNext + Cloudflare DNS — existing
 - ✓ **INFRA-02**: SQLite snapshot to S3 every 30 min; restored on container start — existing
+- ✓ **BT-07**: Backtest page strategy dropdown populated from `strategies.yaml` pre-populates parameter sliders (sliders stay editable) — Validated in Phase 2
+- ✓ **STR-01**: Named strategies are defined in a `strategies.yaml` file (replaces `WHAT_IF_STRATEGIES` hardcoded list in `scanner.py`) — Validated in Phase 2 (loader half; scanner replacement is STR-04 in Phase 3)
+- ✓ **STR-02**: Each strategy supports multi-trigger conditions: OR-of-AND sets (e.g. "goal_diff ≥ 3 at minute ≥ 20 OR goal_diff ≥ 2 at minute ≥ 75") — Validated in Phase 2
+- ✓ **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner — Validated in Phase 2 (backtest half; live-scanner half is DRY-01/DRY-02 in Phase 3)
 
 ### Active
 
-<!-- v1.2 Strategy Engine — defined 2026-04-29 -->
+<!-- v1.2 Strategy Engine — defined 2026-04-29; Phase 2 complete 2026-04-30 -->
 
 - **BT-06**: Backtest engine uses contract-based P&L math (`contracts = floor(stake/price)`, win = `contracts × (1−price)`, loss = `contracts × price`)
-- **BT-07**: Backtest page strategy dropdown populated from `strategies.yaml` pre-populates parameter sliders (sliders stay editable)
-- **STR-01**: Named strategies are defined in a `strategies.yaml` file (replaces `WHAT_IF_STRATEGIES` hardcoded list in `scanner.py`)
-- **STR-02**: Each strategy supports multi-trigger conditions: OR-of-AND sets (e.g. "goal_diff ≥ 3 at minute ≥ 20 OR goal_diff ≥ 2 at minute ≥ 75")
-- **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner
 - **STR-04**: `stretch_opportunities` table and `WHAT_IF_STRATEGIES` are replaced by the new strategy file system
 - **DRY-01**: Live scanner evaluates strategies each loop; when triggered, records live Kalshi yes_ask price and writes a dry-run Trade row (no API call, hardcoded `dry_run=True`)
 - **DRY-02**: Dry-run trades stored with `strategy_name`; P&L computed on settlement using contract math with the recorded yes_ask entry price
@@ -106,4 +106,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-29 — v1.2 Strategy Engine milestone started*
+*Last updated: 2026-04-30 — Phase 2 (Strategy Engine Core) complete*
