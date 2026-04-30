@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 02-strategy-engine-core
 source: [02-00-SUMMARY.md, 02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md, 02-04-SUMMARY.md, 02-05-SUMMARY.md]
 started: 2026-04-30T00:00:00Z
-updated: 2026-04-30T00:00:02Z
+updated: 2026-04-30T00:00:03Z
 ---
 
 ## Current Test
@@ -132,5 +132,18 @@ blocked: 0
   reason: "User reported: pass, but this text should not be here, it's confusing - remove it and use `contract_price` for backtesting"
   severity: minor
   test: 7
-  artifacts: []
-  missing: []
+  root_cause: "Design intent (D-11) conflicts with user UX preference at UAT — not a defect. D-11 deliberately surfaced YAML min_yes_price/max_yes_price as read-only info text inside trigger cards; user finds it confusing clutter and wants it removed. User's 'use contract_price for backtesting' is ambiguous between (a) UI-only deletion since contract_price already drives capital math, or (b) engine-level price gating using contract_price as a stand-in for the missing Kalshi book."
+  artifacts:
+    - path: "dashboard/app/backtest/page.tsx"
+      issue: "lines 404-417 render the conditional Live trading info text block; lines 8-14 ApiTrigger interface declares min_yes_price/max_yes_price"
+    - path: "dashboard/app/backtest/backtest.ts"
+      issue: "lines 14-15 JSDoc declares min_yes_price/max_yes_price NOT used by engine (D-11); detectFireMulti at lines 151-193 confirms zero engine consumption"
+    - path: ".planning/phases/02-strategy-engine-core/02-CONTEXT.md"
+      issue: "D-11 at lines 137-152 is the original design intent; needs Revision addendum if UAT outcome retracts it"
+    - path: "strategies.yaml"
+      issue: "lines 15-16 comment notes min_yes_price/max_yes_price are live-scanner config — keep, do not strip from YAML"
+  missing:
+    - "Disambiguation: confirm whether fix is (a) UI-only deletion or (b) engine-level price gating"
+    - "Under (a): delete page.tsx:404-417, optionally clean ApiTrigger fields, add D-11 retraction to 02-CONTEXT.md Revision section"
+    - "Under (b): extend detectFireMulti to filter on contract_price ∈ [min_yes_price, max_yes_price], thread contract_price into trigger evaluation, update Trigger JSDoc, add tests"
+  debug_session: ".planning/debug/live-trading-info-text-ux.md"
