@@ -2,8 +2,25 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { checkAuth } from "../actions";
-import { SEASONS, type SeasonOption } from "./seasons";
-import { runBacktest, type BacktestTrade } from "./backtest";
+import { LEAGUE_SPORT_PATH, SEASONS, type SeasonOption } from "./seasons";
+import { runBacktest, type BacktestTrade, type Trigger } from "./backtest";
+
+interface ApiTrigger {
+  sport?: string;
+  min_minute?: number;
+  min_lead?: number;
+  min_yes_price?: number;
+  max_yes_price?: number;
+}
+
+interface ApiStrategy {
+  name: string;
+  description?: string;
+  triggers: ApiTrigger[];
+}
+
+const CUSTOM_KEY = "__custom__";
+const CUSTOM_LABEL = "— Custom —";
 
 function formatEuro(value: number): string {
   return value.toLocaleString(undefined, {
@@ -83,8 +100,15 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
 export default function BacktestPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [selectedKey, setSelectedKey] = useState<string>(SEASONS[0]?.key ?? "");
-  const [minMinute, setMinMinute] = useState(75);
-  const [minLead, setMinLead] = useState(2);
+  const [strategies, setStrategies] = useState<ApiStrategy[]>([]);
+  const [selectedStrategy, setSelectedStrategy] = useState<string>(CUSTOM_KEY);
+  const [triggers, setTriggers] = useState<Trigger[]>(() => [
+    {
+      sport: SEASONS[0]?.sport_path ?? "soccer/eng.1",
+      min_minute: 75,
+      min_lead: 2,
+    },
+  ]);
   const [initialCapital, setInitialCapital] = useState(1000);
   const [betFractionPct, setBetFractionPct] = useState(2);
   const [contractPriceCents, setContractPriceCents] = useState(97);
@@ -96,10 +120,50 @@ export default function BacktestPage() {
     });
   }, []);
 
+  useEffect(() => {
+    fetch("/api/strategies", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data: { strategies: ApiStrategy[] }) => {
+        setStrategies(data.strategies);
+      })
+      .catch(() => {
+        // Strategies unreachable — Custom mode still works.
+      });
+  }, []);
+
   const selected: SeasonOption | undefined = useMemo(
     () => SEASONS.find((s) => s.key === selectedKey),
     [selectedKey],
   );
+
+  function updateTrigger(idx: number, patch: Partial<Trigger>) {
+    setSelectedStrategy(CUSTOM_KEY);
+    setTriggers((prev) =>
+      prev.map((t, i) => (i === idx ? { ...t, ...patch } : t)),
+    );
+  }
+
+  function addTrigger() {
+    setSelectedStrategy(CUSTOM_KEY);
+    setTriggers((prev) => [...prev, { ...prev[prev.length - 1] }]);
+  }
+
+  function removeTrigger(idx: number) {
+    if (!window.confirm("Delete this trigger?")) return;
+    setSelectedStrategy(CUSTOM_KEY);
+    setTriggers((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function handleStrategyChange(name: string) {
+    if (name === CUSTOM_KEY) {
+      setSelectedStrategy(CUSTOM_KEY);
+      return;
+    }
+    const strat = strategies.find((s) => s.name === name);
+    if (!strat) return;
+    setSelectedStrategy(name);
+    setTriggers(strat.triggers.map((t) => ({ ...t })));
+  }
 
   const result = useMemo(
     () =>
@@ -107,13 +171,7 @@ export default function BacktestPage() {
         ? runBacktest(
             selected.data,
             {
-              triggers: [
-                {
-                  sport: selected.sport_path,
-                  min_minute: minMinute,
-                  min_lead: minLead,
-                },
-              ],
+              triggers,
               initial_capital: initialCapital,
               bet_fraction: betFractionPct / 100,
               contract_price_cents: contractPriceCents,
@@ -121,17 +179,26 @@ export default function BacktestPage() {
             selected.sport_path,
           )
         : null,
-    [
-      selected,
-      minMinute,
-      minLead,
-      initialCapital,
-      betFractionPct,
-      contractPriceCents,
-    ],
+    [selected, triggers, initialCapital, betFractionPct, contractPriceCents],
   );
 
   if (!authed) return <div className="min-h-screen bg-black" />;
+
+  const seasonSportPath = selected?.sport_path ?? "";
+  const skippedTriggers = triggers.filter(
+    (t) => t.sport !== undefined && t.sport !== seasonSportPath,
+  );
+  const skippedSports = Array.from(
+    new Set(
+      skippedTriggers
+        .map((t) => t.sport)
+        .filter((s): s is string => Boolean(s)),
+    ),
+  ).join(", ");
+  const selectedDescription =
+    selectedStrategy !== CUSTOM_KEY
+      ? strategies.find((s) => s.name === selectedStrategy)?.description
+      : undefined;
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
@@ -168,30 +235,24 @@ export default function BacktestPage() {
             )}
           </div>
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Min minute: {minMinute}
-            </label>
-            <input
-              type="range"
-              min={1}
-              max={90}
-              value={minMinute}
-              onChange={(e) => setMinMinute(Number(e.target.value))}
-              className="w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Min lead: {minLead}
-            </label>
-            <input
-              type="range"
-              min={1}
-              max={5}
-              value={minLead}
-              onChange={(e) => setMinLead(Number(e.target.value))}
-              className="w-full"
-            />
+            <label className="block text-sm text-gray-300 mb-1">Strategy</label>
+            <select
+              value={selectedStrategy}
+              onChange={(e) => handleStrategyChange(e.target.value)}
+              className="w-full bg-black border border-gray-700 rounded px-2 py-1"
+            >
+              <option value={CUSTOM_KEY}>{CUSTOM_LABEL}</option>
+              {strategies.map((s) => (
+                <option key={s.name} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            {selectedDescription && (
+              <p className="mt-1 text-xs text-gray-400">
+                {selectedDescription}
+              </p>
+            )}
           </div>
           <div className="border-t border-gray-800 pt-3 space-y-3">
             <div>
@@ -246,10 +307,124 @@ export default function BacktestPage() {
               </p>
             </div>
           </div>
+          <div className="border-t border-gray-800 pt-3 space-y-3">
+            <div className="text-sm text-gray-300">Triggers</div>
+            {triggers.map((trigger, idx) => {
+              const mismatched =
+                trigger.sport !== undefined &&
+                trigger.sport !== seasonSportPath;
+              return (
+                <div
+                  key={idx}
+                  className={`p-3 rounded border space-y-2 ${
+                    mismatched
+                      ? "opacity-40 border-gray-700"
+                      : "border-gray-600"
+                  }`}
+                >
+                  {mismatched && (
+                    <p
+                      className="text-xs text-yellow-500"
+                      title={`Skipped — no ${trigger.sport} data loaded`}
+                    >
+                      Skipped — no {trigger.sport} data loaded
+                    </p>
+                  )}
+                  <div>
+                    <label className="block text-xs text-gray-300 mb-1">
+                      Sport
+                    </label>
+                    <select
+                      value={trigger.sport ?? ""}
+                      onChange={(e) =>
+                        updateTrigger(idx, {
+                          sport: e.target.value || undefined,
+                        })
+                      }
+                      className="w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
+                    >
+                      <option value="">(any)</option>
+                      {Object.entries(LEAGUE_SPORT_PATH).map(([, path]) => (
+                        <option key={path} value={path}>
+                          {path}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-300 mb-1">
+                      Min minute: {trigger.min_minute ?? "(any)"}
+                    </label>
+                    <input
+                      type="range"
+                      min={1}
+                      max={90}
+                      value={trigger.min_minute ?? 75}
+                      onChange={(e) =>
+                        updateTrigger(idx, {
+                          min_minute: Number(e.target.value),
+                        })
+                      }
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-300 mb-1">
+                      Min lead: {trigger.min_lead ?? "(any)"}
+                    </label>
+                    <input
+                      type="range"
+                      min={1}
+                      max={5}
+                      value={trigger.min_lead ?? 2}
+                      onChange={(e) =>
+                        updateTrigger(idx, {
+                          min_lead: Number(e.target.value),
+                        })
+                      }
+                      className="w-full"
+                    />
+                  </div>
+                  {(trigger.min_yes_price !== undefined ||
+                    trigger.max_yes_price !== undefined) && (
+                    <p className="text-xs text-gray-400">
+                      Live trading:{" "}
+                      {trigger.min_yes_price !== undefined
+                        ? `${trigger.min_yes_price}¢`
+                        : "—"}
+                      –
+                      {trigger.max_yes_price !== undefined
+                        ? `${trigger.max_yes_price}¢`
+                        : "—"}{" "}
+                      (info only — backtest uses contract price slider)
+                    </p>
+                  )}
+                  {triggers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeTrigger(idx)}
+                      className="text-xs text-red-400 hover:text-red-300"
+                    >
+                      Remove trigger
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+            <div className="border-t border-gray-700 pt-3">
+              <button
+                type="button"
+                onClick={addTrigger}
+                className="text-sm text-blue-400 hover:text-blue-300"
+              >
+                + Add trigger
+              </button>
+            </div>
+          </div>
           <p className="text-xs text-gray-500">
-            Trades fire on the first goal where minute ≥ min_minute and |lead| ≥
-            min_lead. Stoppage time is ignored. Simulation walks matches
-            chronologically (oldest first); the list below is newest first.
+            Triggers fire on the first goal where ALL conditions in any trigger
+            are met (OR-of-AND, first-fire-wins per match). Sport-mismatched
+            triggers are skipped silently. Stoppage time is ignored.
           </p>
         </aside>
         <main className="space-y-6">
@@ -308,6 +483,13 @@ export default function BacktestPage() {
                     }
                   />
                 </section>
+                {skippedTriggers.length > 0 && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    {skippedTriggers.length} of {triggers.length} trigger
+                    {triggers.length !== 1 ? "s" : ""} skipped: {skippedSports}{" "}
+                    (no data for current season)
+                  </p>
+                )}
                 {result.trades.length > 0 ? (
                   <section className="space-y-2">
                     {result.trades.map((t) => (
