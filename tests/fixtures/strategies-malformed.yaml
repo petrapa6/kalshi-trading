@@ -1,0 +1,4 @@
+strategies:
+  broken:
+    description: "Empty triggers list — must be rejected"
+    triggers: []

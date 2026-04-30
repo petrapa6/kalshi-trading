@@ -1,0 +1,9 @@
+strategies:
+  test_strategy:
+    description: "Fixture for happy-path tests"
+    triggers:
+      - sport: soccer/eng.1
+        min_minute: 80
+        min_lead: 2
+        min_yes_price: 92
+        max_yes_price: 99

@@ -1,0 +1,6 @@
+strategies:
+  typo_strat:
+    triggers:
+      - sport: soccer/eng.1
+        min_minutes: 80    # typo: should be min_minute
+        min_lead: 2
