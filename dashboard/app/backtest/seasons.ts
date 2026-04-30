@@ -65,6 +65,19 @@ const LEAGUE_NAMES: Record<string, string> = {
   seriea: "Serie A",
 };
 
+// Maps a league key (from the season filename) to the ESPN sport_path notation
+// used by the scanner (KALSHI_TO_ESPN, lead:<path> config keys). Phase 2 D-02:
+// trigger.sport in strategies.yaml uses this same notation, so a backtest can
+// silently skip triggers whose sport doesn't match the loaded season.
+export const LEAGUE_SPORT_PATH: Record<string, string> = {
+  bundesliga: "soccer/ger.1",
+  epl: "soccer/eng.1",
+  laliga: "soccer/esp.1",
+  ligue1: "soccer/fra.1",
+  mls: "soccer/usa.1",
+  seriea: "soccer/ita.1",
+};
+
 export function parseSeasonFilename(name: string): ParsedFilename | null {
   const m = FILENAME_RE.exec(name);
   if (!m) return null;
@@ -92,6 +105,7 @@ export interface SeasonOption {
   key: string; // basename, e.g. "epl_2024_25_season.json"
   parsed: ParsedFilename;
   data: SeasonFile;
+  sport_path: string; // "" if league not in LEAGUE_SPORT_PATH (D-02)
 }
 
 // Hand-maintained list of (filename, imported data) pairs.
@@ -125,7 +139,14 @@ export const SEASONS: SeasonOption[] = IMPORTS.flatMap(({ filename, data }) => {
     }
     return [];
   }
-  return [{ key: filename, parsed, data }];
+  return [
+    {
+      key: filename,
+      parsed,
+      data,
+      sport_path: LEAGUE_SPORT_PATH[parsed.league] ?? "",
+    },
+  ];
 }).sort((a, b) => {
   // Sort by league name ascending, then by startYear descending (newest first)
   if (a.parsed.league !== b.parsed.league) {
