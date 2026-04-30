@@ -83,6 +83,4 @@ async def test_ws_connects_and_receives():
         await ws.close()
 
     got_subscribed = any(m.get("type") == "subscribed" for m in received)
-    assert got_subscribed or received, (
-        "WebSocket connected but received no messages at all"
-    )
+    assert got_subscribed or received, "WebSocket connected but received no messages at all"

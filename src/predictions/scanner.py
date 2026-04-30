@@ -180,7 +180,8 @@ async def place_bet(
         log.info(f"  Order placed: {result}")
         order = result.get("order", {})
         trade.order_id = order.get("order_id", "")
-        # Kalshi usually returns fee in cents. Use extract_cents to handle potential string formatting
+        # Kalshi usually returns fee in cents. Use extract_cents to handle potential
+        # string formatting
         trade.fee_cents = (
             extract_cents(order, "fee") if "fee_dollars" in order else int(order.get("fee", 0))
         )
@@ -643,9 +644,10 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict, max_bet_cents
                     if not (yes_ask and strat_price <= yes_ask <= 99 and volume >= 50):
                         continue
 
-                    # This market would qualify under this strategy
-                    # We want to track ALL markets the strategy would have bet on, including the real ones,
-                    # so we DO NOT skip if it qualifies under real filters.
+                    # This market would qualify under this strategy.
+                    # We want to track ALL markets the strategy would have bet on,
+                    # including the real ones, so we DO NOT skip if it qualifies under
+                    # real filters.
 
                     if (ticker, strategy_name) in existing:
                         continue
@@ -665,10 +667,11 @@ def _evaluate_what_if_strategies(session, espn_final_period: dict, max_bet_cents
                     if not real_timing:
                         reasons.append("timing")
 
-                    # Heuristic to derive event_ticker from market ticker if we don't have it natively
-                    # Most Kalshi game tickers follow: KX<SERIES>-<DATE>-<AWAY>-<HOME>
-                    # Event tickers are usually just the prefix before any specific market modifiers.
-                    # As a safe fallback, we use the ticker itself.
+                    # Heuristic to derive event_ticker from market ticker if we don't
+                    # have it natively. Most Kalshi game tickers follow:
+                    # KX<SERIES>-<DATE>-<AWAY>-<HOME>. Event tickers are usually just
+                    # the prefix before any specific market modifiers. As a safe
+                    # fallback, we use the ticker itself.
                     event_ticker_val = (
                         ticker.split("-")[0] + "-" + "-".join(ticker.split("-")[1:4])
                         if "-" in ticker

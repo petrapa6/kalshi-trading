@@ -11,8 +11,8 @@ Usage (run from the repo root):
     uv run python -m predictions.config_cli set lead:basketball/nba 8
     uv run python -m predictions.config_cli set lead:hockey/nhl 2
     uv run python -m predictions.config_cli set final_seconds:soccer/eng.1 4800
-    uv run python -m predictions.config_cli delete KEY          # remove override (revert to default)
-    uv run python -m predictions.config_cli reset               # reset all overrides to defaults
+    uv run python -m predictions.config_cli delete KEY          # remove override
+    uv run python -m predictions.config_cli reset               # reset to defaults
 """
 
 import sys

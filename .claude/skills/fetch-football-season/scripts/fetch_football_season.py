@@ -30,14 +30,19 @@ REQUEST_DELAY = 0.3  # seconds between requests
 # split_season=True: year is end-year (European Aug–Jun format)
 # split_season=False: year IS the season year (e.g. MLS)
 LEAGUES: dict[str, dict] = {
-    "EPL":        {"path": "eng.1",          "name": "English Premier League",   "split": True,  "shootouts": False},
-    "PL":         {"path": "eng.1",          "name": "English Premier League",   "split": True,  "shootouts": False},
-    "LALIGA":     {"path": "esp.1",          "name": "La Liga",                  "split": True,  "shootouts": False},
-    "BUNDESLIGA": {"path": "ger.1",          "name": "Bundesliga",               "split": True,  "shootouts": False},
-    "SERIEA":     {"path": "ita.1",          "name": "Serie A",                  "split": True,  "shootouts": False},
-    "LIGUE1":     {"path": "fra.1",          "name": "Ligue 1",                  "split": True,  "shootouts": False},
-    "UCL":        {"path": "uefa.champions", "name": "UEFA Champions League",    "split": True,  "shootouts": False},
-    "MLS":        {"path": "usa.1",          "name": "Major League Soccer",      "split": False, "shootouts": True},
+    "EPL": {"path": "eng.1", "name": "English Premier League", "split": True, "shootouts": False},
+    "PL": {"path": "eng.1", "name": "English Premier League", "split": True, "shootouts": False},
+    "LALIGA": {"path": "esp.1", "name": "La Liga", "split": True, "shootouts": False},
+    "BUNDESLIGA": {"path": "ger.1", "name": "Bundesliga", "split": True, "shootouts": False},
+    "SERIEA": {"path": "ita.1", "name": "Serie A", "split": True, "shootouts": False},
+    "LIGUE1": {"path": "fra.1", "name": "Ligue 1", "split": True, "shootouts": False},
+    "UCL": {
+        "path": "uefa.champions",
+        "name": "UEFA Champions League",
+        "split": True,
+        "shootouts": False,
+    },
+    "MLS": {"path": "usa.1", "name": "Major League Soccer", "split": False, "shootouts": True},
 }
 
 
@@ -157,13 +162,24 @@ def build_match(event: dict, *, shootouts: bool = False) -> dict | None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("league", choices=sorted(LEAGUES), metavar="LEAGUE",
-                        help=f"League code: {', '.join(sorted(LEAGUES))}")
-    parser.add_argument("year", type=int, metavar="YEAR",
-                        help="Season end-year (e.g. 2025 fetches 2024/25 for split-season leagues)")
-    parser.add_argument("--out", metavar="FILE",
-                        help="Output JSON path (default: {league}_{year}.json)")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "league",
+        choices=sorted(LEAGUES),
+        metavar="LEAGUE",
+        help=f"League code: {', '.join(sorted(LEAGUES))}",
+    )
+    parser.add_argument(
+        "year",
+        type=int,
+        metavar="YEAR",
+        help="Season end-year (e.g. 2025 fetches 2024/25 for split-season leagues)",
+    )
+    parser.add_argument(
+        "--out", metavar="FILE", help="Output JSON path (default: {league}_{year}.json)"
+    )
     args = parser.parse_args()
 
     league_key = args.league.upper()

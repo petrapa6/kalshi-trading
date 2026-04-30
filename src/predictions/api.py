@@ -486,13 +486,14 @@ def get_total_sport_stats():
     """Aggregates total unique matches seen by the scanner and actual trading PnL by sport."""
     session = get_session()
 
-    # Get all unique matches seen from StretchOpportunities (which tracks all markets reaching final periods)
-    # Group by series_ticker and count unique event_tickers
+    # Get all unique matches seen from StretchOpportunities (which tracks all markets
+    # reaching final periods). Group by series_ticker and count unique event_tickers.
     from sqlalchemy import text
 
     seen_matches = session.execute(
         text(
-            "SELECT series_ticker, COUNT(DISTINCT event_ticker) FROM stretch_opportunities GROUP BY series_ticker"
+            "SELECT series_ticker, COUNT(DISTINCT event_ticker) "
+            "FROM stretch_opportunities GROUP BY series_ticker"
         )
     ).fetchall()
 
