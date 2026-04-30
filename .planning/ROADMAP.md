@@ -77,7 +77,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 - [x] 02-03-PLAN.md — Multi-trigger backtest engine + season sport_path mapping (Wave 2)
 - [x] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
 - [x] 02-05-PLAN.md — Goal-backward verification + STATE.md update (Wave 4, has manual checkpoint)
-- [ ] 02-06-PLAN.md — Gap closure (UAT Test 7): drop Live-trading info text from backtest trigger cards + record D-11 UI-retraction in CONTEXT.md
+- [x] 02-06-PLAN.md — Gap closure (UAT Test 7): drop Live-trading info text from backtest trigger cards + record D-11 UI-retraction in CONTEXT.md
 **UI hint**: yes
 
 ### Phase 3: Scanner Integration
