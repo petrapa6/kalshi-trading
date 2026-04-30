@@ -1,9 +1,10 @@
 ---
-status: diagnosed
+status: complete
 phase: 01-backtest-p-l-math
 source: [01-VERIFICATION.md]
 started: 2026-04-29T21:36:00Z
-updated: 2026-04-30T00:35:00Z
+updated: 2026-04-30T07:35:00Z
+closed_by_plan: 01-02
 ---
 
 ## Current Test
@@ -22,15 +23,26 @@ result: pass
 
 ### 3. Capital conservation seam
 expected: Walking 10 trade rows from newest to oldest, capital decreases by exactly the loss-row pnl, increases by exactly the win-row pnl, and is unchanged across zero-contract rows; topmost row's `capital €X.XX` matches Final capital summary card
-result: issue
-reported: |
+result: pass
+closed_by:
+  commit: 20653ec
+  plan: 01-02 Task 1
+  evidence: |
+    Plan 01-02 replaced `[...trades].sort((a, b) => b.date.localeCompare(a.date))`
+    with `[...trades].reverse()` in dashboard/app/backtest/backtest.ts. Since trades
+    are pushed in chronological-walk order, reversing yields strict newest-first
+    INCLUDING within-day. User confirmed during /gsd-execute-phase Task 3
+    human-verify: top row Aug 25 Wolves-Chelsea (€1,003.60 = Final capital);
+    Aug 24 group descends 1003.00 → 1002.40 → 1001.80; Aug 18 1001.20; Aug 17
+    1000.60. Strictly monotone. Plan-checker independently verified ESPN event-IDs
+    map to ascending kickoff order within a date.
+historical_report: |
   The ordering of matches is not matching the trade order. Matches on the same day are mixed, this is the order in the app:
   2024-08-24 · Aston Villa 0 – 2 Arsenal — 51 contracts @ 97¢ · +€1.53 · capital €1,004.59
   2024-08-24 · Manchester City 4 – 1 Ipswich Town — capital €1,006.12
   2024-08-24 · Tottenham Hotspur 4 – 0 Everton — capital €1,007.65
   2024-08-18 · Chelsea 0 – 2 Manchester City — capital €1,003.06
   2024-08-17 · Everton 0 – 3 Brighton & Hove Albion — capital €1,001.53
-severity: major
 
 ### 4. No-negative-capital seam
 expected: With `initial_capital=100`, `bet_size=50`, `contract_price=99`, no trade row shows a negative `capital €` value (zero-contract rows should appear once capital can no longer afford one contract)
@@ -59,20 +71,45 @@ decision: |
   Rationale: tallies should reflect actual edge captured, not
   hypothetical edge, while the UI still surfaces capital-starvation
   events so the user can see how often they cost the strategy.
+closed_by:
+  commits: [20653ec, 0277022, e7948e3]
+  plan: 01-02 Task 1 + Task 2 + post-checkpoint refinement
+  evidence: |
+    Tally side (commit 20653ec): introduced `placed = trades.filter(t => t.contracts > 0)`
+    in dashboard/app/backtest/backtest.ts; rebuilt wins/losses/matches_bet_on from
+    placed instead of trades. result discriminator stays binary "win" | "loss"
+    (chosen over a "noop" enum value — smaller diff, contracts === 0 is the single
+    source of truth for "did we bet").
+    UI side (commit 0277022): TradeRow rewritten to dispatch on isZero first,
+    then on won. Zero-contract rows render with bg-orange-900/30 (initial choice)
+    and no emoji. D-14 third-line format byte-for-byte preserved.
+    Refinement (commit e7948e3): bg-orange-900/30 → bg-[#F28C28]/30 per user-
+    specified brand hex with /30 alpha to match green/red rhythm; pnlClass on
+    zero rows now text-gray-300 (inherits surrounding gray) instead of
+    text-green-400 — eliminates visual overclaim of profit on +€0.00.
+    User confirmed via /gsd-execute-phase Task 3 human-verify: all-zero stress
+    case (initial=1, bet=50%, price=97) shows Bet on=0, Wins=0, Losses=0,
+    Win rate=0.0%, Final capital=€1.00; mixed scenario at 100/50%/99 shows
+    real-bet rows (green/red) above zero-contract rows (muted orange, gray
+    +€0.00) unambiguously.
 
 ## Summary
 
 total: 6
-passed: 5
-issues: 1
+passed: 6
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
+closed_via: 01-02-PLAN.md
 
 ## Gaps
 
+<!-- Both gaps closed by Plan 01-02. Retained as historical record of the diagnosis and design-decision artifact that drove the fix plan. -->
+
 - truth: "Trade rows are displayed in true reverse-chronological order such that the topmost row reflects the final trade, and capital values change monotonically (or stay flat for zero-contract rows) walking top→bottom."
-  status: failed
+  status: closed
+  closed_by_commit: 20653ec
   reason: |
     User reported: matches on the same day appear in ascending kickoff order rather than descending, so within a day capital values *increase* top→bottom while across days they decrease. Concrete example: Aug 24 group reads 1004.59 → 1006.12 → 1007.65 top→bottom, then drops to 1003.06 (Aug 18) and 1001.53 (Aug 17). Capital conservation per se holds (1001.53 + 4 × 1.53 = 1007.65), but the topmost displayed row is *not* the final trade.
   severity: major
@@ -96,7 +133,8 @@ blocked: 0
   debug_session: "(diagnosed inline by orchestrator; no separate debug session)"
 
 - truth: "Zero-contract rows (capital insufficient to buy even one contract) are excluded from wins/losses/matches_bet_on tallies, and rendered in the UI as a third visual state — orange, no checkmark/cross icon — distinct from won-bet (green ✓) and lost-bet (red ✗) rows."
-  status: failed
+  status: closed
+  closed_by_commits: [20653ec, 0277022, e7948e3]
   reason: |
     Decision A (extended) from Test 6. Current code lets zero-contract rows
     leak into win/loss tallies via the `trade.result` discriminator
