@@ -42,7 +42,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 
 **Milestone Goal:** Replace the hardcoded strategy list with a file-driven engine supporting multi-trigger conditions, power both backtest and live dry-run trading, and surface per-strategy analytics in the dashboard.
 
-- [ ] **Phase 1: Backtest P&L Math** - Replace yield-based math with contract-based P&L in the backtest engine
+- [x] **Phase 1: Backtest P&L Math** - Replace yield-based math with contract-based P&L in the backtest engine — completed 2026-04-30
 - [ ] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest
 - [ ] **Phase 3: Scanner Integration** - DB migration, strategy evaluation in live scanner, stretch system removal
 - [ ] **Phase 4: Analytics Dashboard** - Per-strategy analytics API endpoints and dashboard page
@@ -59,7 +59,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   3. `pnpm fmt:check && pnpm lint && pnpm build` passes with no new failures
 **Plans**: 2 plans
 - [x] 01-01-PLAN.md — Contract-based P&L math in backtest engine + roadmap criterion #2 rewrite
-- [ ] 01-02-PLAN.md — Gap closure: reverse-chronological display + zero-contract tally exclusion + tri-state TradeRow (closes UAT Test 3 & Test 6)
+- [x] 01-02-PLAN.md — Gap closure: reverse-chronological display + zero-contract tally exclusion + tri-state TradeRow (closes UAT Test 3 & Test 6)
 
 ### Phase 2: Strategy Engine Core
 **Goal**: Named strategies defined in `strategies.yaml` drive both the backtest simulator and can be validated against historical data before touching the live scanner
@@ -105,7 +105,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 |-------|-----------|----------------|--------|-----------|
 | v1.0 Production Scanner (aggregate) | v1.0 | — | ✅ Complete | pre-GSD |
 | v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | 4/4 | ✅ Complete | 2026-04-29 |
-| 1. Backtest P&L Math | v1.2 | 1/2 | Executing (gap closure) | - |
+| 1. Backtest P&L Math | v1.2 | 2/2 | ✅ Complete | 2026-04-30 |
 | 2. Strategy Engine Core | v1.2 | 0/? | Not started | - |
 | 3. Scanner Integration | v1.2 | 0/? | Not started | - |
 | 4. Analytics Dashboard | v1.2 | 0/? | Not started | - |
