@@ -478,3 +478,19 @@ becomes the single source of truth for both the backtest (this phase) and
 
 *Phase: 02-strategy-engine-core*
 *Context gathered: 2026-04-30*
+
+## Revision — 2026-04-30 (during 02-04 checkpoint review)
+
+**D-02 OVERRIDE.** The original D-02 locked `sport = ESPN sport_path` (e.g., `soccer/eng.1`). The user revised this during 02-04 sidebar review:
+- `trigger.sport` is now a SPORT FAMILY literal: `football`, `baseball`, `tennis`, …
+- UK terminology: `football`, never `soccer`.
+- League selection is a separate dropdown (renamed from Season). League list is filtered by the page-level Sport.
+- All triggers in a backtest run share the page-level Sport. Per-trigger Sport dropdown removed from the UI.
+- Strategies are visible in the Strategy dropdown only when ALL their triggers match the selected Sport.
+
+This rewrites strategies.yaml data values (not the loader schema), the fixture YAMLs, the dashboard TS layer's Season→League rename, and the 02-04 sidebar UX. Cross-plan revision committed as:
+- `refactor(02-rev): rename sport semantics to family-only (football); rename Season→League`
+- `refactor(02-04): replace sidebar with Sport→League→Strategy hierarchy`
+- `docs(02-rev): record cross-plan revision and D-02 override`
+
+The original D-02 above is preserved verbatim for audit trail. Phase 3's live scanner must read THIS revision, not D-02.
