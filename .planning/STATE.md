@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategy Engine
 status: executing
-stopped_at: Completed 02-03-PLAN.md (multi-trigger backtest engine)
-last_updated: "2026-04-30T11:42:44.549Z"
+stopped_at: Completed 02-04-PLAN.md (strategy-driven backtest sidebar with D-02 override)
+last_updated: "2026-04-30T12:33:26.324Z"
 last_activity: 2026-04-30
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
-  percent: 75
+  completed_plans: 7
+  percent: 88
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 ## Current Position
 
 Phase: 02 (strategy-engine-core) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-04-30
 
-Progress: [████████░░] 75%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Progress: [████████░░] 75%
 | Phase 02 P01 | ~3min | 2 tasks | 2 files |
 | Phase 02 P02 | ~2.5min | 2 tasks | 3 files |
 | Phase 02 P03 | ~5min | 2 tasks | 3 files |
+| Phase 02 P04 | ~30min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,7 @@ Recent decisions affecting current work:
 - [Phase 02-02]: GET /api/strategies endpoint behind Depends(_check_token) Bearer auth — response_model_exclude_none=True so absent YAML Optional fields are absent (not null) in JSON; module-level loader import (no circular risk)
 - [Phase ?]: [Phase 02-03] Backtest engine refactored to OR-of-AND multi-trigger evaluation: BacktestParams.triggers: Trigger[] replaces flat min_minute/min_lead; runBacktest gains season_sport_path third arg; sport-mismatched triggers silently skip; Phase 1 capital math preserved verbatim
 - [Phase ?]: [Phase 02-03] LEAGUE_SPORT_PATH constant + sport_path field on SeasonOption (D-02): season catalog now carries ESPN sport_path (soccer/eng.1, soccer/esp.1, etc) so the backtest engine can filter sport-mismatched triggers without a second lookup
+- [Phase 02-04]: D-02 OVERRIDE: trigger.sport is a sport-family literal (football, baseball, …) NOT the ESPN sport_path; UK terminology (football, never soccer); Sport→League→Strategy hierarchy in dashboard sidebar; per-trigger Sport dropdown removed; sport-mismatch graying + skipped-triggers UI deleted (structurally impossible under hierarchy). Phase 3 scanner port must read 02-CONTEXT.md addendum, NOT original D-02.
 
 ### Pending Todos
 
@@ -84,6 +86,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-30T11:42:44.535Z
-Stopped at: Completed 02-03-PLAN.md (multi-trigger backtest engine)
+Last session: 2026-04-30T12:33:26.308Z
+Stopped at: Completed 02-04-PLAN.md (strategy-driven backtest sidebar with D-02 override)
 Resume: `/gsd-execute-phase 02-strategy-engine-core` (6 plans: bootstrap → loader → API → engine → UI → verify)

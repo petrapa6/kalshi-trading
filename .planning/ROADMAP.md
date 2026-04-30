@@ -75,7 +75,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 - [x] 02-01-PLAN.md — Pydantic loader (`src/predictions/strategies.py`) + STR-01/STR-02 tests (Wave 1)
 - [x] 02-02-PLAN.md — `GET /api/strategies` Bearer-auth endpoint + STR-03 tests (Wave 2)
 - [x] 02-03-PLAN.md — Multi-trigger backtest engine + season sport_path mapping (Wave 2)
-- [ ] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
+- [x] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
 - [ ] 02-05-PLAN.md — Goal-backward verification + STATE.md update (Wave 4, has manual checkpoint)
 **UI hint**: yes
 
