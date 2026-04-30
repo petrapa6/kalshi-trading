@@ -57,8 +57,9 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   1. Backtest results use `contracts = floor(stake / price)`, `win = contracts × (1 − price)`, `loss = contracts × price` — verifiable by checking output against manual calculation for one match
   2. The `avg_win_yield` input is gone; a `contract_price` input (default 97, range 50–99 cents) drives the new math; existing sliders (`min_minute`, `min_lead`) remain and function.
   3. `pnpm fmt:check && pnpm lint && pnpm build` passes with no new failures
-**Plans**: 1 plan
-- [ ] 01-01-PLAN.md — Contract-based P&L math in backtest engine + roadmap criterion #2 rewrite
+**Plans**: 2 plans
+- [x] 01-01-PLAN.md — Contract-based P&L math in backtest engine + roadmap criterion #2 rewrite
+- [ ] 01-02-PLAN.md — Gap closure: reverse-chronological display + zero-contract tally exclusion + tri-state TradeRow (closes UAT Test 3 & Test 6)
 
 ### Phase 2: Strategy Engine Core
 **Goal**: Named strategies defined in `strategies.yaml` drive both the backtest simulator and can be validated against historical data before touching the live scanner
@@ -104,7 +105,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 |-------|-----------|----------------|--------|-----------|
 | v1.0 Production Scanner (aggregate) | v1.0 | — | ✅ Complete | pre-GSD |
 | v1.1 Local-JSON Backtest (4 quick tasks) | v1.1 | 4/4 | ✅ Complete | 2026-04-29 |
-| 1. Backtest P&L Math | v1.2 | 0/? | Not started | - |
+| 1. Backtest P&L Math | v1.2 | 1/2 | Executing (gap closure) | - |
 | 2. Strategy Engine Core | v1.2 | 0/? | Not started | - |
 | 3. Scanner Integration | v1.2 | 0/? | Not started | - |
 | 4. Analytics Dashboard | v1.2 | 0/? | Not started | - |
