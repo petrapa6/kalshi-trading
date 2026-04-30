@@ -1,9 +1,11 @@
 ---
 phase: 01-backtest-p-l-math
 verified: 2026-04-29T21:36:00Z
-status: human_needed
+human_verified: 2026-04-30T07:35:00Z
+status: complete
 score: 19/19 must-haves verified
 overrides_applied: 0
+human_verification_evidence: "01-HUMAN-UAT.md status=complete, 6/6 tests pass after Plan 01-02 gap closure (commits 20653ec, 0277022, e7948e3, d5a7424)"
 roadmap_success_criteria:
   - id: SC-1
     text: "Backtest results use `contracts = floor(stake / price)`, `win = contracts × (1 − price)`, `loss = contracts × price` — verifiable by checking output against manual calculation for one match"
