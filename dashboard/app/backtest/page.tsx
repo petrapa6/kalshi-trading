@@ -41,7 +41,7 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
   const isZero = trade.contracts === 0;
   const won = trade.result === "win";
   const bgClass = isZero
-    ? "bg-orange-900/30"
+    ? "bg-[#F28C28]/30"
     : won
       ? "bg-green-900/30"
       : "bg-red-900/30";
@@ -50,7 +50,13 @@ function TradeRow({ trade }: { trade: BacktestTrade }) {
   const emoji = isZero ? "" : won ? "✅" : "❌";
   const cost_cents = trade.contracts * trade.contract_price_cents;
   const pnlSign = trade.pnl_cents >= 0 ? "+" : "−";
-  const pnlClass = trade.pnl_cents >= 0 ? "text-green-400" : "text-red-400";
+  // Zero-contract rows: pnl text inherits the surrounding gray rather
+  // than green-on-+0.00, which would visually overclaim a profit.
+  const pnlClass = isZero
+    ? "text-gray-300"
+    : trade.pnl_cents >= 0
+      ? "text-green-400"
+      : "text-red-400";
   return (
     <div className={`p-2 rounded ${bgClass}`}>
       <div className="text-sm">
