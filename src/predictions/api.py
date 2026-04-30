@@ -33,6 +33,7 @@ from predictions.espn import (
 )
 from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
 from predictions.scanner import MIN_SCORE_LEAD
+from predictions.strategies import load_strategies
 
 # --- Pydantic response models ---
 
@@ -144,6 +145,24 @@ class StretchStatsResponse(BaseModel):
     hypothetical_pnl_cents: int
     by_reason: dict[str, dict]
     strategies: dict[str, StrategySetStats]
+
+
+class TriggerResponse(BaseModel):
+    sport: Optional[str] = None
+    min_minute: Optional[int] = None
+    min_lead: Optional[int] = None
+    min_yes_price: Optional[int] = None
+    max_yes_price: Optional[int] = None
+
+
+class StrategyResponse(BaseModel):
+    name: str
+    description: Optional[str] = None
+    triggers: list[TriggerResponse]
+
+
+class StrategiesResponse(BaseModel):
+    strategies: list[StrategyResponse]
 
 
 # --- App ---
@@ -352,6 +371,26 @@ def get_stats():
         open_positions=open_positions,
         open_cost_cents=open_cost,
         open_potential_profit_cents=open_potential,
+    )
+
+
+@app.get(
+    "/api/strategies",
+    response_model=StrategiesResponse,
+    response_model_exclude_none=True,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategies():
+    strategies = load_strategies()
+    return StrategiesResponse(
+        strategies=[
+            StrategyResponse(
+                name=s.name,
+                description=s.description,
+                triggers=[TriggerResponse(**t.model_dump()) for t in s.triggers],
+            )
+            for s in strategies
+        ]
     )
 
 
