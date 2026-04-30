@@ -67,10 +67,16 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 **Requirements**: STR-01, STR-02, STR-03, BT-07
 **Success Criteria** (what must be TRUE):
   1. A `strategies.yaml` file exists at the repo root with at least one named strategy using OR-of-AND triggers; the scanner logs a warning and runs with no strategies if the file is missing
-  2. Backtest page strategy dropdown is populated from `strategies.yaml`; selecting a strategy pre-fills parameter sliders with the strategy's first trigger values; sliders remain editable
+  2. Backtest page strategy dropdown is populated from `strategies.yaml`; selecting a strategy pre-fills parameter sliders with the strategy's first trigger values; sliders remain editable (per CONTEXT.md D-11: sliders = sport, min_minute, min_lead; min_yes_price/max_yes_price = read-only info text)
   3. Empty trigger block (`triggers: []` or a trigger with no fields) is rejected at load time — Pydantic validation enforces `min_length=1` on trigger lists and individual trigger dicts
   4. `uv run ruff check . && uv run ruff format --check . && uv run ty check` passes clean
-**Plans**: TBD
+**Plans**: 6 plans
+- [ ] 02-00-PLAN.md — Bootstrap: pyyaml dep, .env.example, starter strategies.yaml, test fixtures + xfail stubs (Wave 0)
+- [ ] 02-01-PLAN.md — Pydantic loader (`src/predictions/strategies.py`) + STR-01/STR-02 tests (Wave 1)
+- [ ] 02-02-PLAN.md — `GET /api/strategies` Bearer-auth endpoint + STR-03 tests (Wave 2)
+- [ ] 02-03-PLAN.md — Multi-trigger backtest engine + season sport_path mapping (Wave 2)
+- [ ] 02-04-PLAN.md — Backtest UI: strategy dropdown, per-trigger cards, +/-, sport-mismatch graying (Wave 3, has manual checkpoint)
+- [ ] 02-05-PLAN.md — Goal-backward verification + STATE.md update (Wave 4, has manual checkpoint)
 **UI hint**: yes
 
 ### Phase 3: Scanner Integration
