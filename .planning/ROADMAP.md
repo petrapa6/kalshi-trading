@@ -43,7 +43,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 **Milestone Goal:** Replace the hardcoded strategy list with a file-driven engine supporting multi-trigger conditions, power both backtest and live dry-run trading, and surface per-strategy analytics in the dashboard.
 
 - [x] **Phase 1: Backtest P&L Math** - Replace yield-based math with contract-based P&L in the backtest engine — completed 2026-04-30
-- [x] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest — completed 2026-04-30 (gap-closure plan 02-06 in flight)
+- [x] **Phase 2: Strategy Engine Core** - Build `strategies.py` + `strategies.yaml`, wire into backtest — completed 2026-04-30 (gap-closure 02-06 closed UAT Test 7)
 - [ ] **Phase 3: Scanner Integration** - DB migration, strategy evaluation in live scanner, stretch system removal
 - [ ] **Phase 4: Analytics Dashboard** - Per-strategy analytics API endpoints and dashboard page
 
