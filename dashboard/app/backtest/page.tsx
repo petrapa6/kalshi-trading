@@ -401,20 +401,6 @@ export default function BacktestPage() {
                     className="w-full"
                   />
                 </div>
-                {(trigger.min_yes_price !== undefined ||
-                  trigger.max_yes_price !== undefined) && (
-                  <p className="text-xs text-gray-400">
-                    Live trading:{" "}
-                    {trigger.min_yes_price !== undefined
-                      ? `${trigger.min_yes_price}¢`
-                      : "—"}
-                    –
-                    {trigger.max_yes_price !== undefined
-                      ? `${trigger.max_yes_price}¢`
-                      : "—"}{" "}
-                    (info only — backtest uses contract price slider)
-                  </p>
-                )}
                 {triggers.length > 1 && (
                   <button
                     type="button"
