@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategy Engine
 status: executing
-stopped_at: Completed 02-02-PLAN.md (GET /api/strategies endpoint)
-last_updated: "2026-04-30T11:32:50.034Z"
+stopped_at: Completed 02-03-PLAN.md (multi-trigger backtest engine)
+last_updated: "2026-04-30T11:42:44.549Z"
 last_activity: 2026-04-30
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
-  percent: 63
+  completed_plans: 6
+  percent: 75
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
 ## Current Position
 
 Phase: 02 (strategy-engine-core) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-04-30
 
-Progress: [██████░░░░] 63%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
@@ -45,6 +45,7 @@ Progress: [██████░░░░] 63%
 | 02 | 00 | ~5 min | 3 | 11 |
 | Phase 02 P01 | ~3min | 2 tasks | 2 files |
 | Phase 02 P02 | ~2.5min | 2 tasks | 3 files |
+| Phase 02 P03 | ~5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,8 @@ Recent decisions affecting current work:
 - [Phase 02-00]: STRATEGIES_PATH stays commented out in .env.example: default 'strategies.yaml' relative to CWD already resolves correctly in dev (repo root) and prod (Dockerfile WORKDIR=/app)
 - [Phase 02]: [Phase 02-01] Strategy loader uses yaml.safe_load + Pydantic v2 ConfigDict(extra=forbid) + Field(min_length=1) — strict, all-or-nothing validation — Single boundary mirrors kalshi_client extract_cents 'single drift point' convention; STRATEGIES_PATH read at single site inside load_strategies() avoids env-var drift across two read sites
 - [Phase 02-02]: GET /api/strategies endpoint behind Depends(_check_token) Bearer auth — response_model_exclude_none=True so absent YAML Optional fields are absent (not null) in JSON; module-level loader import (no circular risk)
+- [Phase ?]: [Phase 02-03] Backtest engine refactored to OR-of-AND multi-trigger evaluation: BacktestParams.triggers: Trigger[] replaces flat min_minute/min_lead; runBacktest gains season_sport_path third arg; sport-mismatched triggers silently skip; Phase 1 capital math preserved verbatim
+- [Phase ?]: [Phase 02-03] LEAGUE_SPORT_PATH constant + sport_path field on SeasonOption (D-02): season catalog now carries ESPN sport_path (soccer/eng.1, soccer/esp.1, etc) so the backtest engine can filter sport-mismatched triggers without a second lookup
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-30T11:32:50.017Z
-Stopped at: Completed 02-02-PLAN.md (GET /api/strategies endpoint)
+Last session: 2026-04-30T11:42:44.535Z
+Stopped at: Completed 02-03-PLAN.md (multi-trigger backtest engine)
 Resume: `/gsd-execute-phase 02-strategy-engine-core` (6 plans: bootstrap → loader → API → engine → UI → verify)

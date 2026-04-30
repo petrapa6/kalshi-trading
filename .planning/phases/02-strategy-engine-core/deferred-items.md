@@ -28,3 +28,14 @@ Pre-existing issues discovered during execution. Not in scope for this plan.
   and 495 (a comment and a SQL string literal in `get_total_sport_stats`).
 - Verified pre-existing via `git stash` baseline check during Plan 02-02.
 - Scope: stand-alone lint cleanup pass; not in 02-02's blast radius.
+
+## Pre-existing oxfmt failures in dashboard/
+
+- `cd dashboard && pnpm fmt:check` fails on 3 files: `app/actions.ts`,
+  `app/api/[...path]/route.ts`, `sst-env.d.ts`. Verified pre-existing
+  during Plan 02-03 baseline (these files are unrelated to 02-03's
+  modifications in `app/backtest/`).
+- The 3 files in 02-03's blast radius (`app/backtest/seasons.ts`,
+  `app/backtest/backtest.ts`, `app/backtest/page.tsx`) are fmt-clean.
+- Scope: stand-alone formatter pass — `pnpm fmt` would auto-fix all 3.
+  Not in 02-03's blast radius.
