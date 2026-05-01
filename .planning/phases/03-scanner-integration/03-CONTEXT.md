@@ -371,6 +371,51 @@ These are pre-decided and downstream agents must verify each:
   Removals must be type-clean (`uv run ty check`) — flag any callers
   the planner finds that aren't on this list.
 
+### Revision — 2026-05-01 (research-surfaced scope additions)
+
+The Phase 3 researcher found four orphan callers of the legacy stretch
+system that D-20 did not enumerate. The user resolved each (2026-05-01,
+post-research, pre-planning):
+
+- **D-21 (extends D-20):** Delete the legacy stretch endpoints +
+  dashboard tab. Specifically remove:
+  - `GET /api/stretch-stats` in `src/predictions/api.py` (around
+    line 826) — endpoint definition + its handler.
+  - `DELETE /api/stretch` in `src/predictions/api.py` (around line 881)
+    — endpoint definition + its handler.
+  - The `WHAT_IF_STRATEGIES` import in `api.py` if it becomes orphaned
+    after the two endpoints are deleted (planner verifies via grep).
+  - The "What If? Strategy Comparison" tab in
+    `dashboard/src/app/page.tsx` (around lines 2618–2674) — entire
+    `<TabsContent>` block + the `TabsTrigger` that activates it + any
+    `useState`/`useEffect` hooks that exist solely to drive that tab.
+    Remove client-side calls to the deleted endpoints. Run
+    `pnpm lint && pnpm build` to verify.
+  - **Rationale:** Phase 3's stated goal is to decommission the
+    `WHAT_IF_STRATEGIES` system; leaving consumers wired to a
+    soon-to-be-frozen archive table breeds confusion. Phase 4 (DASH-03)
+    is already slated to build the per-strategy analytics replacement.
+
+- **D-22 (extends D-20):** Delete `check_stretch_settlements` function
+  in `scanner.py:710-747` entirely (D-20 already removes its sole call
+  site at line 998 — the function itself has no other callers and would
+  become dead code). Migrate `tests/test_sport_stats.py` (lines 4, 27,
+  35) to seed `Opportunity` rows instead of `StretchOpportunity` rows
+  so the test exercises the new D-19 query path. Both changes are
+  type-clean prerequisites: leaving the function in place would fail
+  `uv run ty check` once `StretchOpportunity` is removed (per D-20).
+
+- **D-23 (refines D-15):** Place the `trading_paused` check at the
+  **loop level** inside `scan_kalshi_with_espn` (or wherever
+  `evaluate_strategies` is invoked from), not inside
+  `place_strategy_trade`. This mirrors the existing live-trade pattern
+  at `scan_kalshi_with_espn:523` rather than introducing a new pattern.
+  Skip the entire `evaluate_strategies` call when paused — do NOT run
+  evaluation logic and log "would have fired but paused" lines. D-15's
+  prose ("inside place_strategy_trade") is **superseded** by this
+  decision; D-15's own caveat ("verify exact paused check location ...
+  mirror that placement consistently") is the governing guidance.
+
 ### Claude's Discretion
 
 - **Module location for sport mapping helpers** — keep in `scanner.py`
@@ -398,10 +443,8 @@ These are pre-decided and downstream agents must verify each:
   call.
 
 - **Whether `evaluate_strategies` runs even if `trading_paused == true`** —
-  D-15 says the gate is inside `place_strategy_trade`. But the planner
-  may judge an early-exit at the loop level is cleaner; both are
-  acceptable as long as success criterion #3 (no Trade row written
-  while paused) holds.
+  RESOLVED by D-23 (Revision 2026-05-01): loop-level early-exit. This
+  bullet is retained for traceability; D-23 is the decision of record.
 
 </decisions>
 
