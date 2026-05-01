@@ -881,7 +881,9 @@ The `WHERE series_ticker IS NOT NULL` is defensive — `Opportunity.series_ticke
 | A3 | The pre-deploy gate "test against an S3 backup copy locally" means: download `s3://${DB_BACKUP_BUCKET}/backups/latest.db`, apply `init_db()` against it, verify rename happened. | Runtime State Inventory | If the user intended a different test (e.g., a separate `mode='replica'` SQLite session), the gate is wrong. Low risk — the operational meaning above is the natural reading. |
 | A4 | The dashboard's "What If? Strategy Comparison" UI block (`page.tsx:2618-2674`) consuming `/api/stretch-stats` is something the user wants to keep functional. | Open Questions Q1 | If the user has already decided the UI block is dead alongside the WHAT_IF removal, the path is simpler (delete the endpoint + UI). Surface to user. |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All six open questions below have been resolved by user decisions in 03-CONTEXT.md (D-21, D-22, D-23) and pitfall mitigations carried into Plan 03-03. Resolutions are appended at the end of each question.
 
 1. **`/api/stretch-stats` and `/api/stretch` DELETE endpoints — D-20 does not list them, but they break when `StretchOpportunity` is deleted.**
    - What we know: `api.py:826-878` (`get_stretch_stats`) imports `WHAT_IF_STRATEGIES` and queries `StretchOpportunity` directly. `api.py:881-895` (`clear_stretch_opportunities`) queries the same model. The dashboard `page.tsx:2618-2674` consumes `/api/stretch-stats` to render the "What If? Strategy Comparison" tab.
@@ -909,6 +911,17 @@ The `WHERE series_ticker IS NOT NULL` is defensive — `Opportunity.series_ticke
 6. **D-15 prose vs. existing pattern (Pitfall #2) — `trading_paused` placement.**
    - What we know: D-15 prose says "inside `place_strategy_trade`"; existing live-trade pattern is loop-level inside `scan_kalshi_with_espn:523`.
    - Recommendation: Pick loop-level (parity with live trades). Document the deviation from D-15's prose in PLAN.md so the planner-checker can confirm.
+
+### Resolutions (per 03-CONTEXT.md and Plan 03-03)
+
+| Q | Resolved by | Implementation |
+|---|-------------|----------------|
+| Q1 — `/api/stretch-stats` + `/api/stretch` DELETE + dashboard tab | **D-21** (option a) | Plan 03-04 deletes both endpoints, the `StretchStatsResponse` + `StrategySetStats` models, the `_compute_stretch_stats` helper, and the dashboard "Strategy" tab + `stretchStats` state. Phase 4 (DASH-03) will build the replacement analytics surface. |
+| Q2 — `tests/test_sport_stats.py` imports `StretchOpportunity` | **D-22** (covered by D-19/D-21 scope) | Plan 03-04 migrates the test seed from `StretchOpportunity` to `Opportunity` rows; assertions updated to `COUNT(DISTINCT event_ticker)` semantics. |
+| Q3 — `check_stretch_settlements` function definition orphaned | **D-22** (added explicitly to D-20 removal list) | Plan 03-03 Task 3 Edit 3 deletes the entire `check_stretch_settlements` function body alongside the call-site removal in Task 2b. Verified by negative grep in Task 3 verify command. |
+| Q4 — `market_prices` cache lacks `title` and `event_ticker` (Pitfall #7) | **Pitfall #7 mitigation** in Plan 03-03 Task 2b Edit 1 | The `kalshi_scan_loop` market_prices seed is extended to include `title` and `event_ticker` from the events response. Additive shape change — existing `.get()` consumers unbroken. Documented in plan's must_haves and SUMMARY. |
+| Q5 — `current_open_markets` source for D-06 iteration (Pitfall #5) | **Pitfall #5 mitigation** in Plan 03-03 Task 2b Edit 2 | `evaluate_strategies` iterates `market_prices.items()` (WS-populated, scanner.py module-level), filters by volume ≥ MIN_VOLUME, then by ESPN match via `match_kalshi_to_espn`. Documented in the function docstring. |
+| Q6 — `trading_paused` placement (D-15 prose vs. existing pattern, Pitfall #2) | **D-23** (supersedes D-15) | Plan 03-03 places the `get_config("trading_paused") == "true"` early-return at the TOP of `evaluate_strategies` (loop-level, mirrors the live-trade pattern at scanner.py:523-525). D-23 is the binding decision; D-15's prose is governed by D-23. |
 
 ## Environment Availability
 
