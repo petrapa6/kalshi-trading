@@ -16,7 +16,10 @@ DATABASE_URL = os.getenv(
     f"sqlite:///{_default_db}",
 )
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False, "timeout": 5},
+)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -84,45 +87,10 @@ class Trade(Base):
         Integer, nullable=True
     )  # seconds remaining (or elapsed for count-up sports)
     fee_cents = Column(Integer, nullable=True)  # trading fees charged by Kalshi
-
-
-class StretchOpportunity(Base):
-    """Near-miss markets that didn't quite meet our filters.
-
-    Tracked to see if loosening risk params would be profitable.
-    """
-
-    __tablename__ = "stretch_opportunities"
-
-    id = Column(Integer, primary_key=True)
-    found_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    ticker = Column(String, index=True)
-    event_ticker = Column(String)
-    series_ticker = Column(String)
-    title = Column(Text)
-    yes_sub_title = Column(Text)
-    yes_ask = Column(Integer)
-    volume = Column(Integer)
-    sport_path = Column(String)
-    score_lead = Column(Integer)
-    min_score_lead = Column(Integer)
-    espn_period = Column(Integer)
-    espn_clock = Column(String)
-    # Why it was a stretch (which filter it missed)
-    reason = Column(String)  # "price", "score_lead", "time"
-    # Which what-if strategy set this belongs to
-    strategy_set = Column(String, default="default", index=True)
-    # Hypothetical bet side — always "yes" today, but stored so future
-    # NO strategies settle correctly against market.result.
-    side = Column(String, default="yes")
-    # Number of contracts we would have bought at the time this
-    # opportunity was recorded, derived from the then-current balance
-    # and bet_percent. Used to compute comparable hypothetical P&L
-    # instead of the old "assume 5 contracts" constant.
-    hypothetical_count = Column(Integer, nullable=True)
-    # Settlement tracking
-    status = Column(String, default="open")  # open, settled_win, settled_loss
-    pnl_cents = Column(Integer, nullable=True)  # hypothetical P&L
+    # Strategy attribution: NULL for legacy real trades + legacy
+    # process-level dry-runs (DRY_RUN env). Set to a strategy.name
+    # string for dry-run strategy fires (D-13).
+    strategy_name = Column(String, nullable=True, index=True)
 
 
 class BalanceSnapshot(Base):
@@ -162,22 +130,32 @@ def _migrate_add_columns():
         if "fee_cents" not in cols:
             with engine.begin() as conn:
                 conn.execute(text("ALTER TABLE trades ADD COLUMN fee_cents INTEGER"))
-
-    if "stretch_opportunities" in inspector.get_table_names():
-        cols = {c["name"] for c in inspector.get_columns("stretch_opportunities")}
-        if "strategy_set" not in cols:
+        if "strategy_name" not in cols:
             with engine.begin() as conn:
+                conn.execute(text("ALTER TABLE trades ADD COLUMN strategy_name VARCHAR"))
                 conn.execute(
                     text(
-                        "ALTER TABLE stretch_opportunities "
-                        "ADD COLUMN strategy_set VARCHAR DEFAULT 'default'"
+                        "CREATE INDEX IF NOT EXISTS ix_trades_strategy_name "
+                        "ON trades (strategy_name)"
                     )
                 )
-        if "side" not in cols:
-            with engine.begin() as conn:
-                conn.execute(
-                    text("ALTER TABLE stretch_opportunities ADD COLUMN side VARCHAR DEFAULT 'yes'")
-                )
+
+    # D-03 — rename legacy WHAT_IF tracking table for archival access.
+    # Idempotent: guarded by table-presence; runs once on upgraded DBs,
+    # no-op on fresh DBs (where stretch_opportunities never existed)
+    # and on subsequent boots (where the rename has already happened).
+    # NOTE: pre-deploy gate per STR-04 — test against a current S3
+    # backup copy locally before pushing to prod (see 03-CONTEXT.md
+    # D-03 + DEPLOY checklist).
+    table_names = inspector.get_table_names()
+    if (
+        "stretch_opportunities" in table_names
+        and "stretch_opportunities_archived" not in table_names
+    ):
+        with engine.begin() as conn:
+            conn.execute(
+                text("ALTER TABLE stretch_opportunities RENAME TO stretch_opportunities_archived")
+            )
 
     if "opportunities" in inspector.get_table_names():
         cols = {c["name"] for c in inspector.get_columns("opportunities")}
