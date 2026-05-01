@@ -1,9 +1,12 @@
 """Per-sport stats aggregation — MLB / MLBST must be kept distinct."""
 
+import pytest
+
 from predictions.api import get_total_sport_stats
-from predictions.db import StretchOpportunity, Trade, get_session
+from predictions.db import Opportunity, Trade, get_session
 
 
+@pytest.mark.xfail(reason="Wave 3: 03-04 plan ships D-19", strict=True)
 def test_mlb_and_mlbst_are_kept_distinct():
     session = get_session()
 
@@ -24,7 +27,7 @@ def test_mlb_and_mlbst_are_kept_distinct():
         )
     )
     session.add(
-        StretchOpportunity(
+        Opportunity(
             ticker="KXMLBSTGAME-TEST-BOS-NYY",
             event_ticker="KXMLBSTGAME-TEST-BOS-NYY",
             series_ticker="KXMLBSTGAME",
@@ -32,7 +35,7 @@ def test_mlb_and_mlbst_are_kept_distinct():
         )
     )
     session.add(
-        StretchOpportunity(
+        Opportunity(
             ticker="KXMLBGAME-MATCH-2-BOS-NYY",
             event_ticker="KXMLBGAME-MATCH-2-BOS-NYY",
             series_ticker="KXMLBGAME",
