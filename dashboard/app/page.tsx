@@ -128,34 +128,6 @@ interface AppConfig {
   sports: SportConfig[];
 }
 
-interface StrategySetStats {
-  label: string;
-  total: number;
-  wins: number;
-  losses: number;
-  open: number;
-  win_rate: number;
-  hypothetical_pnl_cents: number;
-  by_reason: Record<
-    string,
-    { total: number; wins: number; losses: number; pnl_cents: number }
-  >;
-}
-
-interface StretchStats {
-  total: number;
-  wins: number;
-  losses: number;
-  open: number;
-  win_rate: number;
-  hypothetical_pnl_cents: number;
-  by_reason: Record<
-    string,
-    { total: number; wins: number; losses: number; pnl_cents: number }
-  >;
-  strategies: Record<string, StrategySetStats>;
-}
-
 function cents(c: number): string {
   return `$${(c / 100).toFixed(2)}`;
 }
@@ -2189,7 +2161,6 @@ export default function Dashboard() {
   const [allTrades, setAllTrades] = useState<Trade[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [balanceHistory, _setBalanceHistory] = useState<BalanceSnapshot[]>([]); // unused, kept for type compat
-  const [stretchStats, setStretchStats] = useState<StretchStats | null>(null);
   const [sportStats, setSportStats] = useState<Record<
     string,
     { played: number; wins: number; pnl: number }
@@ -2200,13 +2171,7 @@ export default function Dashboard() {
     "trades",
   );
   const [mainTab, setMainTab] = useState<
-    | "overview"
-    | "charts"
-    | "sports"
-    | "live_games"
-    | "strategy"
-    | "config"
-    | "trades"
+    "overview" | "charts" | "sports" | "live_games" | "config" | "trades"
   >("overview");
   const [isTradingTransition, setIsTradingTransition] = useState<
     "pausing" | "resuming" | null
@@ -2256,14 +2221,12 @@ export default function Dashboard() {
 
     const fetchSlow = async () => {
       try {
-        const [tradesRes, stretchRes, configRes, ssRes] = await Promise.all([
+        const [tradesRes, configRes, ssRes] = await Promise.all([
           fetch(`${API}/api/histogram-trades?limit=10000`),
-          fetch(`${API}/api/stretch-stats`),
           fetch(`${API}/api/config`),
           fetch(`${API}/api/sport-stats`),
         ]);
         if (tradesRes.ok) setAllTrades((await tradesRes.json()).trades ?? []);
-        if (stretchRes.ok) setStretchStats(await stretchRes.json());
         if (configRes.ok) setConfig(await configRes.json());
         if (ssRes.ok) setSportStats((await ssRes.json()).stats);
       } catch {
@@ -2396,7 +2359,6 @@ export default function Dashboard() {
               { id: "charts", label: "Charts" },
               { id: "sports", label: "Sports" },
               { id: "live_games", label: "Live Games" },
-              { id: "strategy", label: "Strategy" },
               { id: "config", label: "Config" },
               { id: "trades", label: "Recent Trades" },
             ].map((t) => (
@@ -2612,81 +2574,6 @@ export default function Dashboard() {
           <>
             {/* Live Games */}
             <LiveGamesPanel games={games} />
-          </>
-        )}
-
-        {mainTab === "strategy" && (
-          <>
-            {/* What If? Strategy Comparison */}
-            {stretchStats &&
-              stretchStats.strategies &&
-              Object.keys(stretchStats.strategies).length > 0 && (
-                <div className="animate-fade-in bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-sm text-amber-600 font-medium">
-                      What If? Strategy Comparison
-                    </h2>
-                    <span className="text-xs text-zinc-500">
-                      Shadow-tracking {stretchStats.total} markets across{" "}
-                      {Object.keys(stretchStats.strategies).length} strategies
-                    </span>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-zinc-700 text-zinc-500 text-xs">
-                          <th className="text-left py-2 pr-4">Strategy</th>
-                          <th className="text-center py-2 px-3">Tracked</th>
-                          <th className="text-center py-2 px-3">W</th>
-                          <th className="text-center py-2 px-3">L</th>
-                          <th className="text-center py-2 px-3">Open</th>
-                          <th className="text-center py-2 px-3">Win %</th>
-                          <th className="text-right py-2 pl-3">Hyp P&L</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {Object.entries(stretchStats.strategies)
-                          .sort(
-                            ([, a], [, b]) =>
-                              b.hypothetical_pnl_cents -
-                              a.hypothetical_pnl_cents,
-                          )
-                          .map(([key, s]) => (
-                            <tr
-                              key={key}
-                              className="border-b border-zinc-800/50 hover:bg-zinc-800/30"
-                            >
-                              <td className="py-2 pr-4 text-amber-200 font-medium">
-                                {s.label}
-                              </td>
-                              <td className="py-2 px-3 text-center text-zinc-300 font-mono">
-                                {s.total}
-                              </td>
-                              <td className="py-2 px-3 text-center text-green-400 font-mono">
-                                {s.wins}
-                              </td>
-                              <td className="py-2 px-3 text-center text-red-400 font-mono">
-                                {s.losses}
-                              </td>
-                              <td className="py-2 px-3 text-center text-zinc-500 font-mono">
-                                {s.open}
-                              </td>
-                              <td className="py-2 px-3 text-center text-zinc-300 font-mono">
-                                {s.win_rate > 0 ? `${s.win_rate}%` : "-"}
-                              </td>
-                              <td
-                                className={`py-2 pl-3 text-right font-mono font-bold ${s.hypothetical_pnl_cents >= 0 ? "text-green-400" : "text-red-400"}`}
-                              >
-                                {s.hypothetical_pnl_cents >= 0 ? "+" : ""}
-                                {cents(s.hypothetical_pnl_cents)}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
           </>
         )}
 

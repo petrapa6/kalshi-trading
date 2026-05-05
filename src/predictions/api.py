@@ -18,7 +18,6 @@ from predictions.db import (
     BalanceSnapshot,
     Opportunity,
     Scan,
-    StretchOpportunity,
     Trade,
     get_all_config,
     get_session,
@@ -123,28 +122,6 @@ class ScanResponse(BaseModel):
 
 class ScansListResponse(BaseModel):
     scans: list[ScanResponse]
-
-
-class StrategySetStats(BaseModel):
-    label: str
-    total: int
-    wins: int
-    losses: int
-    open: int
-    win_rate: float
-    hypothetical_pnl_cents: int
-    by_reason: dict[str, dict]
-
-
-class StretchStatsResponse(BaseModel):
-    total: int
-    wins: int
-    losses: int
-    open: int
-    win_rate: float
-    hypothetical_pnl_cents: int
-    by_reason: dict[str, dict]
-    strategies: dict[str, StrategySetStats]
 
 
 class TriggerResponse(BaseModel):
@@ -486,14 +463,19 @@ def get_total_sport_stats():
     """Aggregates total unique matches seen by the scanner and actual trading PnL by sport."""
     session = get_session()
 
-    # Get all unique matches seen from StretchOpportunities (which tracks all markets
-    # reaching final periods). Group by series_ticker and count unique event_tickers.
+    # Phase 3 D-19: source from opportunities table (replacing
+    # stretch_opportunities). Behavior change: `played` is now distinct
+    # event_tickers seen by the scanner per series — i.e. games scanned,
+    # not near-miss rows. Same response shape; aggregation logic below
+    # is unchanged.
     from sqlalchemy import text
 
     seen_matches = session.execute(
         text(
             "SELECT series_ticker, COUNT(DISTINCT event_ticker) "
-            "FROM stretch_opportunities GROUP BY series_ticker"
+            "FROM opportunities "
+            "WHERE series_ticker IS NOT NULL "
+            "GROUP BY series_ticker"
         )
     ).fetchall()
 
@@ -787,112 +769,6 @@ async def _get_live_games() -> list[dict]:
 @app.get("/api/live-games", dependencies=[Depends(_check_token)])
 async def get_live_games():
     return {"games": await _get_live_games()}
-
-
-def _compute_stretch_stats(stretches: list) -> dict:
-    """Compute stats for a list of stretch opportunities."""
-    total = len(stretches)
-    wins = sum(1 for s in stretches if s.status == "settled_win")
-    losses = sum(1 for s in stretches if s.status == "settled_loss")
-    open_count = sum(1 for s in stretches if s.status == "open")
-    settled = wins + losses
-    win_rate = (wins / settled * 100) if settled > 0 else 0
-    hyp_pnl = sum(s.pnl_cents or 0 for s in stretches)
-
-    by_reason: dict[str, dict] = {}
-    for s in stretches:
-        for reason in (s.reason or "unknown").split(","):
-            reason = reason.strip()
-            if reason not in by_reason:
-                by_reason[reason] = {"total": 0, "wins": 0, "losses": 0, "pnl_cents": 0}
-            by_reason[reason]["total"] += 1
-            if s.status == "settled_win":
-                by_reason[reason]["wins"] += 1
-            elif s.status == "settled_loss":
-                by_reason[reason]["losses"] += 1
-            by_reason[reason]["pnl_cents"] += s.pnl_cents or 0
-
-    return {
-        "total": total,
-        "wins": wins,
-        "losses": losses,
-        "open": open_count,
-        "win_rate": round(win_rate, 1),
-        "hypothetical_pnl_cents": hyp_pnl,
-        "by_reason": by_reason,
-    }
-
-
-@app.get(
-    "/api/stretch-stats", response_model=StretchStatsResponse, dependencies=[Depends(_check_token)]
-)
-def get_stretch_stats():
-    from predictions.scanner import WHAT_IF_STRATEGIES
-
-    session = get_session()
-    # Query specific columns only to avoid loading 10K+ full ORM objects
-    rows = session.query(
-        StretchOpportunity.status,
-        StretchOpportunity.pnl_cents,
-        StretchOpportunity.reason,
-        StretchOpportunity.strategy_set,
-    ).all()
-
-    # Reconstruct into lightweight namedtuple-like structs for fast stats computing
-    from collections import namedtuple
-
-    SData = namedtuple("SData", ["status", "pnl_cents", "reason", "strategy_set"])
-    all_stretches = [SData(r[0], r[1], r[2], r[3]) for r in rows]
-
-    # Overall stats (all strategy sets combined)
-    overall = _compute_stretch_stats(all_stretches)
-
-    # Per-strategy stats
-    by_strategy: dict[str, list] = {}
-    for s in all_stretches:
-        strat = s.strategy_set or "default"
-        by_strategy.setdefault(strat, []).append(s)
-
-    strategies = {}
-    # Always include all defined strategies even if empty
-    for name, cfg in WHAT_IF_STRATEGIES.items():
-        strat_stretches = by_strategy.get(name, [])
-        stats = _compute_stretch_stats(strat_stretches)
-        strategies[name] = StrategySetStats(
-            label=str(cfg["label"]),
-            **stats,
-        )
-
-    # Include "default" (the original stretch set) if it has data
-    if "default" in by_strategy:
-        stats = _compute_stretch_stats(by_strategy["default"])
-        strategies["default"] = StrategySetStats(
-            label="Default (near-miss)",
-            **stats,
-        )
-
-    session.close()
-    return StretchStatsResponse(
-        **overall,
-        strategies=strategies,
-    )
-
-
-@app.delete("/api/stretch", dependencies=[Depends(_check_token)])
-def clear_stretch_opportunities():
-    """Wipe all shadow tracking history remotely."""
-    try:
-        session = get_session()
-        session.query(StretchOpportunity).delete()
-        session.commit()
-        session.close()
-        log.info("Shadow statistics wiped remotely via API.")
-        return {"status": "ok", "message": "Shadow statistics wiped."}
-    except Exception as e:
-        log.error(f"Failed to wipe stretch opportunities: {e}")
-        from fastapi import HTTPException
-
-        raise HTTPException(status_code=500, detail="Failed to clear shadow opportunities")
 
 
 @app.delete("/api/config", dependencies=[Depends(_check_token)])

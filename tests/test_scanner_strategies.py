@@ -9,7 +9,6 @@ import predictions.db as db_module
 from predictions.db import Trade
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_evaluate_strategies_fires_dry_run_trade(isolated_db, monkeypatch, tmp_path):
     """DRY-01: evaluate_strategies writes a dry_run Trade row when a trigger fires."""
     import predictions.scanner as scanner_module
@@ -25,12 +24,12 @@ async def test_evaluate_strategies_fires_dry_run_trade(isolated_db, monkeypatch,
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -66,7 +65,6 @@ async def test_evaluate_strategies_fires_dry_run_trade(isolated_db, monkeypatch,
     assert t.count == 5  # 500 // 95 == 5
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_strategy_fire_independent_of_dry_run_env(isolated_db, monkeypatch, tmp_path):
     """D-13: strategy dry_run is hardcoded True, not driven by DRY_RUN env var."""
     import predictions.scanner as scanner_module
@@ -83,12 +81,12 @@ async def test_strategy_fire_independent_of_dry_run_env(isolated_db, monkeypatch
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -119,7 +117,6 @@ async def test_strategy_fire_independent_of_dry_run_env(isolated_db, monkeypatch
     assert trades[0].dry_run is True
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_first_trigger_wins(isolated_db, monkeypatch, tmp_path):
     """D-12: first matching trigger fires, not all matching triggers."""
     import predictions.scanner as scanner_module
@@ -141,12 +138,12 @@ async def test_first_trigger_wins(isolated_db, monkeypatch, tmp_path):
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -176,7 +173,6 @@ async def test_first_trigger_wins(isolated_db, monkeypatch, tmp_path):
     assert len(trades) == 1
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_per_strategy_dedupe(isolated_db, monkeypatch, tmp_path):
     """D-10: strategy fires at most once per (strategy_name, ticker)."""
     import predictions.scanner as scanner_module
@@ -192,12 +188,12 @@ async def test_per_strategy_dedupe(isolated_db, monkeypatch, tmp_path):
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -228,7 +224,6 @@ async def test_per_strategy_dedupe(isolated_db, monkeypatch, tmp_path):
     assert len(trades) == 1
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_multi_strategy_fire_same_ticker(isolated_db, monkeypatch, tmp_path):
     """D-11: multiple strategies can fire on the same ticker, one Trade row each."""
     import predictions.scanner as scanner_module
@@ -252,12 +247,12 @@ async def test_multi_strategy_fire_same_ticker(isolated_db, monkeypatch, tmp_pat
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -289,7 +284,6 @@ async def test_multi_strategy_fire_same_ticker(isolated_db, monkeypatch, tmp_pat
     assert strategy_names == {"s1", "s2"}
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_trading_paused_blocks_strategy_fire(isolated_db, monkeypatch, tmp_path):
     """D-23: trading_paused kills evaluate_strategies at the loop level."""
     import predictions.scanner as scanner_module
@@ -307,12 +301,12 @@ async def test_trading_paused_blocks_strategy_fire(isolated_db, monkeypatch, tmp
         scanner_module,
         "market_prices",
         {
-            "KXNBAGAME-20260101-T1": {
+            "KXNBAGAME-20260101-SEALAL": {
                 "yes_ask": 95,
                 "volume": 100,
                 "title": "T",
                 "event_ticker": "KXNBAGAME-20260101",
-                "ticker": "KXNBAGAME-20260101-T1",
+                "ticker": "KXNBAGAME-20260101-SEALAL",
                 "series_ticker": "KXNBAGAME",
             }
         },
@@ -342,7 +336,6 @@ async def test_trading_paused_blocks_strategy_fire(isolated_db, monkeypatch, tmp
     assert len(trades) == 0
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 def test_elapsed_minutes_per_sport():
     """D-09: elapsed_minutes returns game-clock minutes elapsed since start."""
     from predictions.scanner import elapsed_minutes
@@ -360,7 +353,6 @@ def test_elapsed_minutes_per_sport():
     assert elapsed_minutes("unknown/sport", 0, 1) is None
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 def test_sport_path_to_family():
     """D-08: SPORT_PATH_TO_FAMILY maps ESPN sport paths to family literals."""
     from predictions.scanner import SPORT_PATH_TO_FAMILY
@@ -371,7 +363,6 @@ def test_sport_path_to_family():
     assert SPORT_PATH_TO_FAMILY["baseball/mlb"] == "baseball"
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 def test_what_if_strategies_removed():
     """D-20: WHAT_IF_STRATEGIES is deleted from scanner.py."""
     with pytest.raises(ImportError):

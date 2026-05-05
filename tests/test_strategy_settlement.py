@@ -10,10 +10,11 @@ keeps it as a closure, these tests will need to refactor — flag in
 summary.
 """
 
-import pytest
+from typing import cast
 
 import predictions.db as db_module
 from predictions.db import Trade
+from predictions.kalshi_client import KalshiClient
 
 
 class FakeClient:
@@ -29,7 +30,6 @@ class FakeClient:
         return {"balance": 100000, "portfolio_value": 100000}
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_check_settlements_updates_strategy_trades(isolated_db):
     """D-18: check_settlements settles strategy dry-run trades (dry_run=True, strategy_name set)."""
     from predictions.scanner import check_settlements
@@ -53,7 +53,7 @@ async def test_check_settlements_updates_strategy_trades(isolated_db):
     session.close()
 
     client = FakeClient({"KX-T1": {"status": "finalized", "result": "yes"}})
-    await check_settlements(client)
+    await check_settlements(cast(KalshiClient, client))
 
     session = db_module.get_session()
     trade = session.query(Trade).filter(Trade.ticker == "KX-T1").one()
@@ -62,7 +62,6 @@ async def test_check_settlements_updates_strategy_trades(isolated_db):
     session.close()
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_on_lifecycle_updates_strategy_trades(isolated_db):
     """D-17: on_lifecycle applies same combined filter as check_settlements."""
     from predictions.scanner import on_lifecycle
@@ -101,7 +100,6 @@ async def test_on_lifecycle_updates_strategy_trades(isolated_db):
     session.close()
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_strategy_pnl_math(isolated_db):
     """D-18: P&L math for strategy dry-runs — win and loss cases."""
     from predictions.scanner import check_settlements
@@ -144,7 +142,7 @@ async def test_strategy_pnl_math(isolated_db):
             "KX-LOSS": {"status": "finalized", "result": "no"},
         }
     )
-    await check_settlements(client)
+    await check_settlements(cast(KalshiClient, client))
 
     session = db_module.get_session()
     win_trade = session.query(Trade).filter(Trade.ticker == "KX-WIN").one()
@@ -158,7 +156,6 @@ async def test_strategy_pnl_math(isolated_db):
     session.close()
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_legacy_dry_runs_not_settled(isolated_db):
     """D-16 negation: legacy process-level dry-runs (strategy_name=None) are NOT settled."""
     from predictions.scanner import check_settlements
@@ -177,7 +174,7 @@ async def test_legacy_dry_runs_not_settled(isolated_db):
     session.close()
 
     client = FakeClient({"KX-LEG": {"status": "finalized", "result": "yes"}})
-    await check_settlements(client)
+    await check_settlements(cast(KalshiClient, client))
 
     session = db_module.get_session()
     trade = session.query(Trade).filter(Trade.ticker == "KX-LEG").one()
@@ -186,7 +183,6 @@ async def test_legacy_dry_runs_not_settled(isolated_db):
     session.close()
 
 
-@pytest.mark.xfail(reason="Wave 2: 03-03 plan implements", strict=True)
 async def test_settlement_filter_symmetry(isolated_db):
     """D-17: check_settlements and on_lifecycle update the exact same trade set."""
     from predictions.scanner import check_settlements, on_lifecycle
@@ -200,6 +196,7 @@ async def test_settlement_filter_symmetry(isolated_db):
             status="placed",
             dry_run=False,
             strategy_name=None,
+            side="yes",
             count=5,
             yes_price=95,
             cost_cents=475,
@@ -214,6 +211,7 @@ async def test_settlement_filter_symmetry(isolated_db):
             status="dry_run",
             dry_run=True,
             strategy_name="s1",
+            side="yes",
             count=5,
             yes_price=95,
             cost_cents=475,
@@ -253,7 +251,7 @@ async def test_settlement_filter_symmetry(isolated_db):
     client = FakeClient(market_state)
 
     # Run check_settlements (REST fallback path)
-    await check_settlements(client)
+    await check_settlements(cast(KalshiClient, client))
 
     session = db_module.get_session()
     real_after_rest = session.query(Trade).filter(Trade.ticker == "KX-REAL").one().status
