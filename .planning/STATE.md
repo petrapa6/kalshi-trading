@@ -2,45 +2,49 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Strategy Engine
-status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-05-01T11:31:17.051Z"
-last_activity: 2026-05-01 -- Phase 03 planning complete
+status: ready_to_plan
+stopped_at: Phase 3 complete, ready to plan Phase 4
+last_updated: "2026-05-05T18:11:53Z"
+last_activity: 2026-05-05 -- Phase 03 complete (UAT 8/2 skipped, security 21/21 closed)
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 9
-  percent: 69
+  completed_plans: 13
+  percent: 75
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-29 after v1.1)
+See: .planning/PROJECT.md (updated 2026-05-05 after Phase 03)
 
 **Core value:** Capture the lag between actual game state and Kalshi's market re-pricing.
-**Current focus:** Phase 02 — strategy-engine-core
+**Current focus:** Phase 04 — analytics-dashboard
 
 ## Current Position
 
-Phase: 3
+Phase: 04 (analytics-dashboard) — Ready to plan
+Phase: 03 (scanner-integration) — ✅ COMPLETE (2026-05-05)
 Phase: 02 (strategy-engine-core) — ✅ COMPLETE
-Phase: 03 (scanner-integration) — Ready to plan
+Phase: 01 (backtest-p-l-math) — ✅ COMPLETE
 Plan: Not started
-Status: Ready to execute
-Last activity: 2026-05-01 -- Phase 03 planning complete
+Status: Ready to plan
+Last activity: 2026-05-05 -- Phase 03 transition
 
-Progress: [█████░░░░░] 50%
+Progress: [███████░░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 10 (all v1.1 quick tasks) + 2 v1.2 phase-1 + 1 v1.2 phase-2 (02-00 bootstrap)
+- v1.2 plans completed: 13/13 across Phases 01–03 (Phase 4 plans TBD)
+  - Phase 01: 2/2 (backtest P&L math)
+  - Phase 02: 7/7 (strategy engine core, incl. 02-06 gap closure)
+  - Phase 03: 4/4 (scanner integration, waves 0–3)
+- v1.1 quick tasks: 4/4 (separate milestone)
 - Average duration: ~4 min planner + ~4 min executor per task
-- Total execution time: ~32 min for v1.1 milestone
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -73,6 +77,9 @@ Recent decisions affecting current work:
 - PHASE2-03: `extra="forbid"` + `min_length=1` + all-or-nothing validation. Phase 3 scanner imports `load_strategies` directly; it does NOT re-parse YAML.
 - PHASE2-VERIFY-01: deferred-items.md baseline understated lint debt (claimed 16 E501s in scanner.py; actual repo-wide was 4 in scanner.py + 2 in api.py + 1 in config_cli.py + 9 in fetch_football_season.py). All cleared in chore commit `613f7e4` to make Criterion #4 pass at the full-repo level. config_cli.py:14 was undocumented but verified pre-existing via `git log`.
 - PHASE2-VERIFY-02: Future YAML inputs that ever become user-editable (e.g., a Phase 4 strategy editor) must add a max-file-size check before `safe_load` to mitigate alias amplification (per 02-RESEARCH.md security domain). Not needed today (file is hand-edited).
+- [Phase 03-02]: D-01 `Trade.strategy_name = Column(String, nullable=True, index=True)` via idempotent ALTER TABLE migration (NULL = legacy/real, set = strategy fire). D-02 `connect_args timeout=5` added to engine — Phase 4 analytics polling will collide with the scanner without it. D-03 `stretch_opportunities` renamed to `stretch_opportunities_archived` (NEVER dropped — STR-04). D-20 `StretchOpportunity` ORM class deleted; Phase 4 must not reintroduce it.
+- [Phase 03-03]: D-08 sport-family literals (`football`, `basketball`, …, NOT ESPN sport_path) implemented via `SPORT_FAMILY_TO_PATHS` and reverse map. D-09 `elapsed_minutes()` derives minutes from ESPN clock + period via `SPORT_PERIOD_LENGTH_SECS`/`CLOCKLESS_SPORT_PATHS`/`COUNT_UP_SPORT_PATHS`. D-13 `place_strategy_trade` HARDCODES `dry_run=True`/`status="dry_run"`/`yes_price=opp["yes_ask"]` — never calls Kalshi REST regardless of process-level `DRY_RUN`. D-16 settlement filter `Trade.dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)` — closes DRY-02. D-23 `trading_paused == "true"` early-exits `evaluate_strategies` (same gate as live trades). WHAT_IF_STRATEGIES dict + `_evaluate_what_if_strategies` (~130 lines) + `check_stretch_settlements` removed.
+- [Phase 03-04]: D-19 `/api/sport-stats` query swapped from `stretch_opportunities` to `opportunities` (semantic shift: "played" = distinct events scanned, not near-miss rows). D-21 `/api/stretch-stats` GET + `/api/stretch` DELETE endpoints deleted; `StrategySetStats`/`StretchStatsResponse` Pydantic models deleted; dashboard Strategy tab removed.
 
 ### Pending Todos
 
@@ -84,7 +91,9 @@ Recent decisions affecting current work:
 
 - ~~[Phase 2] YAML field vocabulary~~ — RESOLVED by D-01..D-03 + the 02-CONTEXT.md `Revision — 2026-04-30` D-02 override (sport is now a family literal `football`, not ESPN sport_path). Phase 3 still needs a per-sport `total_game_seconds` / period-length lookup for the scanner's `elapsed = total_game_seconds − clock_seconds` derivation, but that's tracked under D-01 implementation in Phase 3.
 - ~~[Phase 2] PyYAML is NOT in pyproject.toml~~ — RESOLVED by Plan 02-00 (`uv add pyyaml>=6.0`, locked at 6.0.3 in uv.lock).
-- [Phase 3] Settlement reconciliation currently filters `dry_run == False` — DRY-02 must add a parallel path for `dry_run=True AND strategy_name IS NOT NULL` trades or P&L will never compute.
+- ~~[Phase 3] Settlement reconciliation filter for `dry_run=True AND strategy_name IS NOT NULL`~~ — RESOLVED in Phase 03-03 (D-16 combined filter `dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)`).
+- [Phase 4] `/api/sport-stats` semantics changed by D-19: "played" now means distinct events *scanned* (from `opportunities`), not near-miss rows. Phase 4 analytics page must read this convention before computing event counts.
+- [Phase 4] `connect_args timeout=5` is the only buffer against `SQLITE_BUSY` under analytics polling (D-02). If polling pressure increases, switch to WAL or move analytics to a read replica.
 - [Phase 4-or-later, low-priority] If a strategy editor is ever added (deferred per REQUIREMENTS.md Future Requirements), add a max-file-size check before `safe_load` to mitigate alias amplification (per 02-RESEARCH.md security domain). Not relevant today (file is hand-edited).
 
 ## Deferred Items
@@ -95,6 +104,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-05-01T10:13:43.458Z
-Stopped at: Phase 3 context gathered
-Resume: `/gsd-plan-phase 3` (Scanner Integration — STR-04, DRY-01, DRY-02). Critical Phase 3 reading: 02-CONTEXT.md `Revision — 2026-04-30` addendum for the D-02 override (trigger.sport is a family literal, not ESPN sport_path).
+Last session: 2026-05-05T18:11:53Z
+Stopped at: Phase 03 complete, ready to plan Phase 04
+Resume: `/gsd-discuss-phase 4` (Analytics Dashboard — DASH-03, DASH-04). Phase 04 reads from `Trade.strategy_name` (added in 03-02) + the `dry_run=True` strategy trades written by `place_strategy_trade` (03-03). Note D-19: `/api/sport-stats` now sources from `opportunities`, not `stretch_opportunities_archived`.

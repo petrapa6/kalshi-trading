@@ -91,10 +91,10 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   4. Settlement reconciliation processes `dry_run=True AND strategy_name IS NOT NULL` trades (WebSocket primary + REST fallback); P&L is computed using contract math on the recorded `yes_ask` entry price
   5. `connect_args` in `db.py` includes `"timeout": 5` to prevent `SQLITE_BUSY` errors under concurrent analytics polling
 **Plans**: 4 plans
-- [ ] 03-01-PLAN.md — Wave 0 test scaffolding (3 new test files + tests/test_sport_stats.py D-22 migration; xfail stubs)
-- [ ] 03-02-PLAN.md — Wave 1 schema migration (db.py: D-01 strategy_name + D-02 timeout=5 + D-03 rename + D-20 ORM removal)
-- [ ] 03-03-PLAN.md — Wave 2 scanner integration (sport mapping + evaluate_strategies + place_strategy_trade + paused gate D-23 + settlement filters D-16/D-17 + WHAT_IF removal)
-- [ ] 03-04-PLAN.md — Wave 3 api + dashboard cleanup (D-19 sport-stats from opportunities + D-21 endpoint + dashboard Strategy-tab deletion)
+- [x] 03-01-PLAN.md — Wave 0 test scaffolding (3 new test files + tests/test_sport_stats.py D-22 migration; xfail stubs)
+- [x] 03-02-PLAN.md — Wave 1 schema migration (db.py: D-01 strategy_name + D-02 timeout=5 + D-03 rename + D-20 ORM removal)
+- [x] 03-03-PLAN.md — Wave 2 scanner integration (sport mapping + evaluate_strategies + place_strategy_trade + paused gate D-23 + settlement filters D-16/D-17 + WHAT_IF removal)
+- [x] 03-04-PLAN.md — Wave 3 api + dashboard cleanup (D-19 sport-stats from opportunities + D-21 endpoint + dashboard Strategy-tab deletion)
 
 ### Phase 4: Analytics Dashboard
 **Goal**: Users can inspect per-strategy dry-run performance in the dashboard with live-updating data

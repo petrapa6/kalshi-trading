@@ -33,16 +33,16 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 - ✓ **BT-07**: Backtest page strategy dropdown populated from `strategies.yaml` pre-populates parameter sliders (sliders stay editable) — Validated in Phase 2
 - ✓ **STR-01**: Named strategies are defined in a `strategies.yaml` file (replaces `WHAT_IF_STRATEGIES` hardcoded list in `scanner.py`) — Validated in Phase 2 (loader half; scanner replacement is STR-04 in Phase 3)
 - ✓ **STR-02**: Each strategy supports multi-trigger conditions: OR-of-AND sets (e.g. "goal_diff ≥ 3 at minute ≥ 20 OR goal_diff ≥ 2 at minute ≥ 75") — Validated in Phase 2
-- ✓ **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner — Validated in Phase 2 (backtest half; live-scanner half is DRY-01/DRY-02 in Phase 3)
+- ✓ **STR-03**: Strategy definitions drive both the backtest simulator and the live scanner — Validated in Phase 2 (backtest half) + Phase 3 (live-scanner half via `evaluate_strategies` + `place_strategy_trade`)
+- ✓ **BT-06**: Backtest engine uses contract-based P&L math (`contracts = floor(stake/price)`, win = `contracts × (1−price)`, loss = `contracts × price`) — Validated in Phase 1
+- ✓ **STR-04**: `stretch_opportunities` table renamed to `stretch_opportunities_archived` (NOT dropped, per S3-backup safety); `WHAT_IF_STRATEGIES` + `_evaluate_what_if_strategies` removed; `/api/sport-stats` re-sourced from `opportunities` (D-19) — Validated in Phase 3
+- ✓ **DRY-01**: `place_strategy_trade` hardcodes `dry_run=True`/`status="dry_run"`/`yes_price=opp["yes_ask"]` — never calls Kalshi REST regardless of process-level `DRY_RUN`; `trading_paused == "true"` early-exits `evaluate_strategies` (D-23) — Validated in Phase 3
+- ✓ **DRY-02**: Settlement filter widened to `Trade.dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)` (D-16); P&L on dry-run strategy trades computed via contract math on recorded `yes_ask` — Validated in Phase 3
 
 ### Active
 
-<!-- v1.2 Strategy Engine — defined 2026-04-29; Phase 2 complete 2026-04-30 -->
+<!-- v1.2 Strategy Engine — Phase 4 (Analytics Dashboard) remaining -->
 
-- **BT-06**: Backtest engine uses contract-based P&L math (`contracts = floor(stake/price)`, win = `contracts × (1−price)`, loss = `contracts × price`)
-- **STR-04**: `stretch_opportunities` table and `WHAT_IF_STRATEGIES` are replaced by the new strategy file system
-- **DRY-01**: Live scanner evaluates strategies each loop; when triggered, records live Kalshi yes_ask price and writes a dry-run Trade row (no API call, hardcoded `dry_run=True`)
-- **DRY-02**: Dry-run trades stored with `strategy_name`; P&L computed on settlement using contract math with the recorded yes_ask entry price
 - **DASH-03**: New analytics dashboard page shows per-strategy trade log, P&L curve, and win rate
 - **DASH-04**: Analytics page auto-refreshes to show live dry-run activity as new trades arrive
 
@@ -87,6 +87,11 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 | Keep `/api/backtest/soccer` endpoint in place | Backend may still be useful from CLI/scripts; only dashboard wiring changes. | ✓ Good — minimal blast radius; endpoint preserved for future use |
 | Use static imports over `import.meta.glob` for season catalog | Next.js 16 Webpack doesn't support `import.meta.glob` without a custom loader; static imports bundle JSON at build time and satisfy `output: standalone`. | ✓ Good — clean build, correct standalone trace; trade-off (hand-maintained catalog) documented |
 | Execute v1.1 as quick tasks rather than formal GSD phases | Scope was tightly contained to `dashboard/app/backtest/`; quick tasks move faster with less planning overhead for sub-day work. | ✓ Good — 4 tasks executed in a single session; overhead appropriate to scope |
+| [Phase 03] Rename `stretch_opportunities` → `stretch_opportunities_archived` instead of dropping (D-03) | Production has 6+ months of stretch data; tested rename against S3 backup. Drop = data loss, rename = idempotent + reversible. | ✓ Good — table preserved; ORM class deleted (D-20) so fresh DBs don't recreate it |
+| [Phase 03] Hardcode `dry_run=True` + `yes_price=opp["yes_ask"]` in `place_strategy_trade` (D-13) | Strategies are local-simulation-only by design; honoring process-level `DRY_RUN` would let real trades fire by accident if the env var is ever flipped. Single boundary mirrors the `extract_cents` invariant. | ✓ Good — DRY-01 invariant enforced at the call site; structurally impossible to violate |
+| [Phase 03] Settlement filter `dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)` (D-16) | Real trades always have `strategy_name=NULL`; strategy fires always have it set. The composite filter lets one settlement loop reconcile both populations without branching. | ✓ Good — closes DRY-02; Phase 04 analytics queries depend on this composite |
+| [Phase 03] `connect_args timeout=5` on the SQLAlchemy engine (D-02) | Phase 4 analytics polling will compete with the scanner's per-loop writes. SQLite's default lock timeout is 0; 5s is a generous buffer without masking real deadlocks. | ✓ Good — pre-emptive; revisit if WAL or read replica is needed under load |
+| [Phase 03] UK terminology: `football` not `soccer` for sport-family literals (D-08) | Operator preference + ESPN's `sport_path` already uses `soccer/`, so the family literal is the natural place to draw the terminology boundary. | ✓ Good — `SPORT_FAMILY_TO_PATHS` is the only translation surface; YAML strategies stay UK-style |
 
 ## Evolution
 
@@ -106,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-30 — Phase 2 (Strategy Engine Core) complete*
+*Last updated: 2026-05-05 — Phase 3 (Scanner Integration) complete*
