@@ -105,7 +105,11 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
   2. A trade log table on the analytics page shows per-trade detail (date, ticker, entry price, contracts, P&L, status) for the selected strategy
   3. The page auto-refreshes every 5 minutes; new dry-run trades appear without a manual reload
   4. Strategies with zero trades appear in the selector but show empty charts and zeroed stat cards rather than 404 or blank page
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 04-00-PLAN.md — Wave 0 test scaffolding (xfail stubs in tests/test_strategy_analytics.py + seed_trades helper in tests/conftest.py)
+- [ ] 04-01-PLAN.md — Wave 1 backend endpoints (TradeResponse.strategy_name + GET /api/strategy-analytics + GET /api/strategies-summary with YAML+DB merge for zero-trade strategies)
+- [ ] 04-02-PLAN.md — Wave 2 analytics page (dashboard/app/analytics/page.tsx — auth gate + sidebar mini-stats + stat cards + recharts P&L chart + trade log + 5-min auto-refresh)
+- [ ] 04-03-PLAN.md — Wave 3 dashboard integration (Trade TS interface + header Analytics link + trades-table strategy-name cross-links)
 **UI hint**: yes
 
 ## Progress
@@ -119,7 +123,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 1. Backtest P&L Math | v1.2 | 2/2 | ✅ Complete | 2026-04-30 |
 | 2. Strategy Engine Core | v1.2 | 6/7 | Gap closure (02-06) in flight | 2026-04-30 |
 | 3. Scanner Integration | v1.2 | 0/4 | Planned (waves 0-3) | - |
-| 4. Analytics Dashboard | v1.2 | 0/? | Not started | - |
+| 4. Analytics Dashboard | v1.2 | 0/4 | Planned (waves 0-3) | - |
 
 ---
 *Roadmap defined: 2026-04-29 (inline bootstrap, brownfield)*
