@@ -141,42 +141,101 @@ def test_analytics_zero_trade_strategy(client, isolated_db):
     assert data["pnl_curve"] == []
 
 
-@pytest.mark.xfail(strict=True, reason="Wave 1 implements YAML+DB merge")
+def _write_strategies_yaml(tmp_path, names: list[str]) -> str:
+    """Helper for summary tests — write a minimal strategies.yaml with the
+    given names, all using a basic single-trigger config. Returns the path.
+    """
+    body = "strategies:\n"
+    for name in names:
+        body += f"  {name}:\n"
+        body += "    triggers:\n"
+        body += "      - sport: football\n"
+        body += "        min_minute: 80\n"
+    f = tmp_path / "s.yaml"
+    f.write_text(body)
+    return str(f)
+
+
 def test_summary_includes_zero_trade_strategies(client, isolated_db, tmp_path, monkeypatch):
     """DASH-03 / D-11: GET /api/strategies-summary merges DB GROUP BY
     results with YAML strategy names so zero-trade strategies appear in
     the response with all-zero stats. Without the merge, GROUP BY
     silently omits them.
-
-    Wave 1 writes a strategies.yaml fixture via tmp_path, seeds rows for
-    ONE strategy only, and asserts both strategies appear in the summary.
     """
-    pytest.fail("not yet implemented (Wave 1)")
+    yaml_path = _write_strategies_yaml(tmp_path, ["alpha", "lonely"])
+    monkeypatch.setenv("STRATEGIES_PATH", yaml_path)
+
+    seed_trades(
+        isolated_db,
+        [_make_row("KX-1", "settled_win", 50, strategy_name="alpha")],
+    )
+
+    resp = client.get(
+        "/api/strategies-summary",
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    by_name = {s["name"]: s for s in data["strategies"]}
+    assert "alpha" in by_name
+    assert "lonely" in by_name
+    assert by_name["lonely"] == {
+        "name": "lonely",
+        "total_trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "pnl_cents": 0,
+    }
 
 
-@pytest.mark.xfail(strict=True, reason="Wave 1 implements summary aggregation")
 def test_summary_aggregation(client, isolated_db, tmp_path, monkeypatch):
     """DASH-03 / D-06: GET /api/strategies-summary returns
-    [{name, total_trades, wins, losses, pnl_cents}] per strategy. Wins
-    count rows with status='settled_win'; losses count
-    status='settled_loss'; pnl_cents sums pnl_cents across all rows for
-    the strategy.
-
-    Wave 1 seeds multi-strategy multi-status rows and asserts each
-    strategy's per-row aggregation.
+    [{name, total_trades, wins, losses, pnl_cents}] per strategy.
     """
-    pytest.fail("not yet implemented (Wave 1)")
+    yaml_path = _write_strategies_yaml(tmp_path, ["alpha", "beta"])
+    monkeypatch.setenv("STRATEGIES_PATH", yaml_path)
+
+    seed_trades(
+        isolated_db,
+        [
+            _make_row("KX-A1", "settled_win", 50, strategy_name="alpha"),
+            _make_row("KX-A2", "settled_win", 30, strategy_name="alpha"),
+            _make_row("KX-A3", "settled_loss", -20, strategy_name="alpha"),
+            _make_row("KX-B1", "settled_win", 100, strategy_name="beta"),
+        ],
+    )
+
+    resp = client.get(
+        "/api/strategies-summary",
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    by_name = {s["name"]: s for s in data["strategies"]}
+    assert by_name["alpha"] == {
+        "name": "alpha",
+        "total_trades": 3,
+        "wins": 2,
+        "losses": 1,
+        "pnl_cents": 60,
+    }
+    assert by_name["beta"] == {
+        "name": "beta",
+        "total_trades": 1,
+        "wins": 1,
+        "losses": 0,
+        "pnl_cents": 100,
+    }
 
 
-@pytest.mark.xfail(strict=True, reason="Wave 1 wires Depends(_check_token) on both endpoints")
 def test_endpoints_require_auth(client):
     """DASH-03 / Threat T-04-02: Both GET /api/strategy-analytics and
-    GET /api/strategies-summary return 401 when called without a Bearer
-    token. Mirrors tests/test_strategies_api.py::test_endpoint_requires_auth.
-
-    No DB seeding required — the auth check fires before any query.
+    GET /api/strategies-summary return 401 when called without a Bearer token.
     """
-    pytest.fail("not yet implemented (Wave 1)")
+    resp = client.get("/api/strategy-analytics?strategy=alpha")
+    assert resp.status_code == 401
+    resp = client.get("/api/strategies-summary")
+    assert resp.status_code == 401
 
 
 def test_composite_filter_excludes_legacy_trades(client, isolated_db):

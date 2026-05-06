@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import and_, desc, func, or_
+from sqlalchemy import and_, case, desc, func, or_
 
 from predictions import backtest as backtest_mod
 from predictions.backtest import BacktestRequest, BacktestResponse
@@ -175,6 +175,18 @@ class StrategyAnalyticsResponse(BaseModel):
     stats: StrategyAnalyticsStats
     trades: list[StrategyAnalyticsTrade]
     pnl_curve: list[StrategyAnalyticsPnlPoint]
+
+
+class StrategySummaryEntry(BaseModel):
+    name: str
+    total_trades: int
+    wins: int
+    losses: int
+    pnl_cents: int
+
+
+class StrategiesSummaryResponse(BaseModel):
+    strategies: list[StrategySummaryEntry]
 
 
 # --- App ---
@@ -501,6 +513,79 @@ def get_strategy_analytics(strategy: str):
         trades=trades,
         pnl_curve=pnl_curve,
     )
+
+
+@app.get(
+    "/api/strategies-summary",
+    response_model=StrategiesSummaryResponse,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategies_summary():
+    """Per-strategy mini-stats for the analytics sidebar.
+
+    DASH-03 / D-06: returns one entry per strategy (totals/wins/losses/
+    pnl_cents). YAML strategies with zero trades are included with
+    all-zero stats (D-11) by merging load_strategies() with the DB
+    GROUP BY result. Orphaned DB-only strategies (rows whose strategy_name
+    is no longer in YAML) are appended so their historical data stays
+    visible.
+    """
+    session = get_session()
+
+    # Composite filter (Phase 03 D-16 symmetry). NULL strategy_name is
+    # excluded by isnot(None); the dry_run clause is documentation.
+    filter_expr = Trade.strategy_name.isnot(None) & or_(
+        Trade.dry_run == False,
+        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
+    )
+
+    rows = (
+        session.query(
+            Trade.strategy_name,
+            func.count(Trade.id),
+            func.sum(case((Trade.status == "settled_win", 1), else_=0)),
+            func.sum(case((Trade.status == "settled_loss", 1), else_=0)),
+            func.sum(case((Trade.pnl_cents.isnot(None), Trade.pnl_cents), else_=0)),
+        )
+        .filter(filter_expr)
+        .group_by(Trade.strategy_name)
+        .all()
+    )
+    session.close()
+
+    db_by_name: dict[str, dict] = {}
+    for name, total, wins, losses, pnl in rows:
+        db_by_name[name] = {
+            "name": name,
+            "total_trades": int(total or 0),
+            "wins": int(wins or 0),
+            "losses": int(losses or 0),
+            "pnl_cents": int(pnl or 0),
+        }
+
+    # Merge with YAML — YAML strategies first in YAML order; orphans appended.
+    yaml_strategies = load_strategies()
+    result: list[StrategySummaryEntry] = []
+    seen: set[str] = set()
+    for s in yaml_strategies:
+        agg = db_by_name.get(
+            s.name,
+            {
+                "name": s.name,
+                "total_trades": 0,
+                "wins": 0,
+                "losses": 0,
+                "pnl_cents": 0,
+            },
+        )
+        result.append(StrategySummaryEntry(**agg))
+        seen.add(s.name)
+    for name, agg in db_by_name.items():
+        if name in seen:
+            continue
+        result.append(StrategySummaryEntry(**agg))
+
+    return StrategiesSummaryResponse(strategies=result)
 
 
 @app.get("/api/trades", response_model=TradesListResponse, dependencies=[Depends(_check_token)])
