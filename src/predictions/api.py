@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import desc, func
+from sqlalchemy import and_, desc, func, or_
 
 from predictions import backtest as backtest_mod
 from predictions.backtest import BacktestRequest, BacktestResponse
@@ -141,6 +141,40 @@ class StrategyResponse(BaseModel):
 
 class StrategiesResponse(BaseModel):
     strategies: list[StrategyResponse]
+
+
+class StrategyAnalyticsStats(BaseModel):
+    total_trades: int
+    wins: int
+    losses: int
+    open_trades: int
+    win_rate: float
+    realized_pnl_cents: int
+
+
+class StrategyAnalyticsTrade(BaseModel):
+    id: int
+    placed_at: Optional[datetime] = None
+    settled_at: Optional[datetime] = None
+    ticker: str
+    yes_price: int
+    count: int
+    cost_cents: int
+    pnl_cents: Optional[int] = None
+    status: str
+
+
+class StrategyAnalyticsPnlPoint(BaseModel):
+    x: Optional[datetime] = None
+    y: int
+    ticker: str
+    trade_pnl: int
+
+
+class StrategyAnalyticsResponse(BaseModel):
+    stats: StrategyAnalyticsStats
+    trades: list[StrategyAnalyticsTrade]
+    pnl_curve: list[StrategyAnalyticsPnlPoint]
 
 
 # --- App ---
@@ -369,6 +403,103 @@ def get_strategies():
             )
             for s in strategies
         ]
+    )
+
+
+@app.get(
+    "/api/strategy-analytics",
+    response_model=StrategyAnalyticsResponse,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategy_analytics(strategy: str):
+    """Per-strategy analytics for the dashboard /analytics page.
+
+    DASH-03 / D-04: returns stat aggregates, full trade log (newest first),
+    and a per-trade-step running P&L curve over settled trades. Composite
+    filter (Phase 03 D-16 symmetry) excludes legacy process-level dry-run
+    rows even though strategy_name == :name already filters them — keeps
+    this query in lockstep with check_settlements if the schema ever evolves.
+    """
+    session = get_session()
+
+    # Composite filter — D-04 + Phase 03 D-16 symmetry
+    strategy_filter = (Trade.strategy_name == strategy) & or_(
+        Trade.dry_run == False,
+        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
+    )
+
+    total = session.query(Trade).filter(strategy_filter).count()
+    wins = session.query(Trade).filter(strategy_filter, Trade.status == "settled_win").count()
+    losses = session.query(Trade).filter(strategy_filter, Trade.status == "settled_loss").count()
+    open_trades = session.query(Trade).filter(strategy_filter, Trade.status == "dry_run").count()
+    settled = wins + losses
+    win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
+
+    realized_pnl = (
+        session.query(func.sum(Trade.pnl_cents))
+        .filter(strategy_filter, Trade.pnl_cents.isnot(None))
+        .scalar()
+        or 0
+    )
+
+    # Trade log — newest first
+    trade_rows = session.query(Trade).filter(strategy_filter).order_by(desc(Trade.placed_at)).all()
+    trades = [
+        StrategyAnalyticsTrade(
+            id=t.id,
+            placed_at=t.placed_at,
+            settled_at=t.settled_at,
+            ticker=t.ticker,
+            yes_price=t.yes_price,
+            count=t.count,
+            cost_cents=t.cost_cents,
+            pnl_cents=t.pnl_cents,
+            status=t.status,
+        )
+        for t in trade_rows
+    ]
+
+    # P&L curve — settled only, oldest first, running sum in Python
+    # (D-05: SQLite version-dependent window functions; do not use SQL).
+    settled_rows = (
+        session.query(Trade)
+        .filter(
+            strategy_filter,
+            Trade.status.in_(("settled_win", "settled_loss")),
+        )
+        .order_by(Trade.settled_at)
+        .all()
+    )
+    pnl_curve: list[StrategyAnalyticsPnlPoint] = []
+    running = 0
+    for t in settled_rows:
+        # Pitfall 5: skip rows where settled_at is NULL — never plot a point
+        # with x=None (recharts silently misplaces it).
+        if t.settled_at is None:
+            continue
+        trade_pnl = t.pnl_cents or 0
+        running += trade_pnl
+        pnl_curve.append(
+            StrategyAnalyticsPnlPoint(
+                x=t.settled_at,
+                y=running,
+                ticker=t.ticker,
+                trade_pnl=trade_pnl,
+            )
+        )
+
+    session.close()
+    return StrategyAnalyticsResponse(
+        stats=StrategyAnalyticsStats(
+            total_trades=total,
+            wins=wins,
+            losses=losses,
+            open_trades=open_trades,
+            win_rate=win_rate,
+            realized_pnl_cents=realized_pnl,
+        ),
+        trades=trades,
+        pnl_curve=pnl_curve,
     )
 
 

@@ -3,6 +3,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 import predictions.db as db_module
 
@@ -14,8 +15,18 @@ def isolated_db(monkeypatch):
     The production db module binds the engine at import time via DATABASE_URL.
     Monkey-patching `engine` and `SessionLocal` ensures every call through
     `get_session()` hits the test DB, not the real predictions.db.
+
+    StaticPool is required so the `:memory:` database is shared across
+    connections within the same engine — without it, FastAPI TestClient
+    requests run on a worker thread and open a fresh connection that sees
+    an empty `:memory:` DB. With StaticPool, all sessions reuse the one
+    connection that holds the seeded tables.
     """
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     SessionLocal = sessionmaker(bind=engine)
     monkeypatch.setattr(db_module, "engine", engine)
     monkeypatch.setattr(db_module, "SessionLocal", SessionLocal)
@@ -29,6 +40,7 @@ def isolated_soccer_db(monkeypatch):
     """Point `predictions.soccer_cache` at a fresh in-memory SQLite for every test."""
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.pool import StaticPool
 
     try:
         import predictions.soccer_cache as soccer_module
@@ -37,7 +49,11 @@ def isolated_soccer_db(monkeypatch):
         yield None
         return
 
-    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     SessionLocal = sessionmaker(bind=engine)
     monkeypatch.setattr(soccer_module, "engine", engine)
     monkeypatch.setattr(soccer_module, "SessionLocal", SessionLocal)

@@ -34,7 +34,7 @@ ignore = ["E402", "E712"]
 [tool.ty.environment]
 python-version = "3.13"
 python-platform = "linux"
-root = ["src"]
+root = ["src", "tests"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
