@@ -44,3 +44,27 @@ def isolated_soccer_db(monkeypatch):
     soccer_module.Base.metadata.create_all(engine)
     yield engine
     engine.dispose()
+
+
+def seed_trades(engine, rows: list[dict]) -> None:
+    """Insert Trade rows into the engine yielded by `isolated_db`.
+
+    Each row dict is unpacked as **kwargs to the Trade ORM constructor —
+    callers control which columns to populate. Required columns per the
+    Trade model: ticker, side, count, yes_price, cost_cents,
+    potential_profit_cents, status. Optional but commonly set in
+    analytics tests: strategy_name, pnl_cents, settled_at, placed_at,
+    dry_run.
+    """
+    from sqlalchemy.orm import sessionmaker
+
+    from predictions.db import Trade
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        for row in rows:
+            session.add(Trade(**row))
+        session.commit()
+    finally:
+        session.close()
