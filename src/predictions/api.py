@@ -73,6 +73,7 @@ class TradeResponse(BaseModel):
     dry_run: bool
     error: Optional[str] = None
     espn_clock_seconds: Optional[int] = None
+    strategy_name: Optional[str] = None
 
 
 class TradesListResponse(BaseModel):
@@ -405,6 +406,7 @@ def get_trades(limit: int = 50, offset: int = 0):
                 dry_run=t.dry_run,
                 error=t.error,
                 espn_clock_seconds=t.espn_clock_seconds,
+                strategy_name=t.strategy_name,
             )
         )
         if len(result) == limit:
