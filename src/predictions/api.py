@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import desc, func
+from sqlalchemy import and_, case, desc, func, or_
 
 from predictions import backtest as backtest_mod
 from predictions.backtest import BacktestRequest, BacktestResponse
@@ -73,6 +73,7 @@ class TradeResponse(BaseModel):
     dry_run: bool
     error: Optional[str] = None
     espn_clock_seconds: Optional[int] = None
+    strategy_name: Optional[str] = None
 
 
 class TradesListResponse(BaseModel):
@@ -140,6 +141,52 @@ class StrategyResponse(BaseModel):
 
 class StrategiesResponse(BaseModel):
     strategies: list[StrategyResponse]
+
+
+class StrategyAnalyticsStats(BaseModel):
+    total_trades: int
+    wins: int
+    losses: int
+    open_trades: int
+    win_rate: float
+    realized_pnl_cents: int
+
+
+class StrategyAnalyticsTrade(BaseModel):
+    id: int
+    placed_at: Optional[datetime] = None
+    settled_at: Optional[datetime] = None
+    ticker: str
+    yes_price: int
+    count: int
+    cost_cents: int
+    pnl_cents: Optional[int] = None
+    status: str
+
+
+class StrategyAnalyticsPnlPoint(BaseModel):
+    x: Optional[datetime] = None
+    y: int
+    ticker: str
+    trade_pnl: int
+
+
+class StrategyAnalyticsResponse(BaseModel):
+    stats: StrategyAnalyticsStats
+    trades: list[StrategyAnalyticsTrade]
+    pnl_curve: list[StrategyAnalyticsPnlPoint]
+
+
+class StrategySummaryEntry(BaseModel):
+    name: str
+    total_trades: int
+    wins: int
+    losses: int
+    pnl_cents: int
+
+
+class StrategiesSummaryResponse(BaseModel):
+    strategies: list[StrategySummaryEntry]
 
 
 # --- App ---
@@ -371,6 +418,176 @@ def get_strategies():
     )
 
 
+@app.get(
+    "/api/strategy-analytics",
+    response_model=StrategyAnalyticsResponse,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategy_analytics(strategy: str):
+    """Per-strategy analytics for the dashboard /analytics page.
+
+    DASH-03 / D-04: returns stat aggregates, full trade log (newest first),
+    and a per-trade-step running P&L curve over settled trades. Composite
+    filter (Phase 03 D-16 symmetry) excludes legacy process-level dry-run
+    rows even though strategy_name == :name already filters them — keeps
+    this query in lockstep with check_settlements if the schema ever evolves.
+    """
+    session = get_session()
+
+    # Composite filter — D-04 + Phase 03 D-16 symmetry
+    strategy_filter = (Trade.strategy_name == strategy) & or_(
+        Trade.dry_run == False,
+        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
+    )
+
+    total = session.query(Trade).filter(strategy_filter).count()
+    wins = session.query(Trade).filter(strategy_filter, Trade.status == "settled_win").count()
+    losses = session.query(Trade).filter(strategy_filter, Trade.status == "settled_loss").count()
+    open_trades = session.query(Trade).filter(strategy_filter, Trade.status == "dry_run").count()
+    settled = wins + losses
+    win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
+
+    realized_pnl = (
+        session.query(func.sum(Trade.pnl_cents))
+        .filter(strategy_filter, Trade.pnl_cents.isnot(None))
+        .scalar()
+        or 0
+    )
+
+    # Trade log — newest first
+    trade_rows = session.query(Trade).filter(strategy_filter).order_by(desc(Trade.placed_at)).all()
+    trades = [
+        StrategyAnalyticsTrade(
+            id=t.id,
+            placed_at=t.placed_at,
+            settled_at=t.settled_at,
+            ticker=t.ticker,
+            yes_price=t.yes_price,
+            count=t.count,
+            cost_cents=t.cost_cents,
+            pnl_cents=t.pnl_cents,
+            status=t.status,
+        )
+        for t in trade_rows
+    ]
+
+    # P&L curve — settled only, oldest first, running sum in Python
+    # (D-05: SQLite version-dependent window functions; do not use SQL).
+    settled_rows = (
+        session.query(Trade)
+        .filter(
+            strategy_filter,
+            Trade.status.in_(("settled_win", "settled_loss")),
+        )
+        .order_by(Trade.settled_at)
+        .all()
+    )
+    pnl_curve: list[StrategyAnalyticsPnlPoint] = []
+    running = 0
+    for t in settled_rows:
+        # Pitfall 5: skip rows where settled_at is NULL — never plot a point
+        # with x=None (recharts silently misplaces it).
+        if t.settled_at is None:
+            continue
+        trade_pnl = t.pnl_cents or 0
+        running += trade_pnl
+        pnl_curve.append(
+            StrategyAnalyticsPnlPoint(
+                x=t.settled_at,
+                y=running,
+                ticker=t.ticker,
+                trade_pnl=trade_pnl,
+            )
+        )
+
+    session.close()
+    return StrategyAnalyticsResponse(
+        stats=StrategyAnalyticsStats(
+            total_trades=total,
+            wins=wins,
+            losses=losses,
+            open_trades=open_trades,
+            win_rate=win_rate,
+            realized_pnl_cents=realized_pnl,
+        ),
+        trades=trades,
+        pnl_curve=pnl_curve,
+    )
+
+
+@app.get(
+    "/api/strategies-summary",
+    response_model=StrategiesSummaryResponse,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategies_summary():
+    """Per-strategy mini-stats for the analytics sidebar.
+
+    DASH-03 / D-06: returns one entry per strategy (totals/wins/losses/
+    pnl_cents). YAML strategies with zero trades are included with
+    all-zero stats (D-11) by merging load_strategies() with the DB
+    GROUP BY result. Orphaned DB-only strategies (rows whose strategy_name
+    is no longer in YAML) are appended so their historical data stays
+    visible.
+    """
+    session = get_session()
+
+    # Composite filter (Phase 03 D-16 symmetry). NULL strategy_name is
+    # excluded by isnot(None); the dry_run clause is documentation.
+    filter_expr = Trade.strategy_name.isnot(None) & or_(
+        Trade.dry_run == False,
+        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
+    )
+
+    rows = (
+        session.query(
+            Trade.strategy_name,
+            func.count(Trade.id),
+            func.sum(case((Trade.status == "settled_win", 1), else_=0)),
+            func.sum(case((Trade.status == "settled_loss", 1), else_=0)),
+            func.sum(case((Trade.pnl_cents.isnot(None), Trade.pnl_cents), else_=0)),
+        )
+        .filter(filter_expr)
+        .group_by(Trade.strategy_name)
+        .all()
+    )
+    session.close()
+
+    db_by_name: dict[str, dict] = {}
+    for name, total, wins, losses, pnl in rows:
+        db_by_name[name] = {
+            "name": name,
+            "total_trades": int(total or 0),
+            "wins": int(wins or 0),
+            "losses": int(losses or 0),
+            "pnl_cents": int(pnl or 0),
+        }
+
+    # Merge with YAML — YAML strategies first in YAML order; orphans appended.
+    yaml_strategies = load_strategies()
+    result: list[StrategySummaryEntry] = []
+    seen: set[str] = set()
+    for s in yaml_strategies:
+        agg = db_by_name.get(
+            s.name,
+            {
+                "name": s.name,
+                "total_trades": 0,
+                "wins": 0,
+                "losses": 0,
+                "pnl_cents": 0,
+            },
+        )
+        result.append(StrategySummaryEntry(**agg))
+        seen.add(s.name)
+    for name, agg in db_by_name.items():
+        if name in seen:
+            continue
+        result.append(StrategySummaryEntry(**agg))
+
+    return StrategiesSummaryResponse(strategies=result)
+
+
 @app.get("/api/trades", response_model=TradesListResponse, dependencies=[Depends(_check_token)])
 def get_trades(limit: int = 50, offset: int = 0):
     session = get_session()
@@ -405,6 +622,7 @@ def get_trades(limit: int = 50, offset: int = 0):
                 dry_run=t.dry_run,
                 error=t.error,
                 espn_clock_seconds=t.espn_clock_seconds,
+                strategy_name=t.strategy_name,
             )
         )
         if len(result) == limit:
