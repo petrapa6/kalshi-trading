@@ -303,6 +303,7 @@ async def check_settlements(client: KalshiClient):
             if status in ("finalized", "settled"):
                 fee = trade.fee_cents or 0
                 tag = "STRATEGY" if trade.strategy_name else "REAL"
+                trade.settled_at = datetime.now(timezone.utc)
                 if result == trade.side:
                     trade.status = "settled_win"
                     trade.pnl_cents = trade.potential_profit_cents - fee
@@ -358,6 +359,7 @@ async def on_lifecycle(msg: dict, client: KalshiClient | None = None) -> None:
     for trade in open_trades:
         fee = trade.fee_cents or 0
         tag = "STRATEGY" if trade.strategy_name else "REAL"
+        trade.settled_at = datetime.now(timezone.utc)
         if result == trade.side:
             trade.status = "settled_win"
             trade.pnl_cents = trade.potential_profit_cents - fee
