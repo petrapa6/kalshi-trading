@@ -109,7 +109,7 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 - [x] 04-00-PLAN.md — Wave 0 test scaffolding (xfail stubs in tests/test_strategy_analytics.py + seed_trades helper in tests/conftest.py)
 - [x] 04-01-PLAN.md — Wave 1 backend endpoints (TradeResponse.strategy_name + GET /api/strategy-analytics + GET /api/strategies-summary with YAML+DB merge for zero-trade strategies)
 - [x] 04-02-PLAN.md — Wave 2 analytics page (dashboard/app/analytics/page.tsx — auth gate + sidebar mini-stats + stat cards + recharts P&L chart + trade log + 5-min auto-refresh)
-- [ ] 04-03-PLAN.md — Wave 3 dashboard integration (Trade TS interface + header Analytics link + trades-table strategy-name cross-links)
+- [x] 04-03-PLAN.md — Wave 3 dashboard integration (Trade TS interface + header Analytics link + trades-table strategy-name cross-links)
 **UI hint**: yes
 
 ## Progress
