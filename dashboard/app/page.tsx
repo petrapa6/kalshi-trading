@@ -43,6 +43,7 @@ interface Trade {
   dry_run: boolean;
   error: string | null;
   espn_clock_seconds: number | null;
+  strategy_name?: string | null;
 }
 
 interface Opportunity {
@@ -2310,6 +2311,12 @@ export default function Dashboard() {
                 className="inline-block mt-2 px-4 py-2 rounded-lg text-sm font-bold transition-all bg-zinc-900 text-zinc-400 hover:text-amber-500 hover:bg-zinc-800"
               >
                 Strategy Backtest →
+              </a>
+              <a
+                href="/analytics"
+                className="inline-block mt-2 ml-2 px-4 py-2 rounded-lg text-sm font-bold transition-all bg-zinc-900 text-zinc-400 hover:text-amber-500 hover:bg-zinc-800"
+              >
+                Analytics →
               </a>
             </div>
             {config && (
