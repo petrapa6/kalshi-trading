@@ -140,6 +140,22 @@ def _migrate_add_columns():
                     )
                 )
 
+        # Backfill settled_at for historical settled rows. The settlement
+        # writer in scanner.py predates this column being read by anyone, so
+        # production rows have settled_at IS NULL. The /api/strategy-analytics
+        # P&L curve filters NULL settled_at out, which would render every
+        # historical strategy as an empty chart until a fresh trade settles.
+        # placed_at is the closest available proxy (settle delay is minutes
+        # to hours for sports markets). Idempotent: only touches NULL rows.
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    "UPDATE trades SET settled_at = placed_at "
+                    "WHERE settled_at IS NULL "
+                    "AND status IN ('settled_win', 'settled_loss')"
+                )
+            )
+
     # D-03 — rename legacy WHAT_IF tracking table for archival access.
     # Idempotent: guarded by table-presence; runs once on upgraded DBs,
     # no-op on fresh DBs (where stretch_opportunities never existed)
