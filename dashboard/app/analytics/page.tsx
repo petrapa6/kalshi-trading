@@ -1,6 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { checkAuth } from "../actions";
 
 interface SummaryEntry {
@@ -146,6 +155,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     if (!authed) return;
     let cancelled = false;
+
     const fetchAll = async () => {
       try {
         const [summaryRes, detailRes] = await Promise.all([
@@ -177,9 +187,12 @@ export default function AnalyticsPage() {
         // non-critical (project pattern: empty catch on background polling)
       }
     };
+
     fetchAll();
+    const interval = setInterval(fetchAll, 5 * 60 * 1000); // DASH-04 / D-12
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, [authed, selected]);
 
@@ -253,12 +266,122 @@ export default function AnalyticsPage() {
                 />
               </div>
 
-              <div className="bg-gray-900 rounded p-4 h-[280px] flex items-center justify-center text-gray-500 text-sm">
-                P&L chart loads in Task 2
+              <div className="bg-gray-900 rounded p-4">
+                <div className="text-xs uppercase tracking-wider text-gray-400 mb-2">
+                  Cumulative P&L
+                </div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart
+                    data={detail?.pnl_curve ?? []}
+                    margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                  >
+                    <CartesianGrid stroke="#27272a" strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="x"
+                      tickFormatter={(v: string | null) =>
+                        v ? new Date(v).toLocaleDateString() : ""
+                      }
+                      tick={{ fill: "#a1a1aa", fontSize: 11 }}
+                    />
+                    <YAxis
+                      tickFormatter={(v: number) => `$${(v / 100).toFixed(2)}`}
+                      tick={{ fill: "#a1a1aa", fontSize: 11 }}
+                    />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (!active || !payload || payload.length === 0)
+                          return null;
+                        const d = payload[0].payload as PnlPoint;
+                        return (
+                          <div className="bg-zinc-900 border border-zinc-700 p-2 text-xs">
+                            <div>
+                              {d.x ? new Date(d.x).toLocaleString() : ""}
+                            </div>
+                            <div>{d.ticker}</div>
+                            <div>Trade: {fmtCents(d.trade_pnl)}</div>
+                            <div>Running: {fmtCents(d.y)}</div>
+                          </div>
+                        );
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="y"
+                      stroke="#d97706"
+                      dot={false}
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
 
-              <div className="bg-gray-900 rounded p-4 text-gray-500 text-sm">
-                Trade log loads in Task 2
+              <div className="bg-gray-900 rounded p-4">
+                <div className="text-xs uppercase tracking-wider text-gray-400 mb-2">
+                  Trades
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-xs uppercase tracking-wider text-gray-400 text-left">
+                        <th className="p-2">Date</th>
+                        <th className="p-2">Ticker</th>
+                        <th className="p-2 text-right">Price</th>
+                        <th className="p-2 text-right">Contracts</th>
+                        <th className="p-2 text-right">P&L</th>
+                        <th className="p-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(detail?.trades ?? []).length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            className="p-4 text-gray-500 text-center"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+                      ) : (
+                        (detail?.trades ?? []).map((t) => {
+                          const dateText = t.placed_at
+                            ? new Date(t.placed_at).toLocaleDateString()
+                            : "—";
+                          const pnlClass =
+                            t.pnl_cents == null
+                              ? "text-gray-400"
+                              : t.pnl_cents >= 0
+                                ? "text-green-400"
+                                : "text-red-400";
+                          const pnlText =
+                            t.pnl_cents == null ? "—" : fmtCents(t.pnl_cents);
+                          return (
+                            <tr
+                              key={t.id}
+                              className="border-t border-gray-800 hover:bg-gray-800/50"
+                            >
+                              <td className="p-2 text-gray-300">{dateText}</td>
+                              <td className="p-2 font-mono text-xs text-gray-300">
+                                {t.ticker}
+                              </td>
+                              <td className="p-2 text-right text-gray-300">
+                                {t.yes_price}c
+                              </td>
+                              <td className="p-2 text-right text-gray-300">
+                                {t.count}
+                              </td>
+                              <td className={`p-2 text-right ${pnlClass}`}>
+                                {pnlText}
+                              </td>
+                              <td className="p-2 text-xs text-gray-400">
+                                {t.status.replace(/_/g, " ")}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </>
           ) : (
