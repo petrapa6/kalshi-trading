@@ -2665,6 +2665,14 @@ export default function Dashboard() {
                             <div className="text-amber-800 text-xs">
                               {t.ticker}
                             </div>
+                            {t.strategy_name && (
+                              <a
+                                href={`/analytics?strategy=${encodeURIComponent(t.strategy_name)}`}
+                                className="text-xs text-amber-600 hover:text-amber-400"
+                              >
+                                {t.strategy_name}
+                              </a>
+                            )}
                           </td>
                           <td className="p-3 text-right text-amber-500 font-mono text-xs">
                             {t.espn_clock_seconds !== null
