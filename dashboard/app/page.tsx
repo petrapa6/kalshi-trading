@@ -43,6 +43,7 @@ interface Trade {
   dry_run: boolean;
   error: string | null;
   espn_clock_seconds: number | null;
+  strategy_name?: string | null;
 }
 
 interface Opportunity {
@@ -2311,6 +2312,12 @@ export default function Dashboard() {
               >
                 Strategy Backtest →
               </a>
+              <a
+                href="/analytics"
+                className="inline-block mt-2 ml-2 px-4 py-2 rounded-lg text-sm font-bold transition-all bg-zinc-900 text-zinc-400 hover:text-amber-500 hover:bg-zinc-800"
+              >
+                Analytics →
+              </a>
             </div>
             {config && (
               <button
@@ -2658,6 +2665,14 @@ export default function Dashboard() {
                             <div className="text-amber-800 text-xs">
                               {t.ticker}
                             </div>
+                            {t.strategy_name && (
+                              <a
+                                href={`/analytics?strategy=${encodeURIComponent(t.strategy_name)}`}
+                                className="text-xs text-amber-600 hover:text-amber-400"
+                              >
+                                {t.strategy_name}
+                              </a>
+                            )}
                           </td>
                           <td className="p-3 text-right text-amber-500 font-mono text-xs">
                             {t.espn_clock_seconds !== null
