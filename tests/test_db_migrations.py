@@ -99,3 +99,94 @@ def test_engine_timeout(isolated_db):
     assert '"timeout": 5' in src, (
         "db.py must include connect_args={'check_same_thread': False, 'timeout': 5}"
     )
+
+
+def test_backfill_settled_at(fresh_engine):
+    """Phase 04 gap closure: historical settled rows get settled_at backfilled
+    from placed_at so /api/strategy-analytics renders a P&L curve immediately
+    after deploy (the column was never written by the settlement path before).
+    """
+    from datetime import datetime, timezone
+
+    from predictions.db import Trade
+
+    placed = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+    Session = sessionmaker(bind=fresh_engine)
+    session = Session()
+    session.add_all(
+        [
+            Trade(
+                ticker="KX-WIN",
+                event_ticker="KX-WIN",
+                status="settled_win",
+                pnl_cents=50,
+                placed_at=placed,
+                settled_at=None,
+            ),
+            Trade(
+                ticker="KX-LOSS",
+                event_ticker="KX-LOSS",
+                status="settled_loss",
+                pnl_cents=-100,
+                placed_at=placed,
+                settled_at=None,
+            ),
+            Trade(
+                ticker="KX-OPEN",
+                event_ticker="KX-OPEN",
+                status="placed",
+                placed_at=placed,
+                settled_at=None,
+            ),
+        ]
+    )
+    session.commit()
+    session.close()
+
+    _migrate_add_columns()
+
+    session = Session()
+    win = session.query(Trade).filter(Trade.ticker == "KX-WIN").one()
+    loss = session.query(Trade).filter(Trade.ticker == "KX-LOSS").one()
+    open_trade = session.query(Trade).filter(Trade.ticker == "KX-OPEN").one()
+    # SQLite strips tzinfo from DateTime columns; compare naive UTC datetimes.
+    placed_naive = placed.replace(tzinfo=None)
+    assert win.settled_at == placed_naive, "settled_win row must be backfilled to placed_at"
+    assert loss.settled_at == placed_naive, "settled_loss row must be backfilled to placed_at"
+    assert open_trade.settled_at is None, "non-settled rows must remain NULL"
+    session.close()
+
+
+def test_backfill_settled_at_idempotent(fresh_engine):
+    """Backfill must not overwrite already-set settled_at on subsequent runs."""
+    from datetime import datetime, timezone
+
+    from predictions.db import Trade
+
+    placed = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+    real_settled = datetime(2026, 5, 1, 13, 30, tzinfo=timezone.utc)
+    Session = sessionmaker(bind=fresh_engine)
+    session = Session()
+    session.add(
+        Trade(
+            ticker="KX-DONE",
+            event_ticker="KX-DONE",
+            status="settled_win",
+            pnl_cents=50,
+            placed_at=placed,
+            settled_at=real_settled,
+        )
+    )
+    session.commit()
+    session.close()
+
+    _migrate_add_columns()
+    _migrate_add_columns()
+
+    session = Session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-DONE").one()
+    # SQLite strips tzinfo from DateTime columns; compare naive UTC datetimes.
+    assert trade.settled_at == real_settled.replace(tzinfo=None), (
+        "rows with non-NULL settled_at must not be touched"
+    )
+    session.close()

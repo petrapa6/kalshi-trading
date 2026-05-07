@@ -59,6 +59,10 @@ async def test_check_settlements_updates_strategy_trades(isolated_db):
     trade = session.query(Trade).filter(Trade.ticker == "KX-T1").one()
     assert trade.status == "settled_win"
     assert trade.pnl_cents == 25  # count * (100 - yes_price) = 5 * (100 - 95) = 25
+    # The /api/strategy-analytics P&L curve filters out NULL settled_at rows;
+    # if the writer ever stops setting this, the chart silently goes blank in
+    # production while realized_pnl_cents stat still totals correctly.
+    assert trade.settled_at is not None
     session.close()
 
 
@@ -97,6 +101,7 @@ async def test_on_lifecycle_updates_strategy_trades(isolated_db):
     trade = session.query(Trade).filter(Trade.ticker == "KX-T1").one()
     assert trade.status == "settled_win"
     assert trade.pnl_cents == 25
+    assert trade.settled_at is not None
     session.close()
 
 
