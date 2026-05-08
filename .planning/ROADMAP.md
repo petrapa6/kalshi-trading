@@ -125,6 +125,18 @@ Full archive: `.planning/milestones/v1.1-ROADMAP.md`
 | 3. Scanner Integration | v1.2 | 0/4 | Planned (waves 0-3) | - |
 | 4. Analytics Dashboard | v1.2 | 0/4 | Planned (waves 0-3) | - |
 
+## Backlog
+
+### Phase 999.1: Analytics back/forward popstate sync (BACKLOG)
+
+**Goal:** Make the browser back/forward buttons re-sync the selected strategy on `/analytics` (closes Phase 04 WR-04 advisory)
+**Source phase:** 04-analytics-dashboard
+**Deferred at:** 2026-05-08 during /gsd-verify-work — accepted as advisory for v1.2 close
+**Severity:** minor
+**Plans:**
+- [ ] 999.1-01: Add `popstate` listener in `dashboard/app/analytics/page.tsx` that re-reads `?strategy=` and calls `setSelected` (or revisit the Next.js 16 Suspense workaround at page.tsx:139-141 and switch to `useSearchParams()`)
+
 ---
 *Roadmap defined: 2026-04-29 (inline bootstrap, brownfield)*
 *v1.2 phases added: 2026-04-29*
+*Phase 999.1 deferred: 2026-05-08 (Phase 04 WR-04)*
