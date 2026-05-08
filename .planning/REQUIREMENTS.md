@@ -10,7 +10,7 @@
 
 ### Backtest Engine
 
-- [ ] **BT-06**: User backtests use contract-based P&L math: `contracts = floor(stake_cents / price_cents)`, win profit = `contracts × (100 − price_cents)`, loss = `contracts × price_cents`; the `avg_win_yield` input is removed from the backtest UI
+- [x] **BT-06**: User backtests use contract-based P&L math: `contracts = floor(stake_cents / price_cents)`, win profit = `contracts × (100 − price_cents)`, loss = `contracts × price_cents`; the `avg_win_yield` input is removed from the backtest UI
 
 - [x] **BT-07**: The backtest page has a strategy selector dropdown populated from `strategies.yaml`; selecting a strategy pre-populates the parameter sliders (sport, min_lead, min_minute, min_yes_price, max_yes_price) with that strategy's first trigger values; sliders remain fully editable so users can explore custom variations after loading a preset
 
@@ -22,19 +22,19 @@
 
 - [x] **STR-03**: Strategy definitions in `strategies.yaml` drive both the backtest simulator and the live scanner (single source of truth for strategy logic)
 
-- [ ] **STR-04**: The `stretch_opportunities` DB table is dropped and `WHAT_IF_STRATEGIES` is removed from `scanner.py`; the existing `GET /api/sport-stats` endpoint is updated to derive game counts from the `opportunities` table instead
+- [x] **STR-04** (deviation: RENAME, not DROP): `stretch_opportunities` renamed to `stretch_opportunities_archived` per PROJECT.md STR-04 + Phase 03-02 D-03 (rollback safety against S3 backup); `WHAT_IF_STRATEGIES` removed from `scanner.py`; `GET /api/sport-stats` updated to derive game counts from the `opportunities` table per D-19
 
 ### Dry-Run Trading
 
-- [ ] **DRY-01**: The live scanner evaluates all enabled strategies from `strategies.yaml` each scan loop; when a strategy's trigger conditions are met for a market, the scanner fires a dry-run trade: no Kalshi API call is made, but the live `yes_ask` price from the market_prices cache (fetched via WebSocket/REST) is recorded as the entry price, hardcoded `dry_run=True` regardless of the process-level `DRY_RUN` env var
+- [x] **DRY-01**: The live scanner evaluates all enabled strategies from `strategies.yaml` each scan loop; when a strategy's trigger conditions are met for a market, the scanner fires a dry-run trade: no Kalshi API call is made, but the live `yes_ask` price from the market_prices cache (fetched via WebSocket/REST) is recorded as the entry price, hardcoded `dry_run=True` regardless of the process-level `DRY_RUN` env var
 
-- [ ] **DRY-02**: Dry-run strategy trades are stored in the `trades` table with a new `strategy_name` column; the recorded `yes_price` (live Kalshi yes_ask at signal time) is used to compute contract-based P&L on settlement: `contracts = floor(bet_amount / yes_price)`, win = `contracts × (100 − yes_price)`, loss = `−contracts × yes_price`; settlement reconciliation runs for these trades (via WebSocket primary + REST fallback)
+- [x] **DRY-02**: Dry-run strategy trades are stored in the `trades` table with a new `strategy_name` column; the recorded `yes_price` (live Kalshi yes_ask at signal time) is used to compute contract-based P&L on settlement: `contracts = floor(bet_amount / yes_price)`, win = `contracts × (100 − yes_price)`, loss = `−contracts × yes_price`; settlement reconciliation runs for these trades (via WebSocket primary + REST fallback)
 
 ### Analytics Dashboard
 
-- [ ] **DASH-03**: A new dashboard page shows per-strategy dry-run performance: strategy selector, summary stat cards (total trades, wins, losses, win rate, realized P&L), cumulative P&L line chart (x = `placed_at`, y = running P&L sum), and a trade log table (date, ticker, price, contracts, P&L, status); page is behind the `checkAuth` gate
+- [x] **DASH-03**: A new dashboard page shows per-strategy dry-run performance: strategy selector, summary stat cards (total trades, wins, losses, win rate, realized P&L), cumulative P&L line chart (x = `placed_at`, y = running P&L sum), and a trade log table (date, ticker, price, contracts, P&L, status); page is behind the `checkAuth` gate
 
-- [ ] **DASH-04**: The analytics page auto-refreshes every 5 minutes to show new dry-run activity without a manual reload
+- [x] **DASH-04**: The analytics page auto-refreshes every 5 minutes to show new dry-run activity without a manual reload
 
 ---
 
