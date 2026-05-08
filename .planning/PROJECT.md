@@ -38,13 +38,14 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 - ✓ **STR-04**: `stretch_opportunities` table renamed to `stretch_opportunities_archived` (NOT dropped, per S3-backup safety); `WHAT_IF_STRATEGIES` + `_evaluate_what_if_strategies` removed; `/api/sport-stats` re-sourced from `opportunities` (D-19) — Validated in Phase 3
 - ✓ **DRY-01**: `place_strategy_trade` hardcodes `dry_run=True`/`status="dry_run"`/`yes_price=opp["yes_ask"]` — never calls Kalshi REST regardless of process-level `DRY_RUN`; `trading_paused == "true"` early-exits `evaluate_strategies` (D-23) — Validated in Phase 3
 - ✓ **DRY-02**: Settlement filter widened to `Trade.dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)` (D-16); P&L on dry-run strategy trades computed via contract math on recorded `yes_ask` — Validated in Phase 3
+- ✓ **DASH-03**: New `/analytics` dashboard page (auth-gated) renders per-strategy stat cards, cumulative P&L curve (settled_at axis per D-09 — semantically correct for realized P&L), and trade log; backed by `GET /api/strategy-analytics` + `GET /api/strategies-summary` (Bearer auth) — Validated in Phase 4
+- ✓ **DASH-04**: Analytics page auto-refreshes every 5 minutes via `setInterval(fetchAll, 5*60*1000)`; `lastUpdated` state ticks per fetch — Validated in Phase 4
 
 ### Active
 
-<!-- v1.2 Strategy Engine — Phase 4 (Analytics Dashboard) remaining -->
+<!-- v1.3 — TBD; defined via /gsd-new-milestone -->
 
-- **DASH-03**: New analytics dashboard page shows per-strategy trade log, P&L curve, and win rate
-- **DASH-04**: Analytics page auto-refreshes to show live dry-run activity as new trades arrive
+(none — v1.2 shipped 2026-05-08; v1.3 not yet defined)
 
 ### Out of Scope
 
@@ -52,21 +53,23 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 - New season JSONs or backtest page UI redesign beyond the P&L math change
 - CLI changes — no new CLI commands for strategy management in this milestone
 
-## Current Milestone: v1.2 Strategy Engine
+## Current State
 
-**Goal:** Replace the hardcoded strategy list with a file-driven engine that supports multi-trigger conditions, powers both backtest and live dry-run trading, and surfaces per-strategy analytics in the dashboard.
+**Shipped:** v1.2 Strategy Engine (2026-05-08). 4 phases, 17 plans. All 10 v1.2 REQ-IDs validated; STR-04 satisfied via documented RENAME-not-DROP deviation. See `.planning/MILESTONES.md` and `.planning/milestones/v1.2-*.md` for archive.
 
-**Target features:**
-- Contract-based P&L math in the backtest engine
-- `strategies.yaml` replaces `WHAT_IF_STRATEGIES` + `stretch_opportunities`
-- Multi-trigger (OR-of-AND) conditions in strategies
-- Kalshi dry-run: live scanner places API orders per strategy with `dry_run=True`
-- New analytics dashboard page with per-strategy trade log, P&L curves, win rate, auto-refresh
+## Next Milestone Goals
+
+v1.3 not yet defined. Likely candidates (operator judgement):
+- Phase 999.1 backlog: analytics back/forward popstate sync (WR-04)
+- WAL mode or read replica for SQLite if analytics polling pressure increases under multi-tab use
+- Strategy editor in dashboard UI (deferred from v1.2 Future Requirements; requires max-file-size check before `safe_load`)
+- Hot-reload of `strategies.yaml` (deferred — open dry-run trades under changed strategies create mismatched state)
 
 ## Context
 
 - Brownfield project — production deployment exists. `.planning/codebase/` (mapped on commit `f2c2f78`) is the source of truth for architecture and stack.
 - v1.1 shipped 2026-04-29 on branch `feat/soccer-backtest`. The backtest page is now a fully self-contained client-side computation over 6 pre-fetched season JSONs (EPL, LaLiga, Bundesliga, Ligue 1, Serie A, MLS). No network calls after page load.
+- v1.2 shipped 2026-05-08 on `master`. Strategy engine + analytics dashboard. 88/88 unit tests + 1 skipped; Phase 04 security audit clean (`threats_open: 0`).
 - The integer-cents invariant (Kalshi prices internal cents, dollar strings only at the `kalshi_client.py` boundary) holds across the codebase. Backtest JSONs do not contain Kalshi prices; the v1.1 milestone removed price-based charts entirely.
 - Known tech debt: hand-maintained static import catalog in `seasons.ts` requires editing for each new season JSON; pre-existing `pnpm fmt:check` failures in `app/page.tsx` and surrounding files.
 - The pending contract-based P&L todo (`.planning/todos/pending/2026-04-29-backtest-contract-based-pnl.md`) is a v1.2 target.
@@ -92,6 +95,10 @@ Capture the lag between actual game state and Kalshi's market re-pricing — eve
 | [Phase 03] Settlement filter `dry_run==False OR (dry_run==True AND strategy_name IS NOT NULL)` (D-16) | Real trades always have `strategy_name=NULL`; strategy fires always have it set. The composite filter lets one settlement loop reconcile both populations without branching. | ✓ Good — closes DRY-02; Phase 04 analytics queries depend on this composite |
 | [Phase 03] `connect_args timeout=5` on the SQLAlchemy engine (D-02) | Phase 4 analytics polling will compete with the scanner's per-loop writes. SQLite's default lock timeout is 0; 5s is a generous buffer without masking real deadlocks. | ✓ Good — pre-emptive; revisit if WAL or read replica is needed under load |
 | [Phase 03] UK terminology: `football` not `soccer` for sport-family literals (D-08) | Operator preference + ESPN's `sport_path` already uses `soccer/`, so the family literal is the natural place to draw the terminology boundary. | ✓ Good — `SPORT_FAMILY_TO_PATHS` is the only translation surface; YAML strategies stay UK-style |
+| [Phase 04] `/analytics` page chart x-axis uses `settled_at` not `placed_at` (D-09 vs DASH-03) | DASH-03 specified `placed_at`; D-09 implemented `settled_at` because the chart shows realized P&L, which only settled trades contribute to. User approved at Phase 04 verification. | ✓ Good — semantically correct for a realized-P&L curve; documented as adjustment in v1.2-REQUIREMENTS archive |
+| [Phase 04] CR-01 `Trade.settled_at` writer fix (post-execution gap closure) | Phase 03 added the `settled_at` column but never wrote it from either settlement path; Phase 04 verification surfaced the empty-chart symptom. Atomic 3-commit fix (writer + idempotent backfill + tests) closed the gap; verification re-run flipped 6/8 → 8/8. | ✓ Good — caught at the right phase boundary; idempotent backfill handles historical rows; cross-phase contracts now durable |
+| [Phase 04] Composite filter for `/api/strategy-analytics` mirrors D-16 settlement filter | Symmetry between read path (analytics) and write path (settlement) — if the schema ever evolves to allow `dry_run=False` strategy attribution, both paths shift together. | ✓ Good — WR-01 advisory notes the outer `strategy_name == :name` makes part of the filter redundant today, but the symmetry is intentional defense-in-depth |
+| [Phase 04] Skip git tag at v1.2 close | Operator judgement (2026-05-08) — milestone artifacts (audit + archive + MILESTONES.md entry) capture the cut without a tag. | — Pending — revisit if release tags become useful for deployment correlation |
 
 ## Evolution
 
@@ -111,4 +118,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-05 — Phase 3 (Scanner Integration) complete*
+*Last updated: 2026-05-08 — v1.2 Strategy Engine milestone shipped*
