@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAuth } from "../../actions";
 
-const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
+const apiUrl = (
+  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001"
+).replace(/\/+$/, "");
 
-async function proxyRequest(req: NextRequest, method: string): Promise<NextResponse> {
+async function proxyRequest(
+  req: NextRequest,
+  method: string,
+): Promise<NextResponse> {
   if (!(await checkAuth())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -12,11 +17,12 @@ async function proxyRequest(req: NextRequest, method: string): Promise<NextRespo
   const backendUrl = `${apiUrl}${targetUrl.pathname}${targetUrl.search}`;
 
   try {
-    const body = method !== "GET" && method !== "DELETE" ? await req.text() : undefined;
+    const body =
+      method !== "GET" && method !== "DELETE" ? await req.text() : undefined;
     const res = await fetch(backendUrl, {
       method,
       headers: {
-        "Authorization": `Bearer ${process.env.API_TOKEN || ""}`,
+        Authorization: `Bearer ${process.env.API_TOKEN || ""}`,
         ...(body ? { "Content-Type": "application/json" } : {}),
       },
       body,
@@ -39,7 +45,15 @@ async function proxyRequest(req: NextRequest, method: string): Promise<NextRespo
   }
 }
 
-export async function GET(req: NextRequest)    { return proxyRequest(req, "GET"); }
-export async function POST(req: NextRequest)   { return proxyRequest(req, "POST"); }
-export async function PUT(req: NextRequest)    { return proxyRequest(req, "PUT"); }
-export async function DELETE(req: NextRequest) { return proxyRequest(req, "DELETE"); }
+export async function GET(req: NextRequest) {
+  return proxyRequest(req, "GET");
+}
+export async function POST(req: NextRequest) {
+  return proxyRequest(req, "POST");
+}
+export async function PUT(req: NextRequest) {
+  return proxyRequest(req, "PUT");
+}
+export async function DELETE(req: NextRequest) {
+  return proxyRequest(req, "DELETE");
+}
