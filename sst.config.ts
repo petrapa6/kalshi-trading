@@ -43,8 +43,8 @@ export default $config({
     const api = cluster.addService("Api", {
       image: {
         context: ".",
-        dockerfile: "Dockerfile",
-        buildArgs: { CACHE_BUST: Date.now().toString() },
+        dockerfile: "Dockerfile.api",
+        args: { CACHE_BUST: Date.now().toString() },
       },
       cpu: "0.25 vCPU",
       memory: "0.5 GB",
