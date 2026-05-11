@@ -245,6 +245,86 @@ The pre-commit hook (installed by `install.sh` or manually symlinked to `.git/ho
 
 ---
 
+## Run as a Home Assistant add-on (dry-run only)
+
+This repo ships as a HA add-on alongside the SST/AWS deploy. The add-on
+runs the scanner and dashboard in a single container, exposes the
+dashboard on port 8000, and stores SQLite + strategies under `/data`
+(included in HA backups). `DRY_RUN=true` is hardcoded in `run.sh` and
+`trading_paused=true` is seeded on first boot — three independent
+locks prevent live orders.
+
+### One-time setup
+
+1. **Add the add-on repository.** In HA → Settings → Add-ons → Add-on
+   Store → ⋮ (top right) → Repositories → paste:
+
+   ```
+   https://github.com/petrapa6/kalshi-trading
+   ```
+
+2. **Install "Kalshi Trading"** from the now-visible repo entry. HA
+   Supervisor builds the image on-device (first build takes ~5–10 min on
+   a Raspberry Pi).
+
+3. **Configure secrets** in the add-on's Configuration tab:
+   - `kalshi_api_key` — from Kalshi
+   - `kalshi_private_key` — PEM contents, multi-line
+   - `api_token` — generate with `openssl rand -hex 32`
+   - `dashboard_password` — login password
+   - `api_football_key` — optional, only for soccer backtest
+
+4. **Start the add-on.** Watch the log for `[kalshi] Seeded
+   trading_paused=true (first boot)` and `[kalshi] next started`.
+
+### Expose via Cloudflare Tunnel
+
+1. Install the [Cloudflared HA add-on](https://github.com/brenner-tobias/ha-addons)
+   if not already installed.
+2. In its config, add an ingress rule:
+
+   ```yaml
+   - hostname: trading.petra-czech.cc
+     service: http://homeassistant.local:8000
+   ```
+
+3. In Cloudflare DNS, create a CNAME for `trading.petra-czech.cc`
+   pointing at the tunnel UUID (Cloudflare's dashboard handles this
+   automatically when you create the tunnel).
+
+### Gate access with Cloudflare Access
+
+1. In Cloudflare Zero Trust → Access → Applications → Add an application
+   (Self-hosted).
+2. Application domain: `trading.petra-czech.cc`.
+3. Policy: include rule "Emails: petracekpav@gmail.com" (one-time PIN or
+   Google OAuth).
+
+Cloudflare Access is defense-in-depth. The dashboard password is the
+second lock; if you skip Access setup entirely the add-on is still
+protected by the password.
+
+### Updates
+
+`Settings → Add-ons → Kalshi Trading → ⋮ → Check for updates` pulls the
+latest commit from `master` and rebuilds the image. `/data/predictions.db`
+and `/data/strategies.yaml` survive upgrades.
+
+### Local build (for HAOS parity testing)
+
+```bash
+docker build -t kalshi-trading:local .
+docker run --rm -p 8000:8000 \
+    -v "$(pwd)/.haos-smoke-data:/data" \
+    --env-file .haos-smoke.env \
+    kalshi-trading:local
+```
+
+Open `http://localhost:8000`. The existing `pnpm dev:api` + `pnpm
+dev:dashboard` workflow is unchanged and remains the fast inner loop.
+
+---
+
 ## License
 
 See [`LICENSE`](LICENSE).
