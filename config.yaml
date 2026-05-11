@@ -1,0 +1,28 @@
+name: "Kalshi Trading"
+version: "1.0.0"
+slug: "kalshi_trading"
+description: "Kalshi sports market scanner — dry-run only"
+url: "https://github.com/petrapa6/kalshi-trading"
+arch:
+  - aarch64
+  - amd64
+ports:
+  8000/tcp: 8000
+ports_description:
+  8000/tcp: "Dashboard web interface"
+map:
+  - data:rw
+options:
+  kalshi_api_key: ""
+  kalshi_private_key: ""
+  api_token: ""
+  dashboard_password: ""
+  api_football_key: ""
+schema:
+  kalshi_api_key: password
+  kalshi_private_key: password
+  api_token: password
+  dashboard_password: password
+  api_football_key: str?
+startup: "application"
+boot: "auto"

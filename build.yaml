@@ -1,0 +1,6 @@
+build_from:
+  aarch64: "python:3.13-slim-bookworm"
+  amd64: "python:3.13-slim-bookworm"
+labels:
+  org.opencontainers.image.title: "Kalshi Trading"
+  org.opencontainers.image.source: "https://github.com/petrapa6/kalshi-trading"
