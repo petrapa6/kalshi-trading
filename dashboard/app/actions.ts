@@ -2,15 +2,9 @@
 
 import { cookies } from "next/headers";
 
-import crypto from "crypto";
+import { COOKIE_NAME, COOKIE_VALUE } from "./auth";
 
 const PASSWORD = process.env.DASHBOARD_PASSWORD || "";
-const COOKIE_NAME = "predictions_auth";
-// Use a secure server-side hash so attackers cannot manually guess and forge the cookie
-const COOKIE_VALUE = crypto
-  .createHash("sha256")
-  .update(PASSWORD + "salt123")
-  .digest("hex");
 
 export async function login(password: string): Promise<{ success: boolean }> {
   if (password === PASSWORD) {
@@ -45,7 +39,9 @@ export async function updateConfig(
   if (!isAuthed) return { success: false, error: "Authentication required" };
 
   const apiUrl = (
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001"
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://127.0.0.1:8001"
   ).replace(/\/+$/, "");
   const res = await fetch(`${apiUrl}/api/config`, {
     method: "PUT",

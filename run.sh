@@ -28,7 +28,10 @@ export DRY_RUN=true
 export DATABASE_URL="sqlite:////data/predictions.db"
 export SOCCER_CACHE_DB_PATH="/data/soccer-cache.db"
 export STRATEGIES_PATH="/data/strategies.yaml"
-export NEXT_PUBLIC_API_URL="http://127.0.0.1:8001"
+# API_URL (not NEXT_PUBLIC_) so the dashboard's server-side proxy reads it at
+# runtime; NEXT_PUBLIC_API_URL is baked into the bundle at build time and can't
+# be overridden here.
+export API_URL="http://127.0.0.1:8001"
 export PORT=8000
 export HOSTNAME=0.0.0.0
 
