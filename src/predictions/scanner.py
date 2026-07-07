@@ -29,7 +29,6 @@ from predictions.db import (
     Opportunity,
     Scan,
     Trade,
-    countable_trades,
     get_config,
     get_config_int,
     get_session,
@@ -222,12 +221,7 @@ async def check_settlements(client: KalshiClient):
     """Check open trades for settlement and update P&L."""
     session = get_session()
     open_trades = (
-        session.query(Trade)
-        .filter(
-            Trade.status.in_(("placed", "filled", "dry_run")),
-            countable_trades(),
-        )
-        .all()
+        session.query(Trade).filter(Trade.status.in_(("placed", "filled", "dry_run"))).all()
     )
 
     for trade in open_trades:
@@ -268,7 +262,6 @@ async def on_lifecycle(msg: dict, client: KalshiClient | None = None) -> None:
         .filter(
             Trade.ticker == ticker,
             Trade.status.in_(("placed", "filled", "dry_run")),
-            countable_trades(),
         )
         .all()
     )

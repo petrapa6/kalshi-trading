@@ -105,6 +105,44 @@ async def test_on_lifecycle_updates_strategy_trades(isolated_db):
     session.close()
 
 
+async def test_on_lifecycle_settles_process_dry_runs(isolated_db):
+    """Issue #2: WS path settles process dry-runs too (symmetry with REST path)."""
+    from predictions.scanner import on_lifecycle
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-PROC",
+            event_ticker="KX-PROC",
+            status="dry_run",
+            dry_run=True,
+            strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
+        )
+    )
+    session.commit()
+    session.close()
+
+    msg = {
+        "msg": {
+            "market_ticker": "KX-PROC",
+            "market_status": "finalized",
+            "result": "yes",
+        }
+    }
+    await on_lifecycle(msg)
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-PROC").one()
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 25
+    session.close()
+
+
 async def test_strategy_pnl_math(isolated_db):
     """D-18: P&L math for strategy dry-runs — win and loss cases."""
     from predictions.scanner import check_settlements
@@ -161,30 +199,37 @@ async def test_strategy_pnl_math(isolated_db):
     session.close()
 
 
-async def test_legacy_dry_runs_not_settled(isolated_db):
-    """D-16 negation: legacy process-level dry-runs (strategy_name=None) are NOT settled."""
+async def test_process_dry_runs_settle(isolated_db):
+    """Issue #2: process dry-runs (dry_run=True, strategy_name=None) settle
+    like live trades so they free max_positions slots."""
     from predictions.scanner import check_settlements
 
     session = db_module.get_session()
     session.add(
         Trade(
-            ticker="KX-LEG",
-            event_ticker="KX-LEG",
+            ticker="KX-PROC",
+            event_ticker="KX-PROC",
             status="dry_run",
             dry_run=True,
             strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
         )
     )
     session.commit()
     session.close()
 
-    client = FakeClient({"KX-LEG": {"status": "finalized", "result": "yes"}})
+    client = FakeClient({"KX-PROC": {"status": "finalized", "result": "yes"}})
     await check_settlements(cast(KalshiClient, client))
 
     session = db_module.get_session()
-    trade = session.query(Trade).filter(Trade.ticker == "KX-LEG").one()
-    assert trade.status == "dry_run"
-    assert trade.pnl_cents is None
+    trade = session.query(Trade).filter(Trade.ticker == "KX-PROC").one()
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 25
+    assert trade.settled_at is not None
     session.close()
 
 
@@ -223,14 +268,19 @@ async def test_settlement_filter_symmetry(isolated_db):
             potential_profit_cents=25,
         )
     )
-    # Legacy process-level dry-run (should NOT be settled by either path)
+    # Process dry-run (settled by both paths since issue #2)
     session.add(
         Trade(
-            ticker="KX-LEG",
-            event_ticker="KX-LEG",
+            ticker="KX-PROC",
+            event_ticker="KX-PROC",
             status="dry_run",
             dry_run=True,
             strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
         )
     )
     # Already-settled trade (should be ignored by both paths)
@@ -250,7 +300,7 @@ async def test_settlement_filter_symmetry(isolated_db):
     market_state = {
         "KX-REAL": {"status": "finalized", "result": "yes"},
         "KX-STRAT": {"status": "finalized", "result": "yes"},
-        "KX-LEG": {"status": "finalized", "result": "yes"},
+        "KX-PROC": {"status": "finalized", "result": "yes"},
         "KX-DONE": {"status": "finalized", "result": "yes"},
     }
     client = FakeClient(market_state)
@@ -261,13 +311,17 @@ async def test_settlement_filter_symmetry(isolated_db):
     session = db_module.get_session()
     real_after_rest = session.query(Trade).filter(Trade.ticker == "KX-REAL").one().status
     strat_after_rest = session.query(Trade).filter(Trade.ticker == "KX-STRAT").one().status
-    leg_after_rest = session.query(Trade).filter(Trade.ticker == "KX-LEG").one().status
+    proc_after_rest = session.query(Trade).filter(Trade.ticker == "KX-PROC").one().status
     done_after_rest = session.query(Trade).filter(Trade.ticker == "KX-DONE").one().status
     session.close()
 
     # Reset settled trades back to open state for on_lifecycle test
     session = db_module.get_session()
-    for ticker, orig_status in [("KX-REAL", "placed"), ("KX-STRAT", "dry_run")]:
+    for ticker, orig_status in [
+        ("KX-REAL", "placed"),
+        ("KX-STRAT", "dry_run"),
+        ("KX-PROC", "dry_run"),
+    ]:
         t = session.query(Trade).filter(Trade.ticker == ticker).one()
         t.status = orig_status
         t.pnl_cents = None
@@ -276,7 +330,7 @@ async def test_settlement_filter_symmetry(isolated_db):
     session.close()
 
     # Run on_lifecycle (WS primary path) for the same tickers
-    for ticker in ["KX-REAL", "KX-STRAT", "KX-LEG", "KX-DONE"]:
+    for ticker in ["KX-REAL", "KX-STRAT", "KX-PROC", "KX-DONE"]:
         await on_lifecycle(
             {"msg": {"market_ticker": ticker, "market_status": "finalized", "result": "yes"}}
         )
@@ -284,14 +338,14 @@ async def test_settlement_filter_symmetry(isolated_db):
     session = db_module.get_session()
     real_after_ws = session.query(Trade).filter(Trade.ticker == "KX-REAL").one().status
     strat_after_ws = session.query(Trade).filter(Trade.ticker == "KX-STRAT").one().status
-    leg_after_ws = session.query(Trade).filter(Trade.ticker == "KX-LEG").one().status
+    proc_after_ws = session.query(Trade).filter(Trade.ticker == "KX-PROC").one().status
     done_after_ws = session.query(Trade).filter(Trade.ticker == "KX-DONE").one().status
     session.close()
 
     # Both paths must produce the same outcome for each trade
     assert real_after_rest == real_after_ws == "settled_win"
     assert strat_after_rest == strat_after_ws == "settled_win"
-    assert leg_after_rest == leg_after_ws == "dry_run"  # unchanged
+    assert proc_after_rest == proc_after_ws == "settled_win"
     assert done_after_rest == done_after_ws == "settled_win"  # already settled, unchanged
 
 
