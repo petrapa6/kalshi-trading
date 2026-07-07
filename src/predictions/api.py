@@ -22,12 +22,14 @@ from predictions.db import (
     countable_trades,
     get_all_config,
     get_config_int,
+    get_final_seconds_thresholds,
     get_session,
     init_db,
     set_config,
 )
 from predictions.espn import (
     get_scoreboard,
+    is_in_final_minutes,
     match_kalshi_to_espn,
 )
 from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
@@ -867,6 +869,7 @@ async def _get_live_games() -> list[dict]:
         *(fetch_espn(path, series) for series, path in unique_sports)
     )
 
+    thresholds = get_final_seconds_thresholds()
     for sport_path, _primary_series, games in espn_results:
         for g in games:
             if g.state != "in":
@@ -874,11 +877,12 @@ async def _get_live_games() -> list[dict]:
 
             min_lead = get_config_int(f"lead:{sport_path}")
             meets_score_lead = g.score_diff >= min_lead
-            is_target = g.is_in_final_minutes and meets_score_lead
+            in_final_minutes = is_in_final_minutes(g, thresholds)
+            is_target = in_final_minutes and meets_score_lead
             is_watching = (
                 not is_target
                 and g.state == "in"
-                and (g.is_in_final_minutes or meets_score_lead or g.is_final_period)
+                and (in_final_minutes or meets_score_lead or g.is_final_period)
             )
 
             # Check if we have an active trade on this event
@@ -916,7 +920,7 @@ async def _get_live_games() -> list[dict]:
                 "display_clock": g.display_clock,
                 "clock_seconds": g.clock_seconds,
                 "state": g.state,
-                "is_final_minutes": g.is_in_final_minutes,
+                "is_final_minutes": in_final_minutes,
                 "is_target": is_target,
                 "is_watching": is_watching,
                 "has_bet": has_bet,

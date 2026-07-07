@@ -5,12 +5,13 @@ Provides real-time game clock, score, and period info to determine
 if a game is truly in its final minutes (4th quarter, 9th inning, etc).
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Optional
 
 import httpx
 
-from predictions.sports import KALSHI_TO_ESPN, SPORT_FINAL_PERIOD
+from predictions.sports import KALSHI_TO_ESPN, SPORT_CLOCK_DIR, SPORT_FINAL_PERIOD
 from predictions.teams import espn_to_kalshi_codes
 
 ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports"
@@ -43,24 +44,6 @@ class GameState:
     @property
     def is_final_period(self) -> bool:
         return self.period >= self.final_period
-
-    @property
-    def is_in_final_minutes(self) -> bool:
-        """True if game is live, in the final period, with <=5 min on the clock."""
-        if not self.is_live:
-            return False
-        if not self.is_final_period:
-            return False
-        # Baseball has no clock — being in the final period is enough
-        if "baseball" in self.sport_path:
-            return True
-        from predictions.db import get_config_int
-
-        final_secs = get_config_int(f"final_seconds:{self.sport_path}")
-        # Soccer clock counts UP — require >= threshold
-        if "soccer" in self.sport_path:
-            return self.clock_seconds >= (final_secs or 4500)
-        return self.clock_seconds <= (final_secs or 300)
 
     @property
     def score_diff(self) -> int:
@@ -137,18 +120,9 @@ async def get_scoreboard(sport_path: str) -> list[GameState]:
     return games
 
 
-async def get_live_final_minutes_games() -> dict[str, list[GameState]]:
-    """Get all games across all sports that are in their final minutes."""
-    result = {}
-    for kalshi_series, sport_path in KALSHI_TO_ESPN.items():
-        games = await get_scoreboard(sport_path)
-        final_min = [g for g in games if g.is_in_final_minutes]
-        if final_min:
-            result[kalshi_series] = final_min
-    return result
-
-
-async def get_categorized_games() -> tuple[dict[str, list[GameState]], dict[str, list[GameState]]]:
+async def get_categorized_games(
+    thresholds: Mapping[str, int],
+) -> tuple[dict[str, list[GameState]], dict[str, list[GameState]]]:
     """Fetch live games once, return (final_minutes, final_period) dicts.
 
     final_minutes: games matching the configured end-of-game timing.
@@ -158,7 +132,7 @@ async def get_categorized_games() -> tuple[dict[str, list[GameState]], dict[str,
     final_period: dict[str, list[GameState]] = {}
     for kalshi_series, sport_path in KALSHI_TO_ESPN.items():
         games = await get_scoreboard(sport_path)
-        fm = [g for g in games if g.is_in_final_minutes]
+        fm = [g for g in games if is_in_final_minutes(g, thresholds)]
         fp = [g for g in games if g.is_live and g.is_final_period]
         if fm:
             final_minutes[kalshi_series] = fm
@@ -167,15 +141,19 @@ async def get_categorized_games() -> tuple[dict[str, list[GameState]], dict[str,
     return final_minutes, final_period
 
 
-def game_meets_timing(game: GameState, countdown_secs: int, countup_secs: int) -> bool:
-    """Check if a game meets a specific timing threshold."""
+def is_in_final_minutes(game: GameState, thresholds: Mapping[str, int]) -> bool:
+    """True if a live game in its final period has crossed the sport's clock threshold.
+
+    thresholds maps sport_path -> final_seconds; clockless sports need no entry.
+    """
     if not game.is_live or not game.is_final_period:
         return False
-    if "baseball" in game.sport_path:
+    clock = SPORT_CLOCK_DIR[game.sport_path]
+    if clock == "none":
         return True
-    if "soccer" in game.sport_path:
-        return game.clock_seconds >= countup_secs
-    return game.clock_seconds <= countdown_secs
+    if clock == "up":
+        return game.clock_seconds >= thresholds[game.sport_path]
+    return game.clock_seconds <= thresholds[game.sport_path]
 
 
 def match_kalshi_to_espn(

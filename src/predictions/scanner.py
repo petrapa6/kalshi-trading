@@ -31,6 +31,7 @@ from predictions.db import (
     Trade,
     get_config,
     get_config_int,
+    get_final_seconds_thresholds,
     get_session,
     init_db,
 )
@@ -749,7 +750,7 @@ async def run_scanner(
         while True:
             try:
                 log.info("ESPN: refreshing live game state...")
-                fresh, fresh_fp = await get_categorized_games()
+                fresh, fresh_fp = await get_categorized_games(get_final_seconds_thresholds())
                 async with espn_lock:
                     espn_cache = fresh
                     espn_final_period_cache = fresh_fp

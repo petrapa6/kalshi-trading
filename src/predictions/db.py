@@ -8,7 +8,7 @@ load_dotenv()
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, and_, create_engine, or_
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, CONFIG_LEAD_DEFAULTS
+from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, CONFIG_LEAD_DEFAULTS, SPORTS
 
 # Default SQLite path at the repo root (src/predictions/db.py → repo/predictions.db)
 _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -246,6 +246,15 @@ def get_config(key: str) -> str:
 
 def get_config_int(key: str) -> int:
     return int(get_config(key) or "0")
+
+
+def get_final_seconds_thresholds() -> dict[str, int]:
+    """final_seconds thresholds per clocked sport_path (DB override or registry default)."""
+    return {
+        s.path: get_config_int(f"final_seconds:{s.path}") or s.default_final_seconds
+        for s in SPORTS
+        if s.clock != "none" and s.default_final_seconds is not None
+    }
 
 
 def set_config(key: str, value: str):
