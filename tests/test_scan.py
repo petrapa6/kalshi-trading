@@ -89,3 +89,57 @@ async def test_scan_records_opportunity_and_places_dry_run_bet():
     assert t.dry_run is True
     assert t.yes_price == 94
     assert t.count == 10  # 1000 // 94
+
+
+async def test_falsy_lead_config_falls_back_to_registry_default():
+    exp = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat().replace("+00:00", "Z")
+    events = [
+        {
+            "event_ticker": "KXNBAGAME-26JUL07LALSEA",
+            "title": "Los Angeles at Seattle",
+            "markets": [
+                {
+                    "ticker": "KXNBAGAME-26JUL07LALSEA-SEA",
+                    "status": "active",
+                    "volume": 500,
+                    "yes_bid": 93,
+                    "yes_ask": 94,
+                    "yes_sub_title": "Seattle wins",
+                    "close_time": exp,
+                    "expected_expiration_time": exp,
+                }
+            ],
+        }
+    ]
+    game = GameState(
+        espn_id="401234",
+        home_team="SEA",
+        away_team="LAL",
+        home_score=103,
+        away_score=98,
+        period=4,
+        display_clock="0:47",
+        clock_seconds=47.0,
+        state="in",
+        status_name="STATUS_IN_PROGRESS",
+        sport_path="basketball/nba",
+    )
+    # A DB row of "0" must not disable the lead gate — a 5-point lead
+    # stays below the NBA registry default of 12.
+    db_module.set_config("lead:basketball/nba", "0")
+
+    await scan_kalshi_with_espn(
+        client=cast(KalshiClient, FakeKalshiClient(events)),
+        espn_final={"KXNBAGAME": [game]},
+        min_yes_price=91,
+        max_bet_cents=1000,
+        dry_run=True,
+    )
+
+    session = db_module.get_session()
+    opps = session.query(Opportunity).all()
+    trades = session.query(Trade).all()
+    session.close()
+
+    assert opps == []
+    assert trades == []

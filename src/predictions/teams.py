@@ -40,7 +40,7 @@ def espn_to_kalshi_codes(espn_abbr: str) -> list[str]:
 # display name. Lookup is case-insensitive after normalize_team. This is
 # the systematic-correction surface — grow lazily as Kalshi/API-Football
 # mismatches are observed.
-TEAM_ALIASES: dict[str, str] = {
+_RAW_TEAM_ALIASES: dict[str, str] = {
     # Premier League
     "man utd": "manchester united",
     "man united": "manchester united",
@@ -106,6 +106,13 @@ def normalize_team(name: str) -> str:
         if s.endswith(suf):
             s = s[: -len(suf)].strip()
     return s
+
+
+# Alias keys pass through normalize_team so punctuated aliases
+# ("nott'm forest") match the punctuation-stripped token stream.
+TEAM_ALIASES: dict[str, str] = {
+    normalize_team(alias): canon for alias, canon in _RAW_TEAM_ALIASES.items()
+}
 
 
 def canonical_team(name: str) -> str:

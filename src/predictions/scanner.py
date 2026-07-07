@@ -45,6 +45,7 @@ from predictions.kalshi_client import KalshiClient, KalshiWebSocket, extract_cen
 from predictions.sports import (
     CLOCKLESS_SPORT_PATHS,
     COUNT_UP_SPORT_PATHS,
+    SPORT_BY_PATH,
     SPORT_PATH_TO_FAMILY,
     SPORT_PERIOD_LENGTH_SECS,
     SPORTS_GAME_SERIES,
@@ -546,7 +547,10 @@ async def scan_kalshi_with_espn(
                         if not espn_game:
                             continue
 
-                        min_lead = get_config_int(f"lead:{espn_game.sport_path}")
+                        min_lead = (
+                            get_config_int(f"lead:{espn_game.sport_path}")
+                            or SPORT_BY_PATH[espn_game.sport_path].default_lead
+                        )
                         if not trigger_matches(
                             live_trigger(min_yes_price, min_lead),
                             family=None,

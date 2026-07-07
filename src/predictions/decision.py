@@ -22,9 +22,9 @@ def within_expiry_window(exp_str: str, now: datetime, window: timedelta = EXPIRY
         return True
     try:
         exp_time = datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
+        return abs(exp_time - now) <= window
     except (ValueError, TypeError):
         return True
-    return abs(exp_time - now) <= window
 
 
 def live_trigger(min_yes_price: int, min_lead: int) -> Trigger:

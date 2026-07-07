@@ -44,6 +44,16 @@ def test_shared_prefix_teams_do_not_collide():
     )
 
 
+def test_alias_with_apostrophe_resolves():
+    """Regression: normalize_team strips the apostrophe before alias lookup,
+    so alias keys containing punctuation ("nott'm forest") could never match."""
+    from predictions.teams import canonical_team as _canonical_team
+    from predictions.teams import canonicalize_title as _canonicalize_title
+
+    assert _canonical_team("Nott'm Forest") == "nottingham forest"
+    assert "nottingham forest" in _canonicalize_title("Nott'm Forest vs Chelsea")
+
+
 def test_bundesliga_dotted_prefix_strips_correctly():
     """Regression: "1. FC Köln" must strip the "1. " prefix even though the
     literal dot is later removed by alphanumeric filtering."""
