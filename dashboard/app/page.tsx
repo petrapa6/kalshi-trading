@@ -568,42 +568,61 @@ function PnlChart({
   );
 }
 
-function ContractValueHistogram({ trades }: { trades: Trade[] }) {
-  // Only settled, non-dry-run trades with a known price and outcome
-  const settled = trades.filter(
+// Only settled, non-dry-run trades with a known price and outcome
+function settledWithPrice(trades: Trade[]): Trade[] {
+  return trades.filter(
     (t) =>
       !t.dry_run &&
       t.pnl_cents !== null &&
       t.yes_price != null &&
       (t.status === "settled_win" || t.status === "settled_loss"),
   );
+}
 
-  if (settled.length === 0) {
+// Only countdown-sport settled trades with a known clock reading ≤ 10 min
+function settledWithClock(trades: Trade[]): Trade[] {
+  return trades.filter(
+    (t) =>
+      !t.dry_run &&
+      t.pnl_cents !== null &&
+      t.espn_clock_seconds !== null &&
+      t.espn_clock_seconds <= 600 &&
+      t.espn_clock_seconds >= 0 &&
+      (t.status === "settled_win" || t.status === "settled_loss"),
+  );
+}
+
+function WinLossHistogram({
+  title,
+  emptyText,
+  bins,
+  xKey,
+  formatTick,
+  formatLabel,
+}: {
+  title: string;
+  emptyText: string;
+  bins: { wins: number; losses: number }[] | null;
+  xKey: string;
+  formatTick?: (v: number) => string;
+  formatLabel: (label: number) => string;
+}) {
+  if (!bins) {
     return (
       <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-        <h2 className="text-sm text-amber-600 font-medium mb-3">
-          Contract Value Distribution
-        </h2>
-        <p className="text-amber-900 text-sm">
-          No settled trades to display yet.
-        </p>
+        <h2 className="text-sm text-amber-600 font-medium mb-3">{title}</h2>
+        <p className="text-amber-900 text-sm">{emptyText}</p>
       </div>
     );
   }
 
-  const bins = priceBins(
-    settled.map((t) => ({ yes_price: t.yes_price, pnl_cents: t.pnl_cents! })),
-  );
-
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-sm text-amber-600 font-medium">
-          Contract Value Distribution
-        </h2>
+        <h2 className="text-sm text-amber-600 font-medium">{title}</h2>
         <WinLossLegend
-          wins={settled.filter((t) => t.pnl_cents! >= 0).length}
-          losses={settled.filter((t) => t.pnl_cents! < 0).length}
+          wins={bins.reduce((s, b) => s + b.wins, 0)}
+          losses={bins.reduce((s, b) => s + b.losses, 0)}
         />
       </div>
       <ResponsiveContainer width="100%" aspect={4}>
@@ -618,7 +637,8 @@ function ContractValueHistogram({ trades }: { trades: Trade[] }) {
             strokeDasharray="3 3"
           />
           <XAxis
-            dataKey="price"
+            dataKey={xKey}
+            tickFormatter={formatTick}
             tick={CHART_TICK}
             interval={0}
             axisLine={false}
@@ -632,7 +652,7 @@ function ContractValueHistogram({ trades }: { trades: Trade[] }) {
             tickLine={false}
           />
           <Tooltip
-            content={<WinLossTooltip formatLabel={(p) => `${p}¢`} />}
+            content={<WinLossTooltip formatLabel={formatLabel} />}
             cursor={CHART_CURSOR_FILL}
           />
           <Bar
@@ -656,39 +676,36 @@ function ContractValueHistogram({ trades }: { trades: Trade[] }) {
   );
 }
 
-function PnlHistogram({ trades }: { trades: Trade[] }) {
-  const settled = trades.filter(
-    (t) =>
-      !t.dry_run &&
-      t.pnl_cents !== null &&
-      t.yes_price != null &&
-      (t.status === "settled_win" || t.status === "settled_loss"),
-  );
-
-  if (settled.length === 0) {
+function SignedPnlHistogram({
+  title,
+  emptyText,
+  bins,
+  totalPnl,
+  xKey,
+  formatTick,
+  formatLabel,
+}: {
+  title: string;
+  emptyText: string;
+  bins: { pnl: number }[] | null;
+  totalPnl: number;
+  xKey: string;
+  formatTick?: (v: number) => string;
+  formatLabel: (label: number) => string;
+}) {
+  if (!bins) {
     return (
       <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-        <h2 className="text-sm text-amber-600 font-medium mb-3">
-          P&L by Contract Value
-        </h2>
-        <p className="text-amber-900 text-sm">
-          No settled trades to display yet.
-        </p>
+        <h2 className="text-sm text-amber-600 font-medium mb-3">{title}</h2>
+        <p className="text-amber-900 text-sm">{emptyText}</p>
       </div>
     );
   }
 
-  const bins = pnlByPrice(
-    settled.map((t) => ({ yes_price: t.yes_price, pnl_cents: t.pnl_cents! })),
-  );
-  const totalPnl = settled.reduce((s, t) => s + t.pnl_cents!, 0);
-
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-sm text-amber-600 font-medium">
-          P&L by Contract Value
-        </h2>
+        <h2 className="text-sm text-amber-600 font-medium">{title}</h2>
         <span
           className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${totalPnl >= 0 ? "text-green-400 bg-green-900/30" : "text-red-400 bg-red-900/30"}`}
         >
@@ -708,7 +725,8 @@ function PnlHistogram({ trades }: { trades: Trade[] }) {
             strokeDasharray="3 3"
           />
           <XAxis
-            dataKey="price"
+            dataKey={xKey}
+            tickFormatter={formatTick}
             tick={CHART_TICK}
             interval={0}
             axisLine={false}
@@ -726,7 +744,7 @@ function PnlHistogram({ trades }: { trades: Trade[] }) {
           />
           <ReferenceLine y={0} stroke="#78716c" />
           <Tooltip
-            content={<PnlBarTooltip formatLabel={(p) => `${p}¢`} />}
+            content={<PnlBarTooltip formatLabel={formatLabel} />}
             cursor={CHART_CURSOR_FILL}
           />
           <Bar
@@ -738,195 +756,98 @@ function PnlHistogram({ trades }: { trades: Trade[] }) {
         </BarChart>
       </ResponsiveContainer>
     </div>
+  );
+}
+
+function ContractValueHistogram({ trades }: { trades: Trade[] }) {
+  const settled = settledWithPrice(trades);
+  return (
+    <WinLossHistogram
+      title="Contract Value Distribution"
+      emptyText="No settled trades to display yet."
+      bins={
+        settled.length
+          ? priceBins(
+              settled.map((t) => ({
+                yes_price: t.yes_price,
+                pnl_cents: t.pnl_cents!,
+              })),
+            )
+          : null
+      }
+      xKey="price"
+      formatLabel={(p) => `${p}¢`}
+    />
+  );
+}
+
+function PnlHistogram({ trades }: { trades: Trade[] }) {
+  const settled = settledWithPrice(trades);
+  return (
+    <SignedPnlHistogram
+      title="P&L by Contract Value"
+      emptyText="No settled trades to display yet."
+      bins={
+        settled.length
+          ? pnlByPrice(
+              settled.map((t) => ({
+                yes_price: t.yes_price,
+                pnl_cents: t.pnl_cents!,
+              })),
+            )
+          : null
+      }
+      totalPnl={settled.reduce((s, t) => s + t.pnl_cents!, 0)}
+      xKey="price"
+      formatLabel={(p) => `${p}¢`}
+    />
   );
 }
 
 function TimeHistogram({ trades }: { trades: Trade[] }) {
-  // Only countdown-sport settled trades with a known clock reading ≤ 10 min
-  const settled = trades.filter(
-    (t) =>
-      !t.dry_run &&
-      t.pnl_cents !== null &&
-      t.espn_clock_seconds !== null &&
-      t.espn_clock_seconds <= 600 &&
-      t.espn_clock_seconds >= 0 &&
-      (t.status === "settled_win" || t.status === "settled_loss"),
-  );
-
-  if (settled.length === 0) {
-    return (
-      <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-        <h2 className="text-sm text-amber-600 font-medium mb-3">
-          Trade Distribution by Time Remaining
-        </h2>
-        <p className="text-amber-900 text-sm">
-          No settled trades with clock data yet.
-        </p>
-      </div>
-    );
-  }
-
-  const bins = timeBins(
-    settled.map((t) => ({
-      clock_seconds: t.espn_clock_seconds!,
-      pnl_cents: t.pnl_cents!,
-    })),
-  );
-
+  const settled = settledWithClock(trades);
   return (
-    <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-sm text-amber-600 font-medium">
-          Trade Distribution by Time Remaining
-        </h2>
-        <WinLossLegend
-          wins={settled.filter((t) => t.pnl_cents! >= 0).length}
-          losses={settled.filter((t) => t.pnl_cents! < 0).length}
-        />
-      </div>
-      <ResponsiveContainer width="100%" aspect={4}>
-        <BarChart
-          data={bins}
-          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
-        >
-          <CartesianGrid
-            vertical={false}
-            stroke="#3f3f46"
-            strokeWidth={0.5}
-            strokeDasharray="3 3"
-          />
-          <XAxis
-            dataKey="minutesLeft"
-            tickFormatter={(m: number) => `${m}m`}
-            tick={CHART_TICK}
-            interval={0}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            allowDecimals={false}
-            width={36}
-            tick={CHART_TICK}
-            axisLine={false}
-            tickLine={false}
-          />
-          <Tooltip
-            content={<WinLossTooltip formatLabel={(m) => `~${m}m left`} />}
-            cursor={CHART_CURSOR_FILL}
-          />
-          <Bar
-            dataKey="losses"
-            stackId="wl"
-            fill={LOSS_COLOR}
-            fillOpacity={0.6}
-            isAnimationActive={false}
-          />
-          <Bar
-            dataKey="wins"
-            stackId="wl"
-            fill={WIN_COLOR}
-            fillOpacity={0.6}
-            radius={[2, 2, 0, 0]}
-            isAnimationActive={false}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <WinLossHistogram
+      title="Trade Distribution by Time Remaining"
+      emptyText="No settled trades with clock data yet."
+      bins={
+        settled.length
+          ? timeBins(
+              settled.map((t) => ({
+                clock_seconds: t.espn_clock_seconds!,
+                pnl_cents: t.pnl_cents!,
+              })),
+            )
+          : null
+      }
+      xKey="minutesLeft"
+      formatTick={(m) => `${m}m`}
+      formatLabel={(m) => `~${m}m left`}
+    />
   );
 }
 
 function TimePnlHistogram({ trades }: { trades: Trade[] }) {
-  const settled = trades.filter(
-    (t) =>
-      !t.dry_run &&
-      t.pnl_cents !== null &&
-      t.espn_clock_seconds !== null &&
-      t.espn_clock_seconds <= 600 &&
-      t.espn_clock_seconds >= 0 &&
-      (t.status === "settled_win" || t.status === "settled_loss"),
-  );
-
-  if (settled.length === 0) {
-    return (
-      <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-        <h2 className="text-sm text-amber-600 font-medium mb-3">
-          P&L by Time Remaining
-        </h2>
-        <p className="text-amber-900 text-sm">
-          No settled trades with clock data yet.
-        </p>
-      </div>
-    );
-  }
-
-  const bins = pnlByTime(
-    settled.map((t) => ({
-      clock_seconds: t.espn_clock_seconds!,
-      pnl_cents: t.pnl_cents!,
-    })),
-  );
-  const totalPnl = settled.reduce((s, t) => s + t.pnl_cents!, 0);
-
+  const settled = settledWithClock(trades);
   return (
-    <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-sm text-amber-600 font-medium">
-          P&L by Time Remaining
-        </h2>
-        <span
-          className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${
-            totalPnl >= 0
-              ? "text-green-400 bg-green-900/30"
-              : "text-red-400 bg-red-900/30"
-          }`}
-        >
-          {totalPnl >= 0 ? "+" : ""}
-          {cents(totalPnl)} total
-        </span>
-      </div>
-      <ResponsiveContainer width="100%" aspect={4}>
-        <BarChart
-          data={bins}
-          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
-        >
-          <CartesianGrid
-            vertical={false}
-            stroke="#3f3f46"
-            strokeWidth={0.5}
-            strokeDasharray="3 3"
-          />
-          <XAxis
-            dataKey="minutesLeft"
-            tickFormatter={(m: number) => `${m}m`}
-            tick={CHART_TICK}
-            interval={0}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            width={56}
-            tick={CHART_TICK}
-            tickFormatter={(v: number) =>
-              `${v >= 0 ? "+" : ""}$${(v / 100).toFixed(2)}`
-            }
-            axisLine={false}
-            tickLine={false}
-            domain={["auto", "auto"]}
-          />
-          <ReferenceLine y={0} stroke="#78716c" />
-          <Tooltip
-            content={<PnlBarTooltip formatLabel={(m) => `~${m}m left`} />}
-            cursor={CHART_CURSOR_FILL}
-          />
-          <Bar
-            dataKey="pnl"
-            fillOpacity={0.7}
-            shape={pnlBarShape}
-            isAnimationActive={false}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <SignedPnlHistogram
+      title="P&L by Time Remaining"
+      emptyText="No settled trades with clock data yet."
+      bins={
+        settled.length
+          ? pnlByTime(
+              settled.map((t) => ({
+                clock_seconds: t.espn_clock_seconds!,
+                pnl_cents: t.pnl_cents!,
+              })),
+            )
+          : null
+      }
+      totalPnl={settled.reduce((s, t) => s + t.pnl_cents!, 0)}
+      xKey="minutesLeft"
+      formatTick={(m) => `${m}m`}
+      formatLabel={(m) => `~${m}m left`}
+    />
   );
 }
 
