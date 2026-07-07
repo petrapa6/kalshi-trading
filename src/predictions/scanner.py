@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional
 
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -251,13 +252,13 @@ def settle_trade(trade: Trade, result: str) -> None:
     trade.settled_at = datetime.now(timezone.utc)
     if result == trade.side:
         trade.status = "settled_win"
-        trade.pnl_cents = trade.potential_profit_cents - fee
+        trade.pnl_cents = (trade.potential_profit_cents or 0) - fee
         log.info(
             f"  {tag} WIN: {trade.ticker} settled {result} | P&L: +${trade.pnl_cents / 100:.2f}"
         )
     else:
         trade.status = "settled_loss"
-        trade.pnl_cents = -trade.cost_cents - fee
+        trade.pnl_cents = -(trade.cost_cents or 0) - fee
         log.info(
             f"  {tag} LOSS: {trade.ticker} settled {result} | P&L: ${trade.pnl_cents / 100:.2f}"
         )
@@ -273,13 +274,24 @@ async def check_settlements(client: KalshiClient):
     for trade in open_trades:
         try:
             market = await client.get_market(trade.ticker)
-            status = market.get("status", "")
-            result = market.get("result", "")
-
-            if status in ("finalized", "settled"):
-                settle_trade(trade, result)
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                trade.status = "error"
+                trade.error = "market not found on Kalshi (404)"
+                log.warning(f"  {trade.ticker} no longer exists on Kalshi, closing as error")
+            else:
+                log.warning(f"  Failed to check {trade.ticker}: {e}")
+            continue
         except Exception as e:
             log.warning(f"  Failed to check {trade.ticker}: {e}")
+            continue
+
+        status = market.get("status", "")
+        result = market.get("result", "")
+        # Kalshi can report finalized before result is populated; settling
+        # then would misread the empty result as a loss. Retry next pass.
+        if status in ("finalized", "settled") and result:
+            settle_trade(trade, result)
 
     session.commit()
     session.close()
@@ -298,7 +310,7 @@ async def on_lifecycle(msg: dict, client: KalshiClient | None = None) -> None:
     ticker = data.get("market_ticker", "")
     new_status = data.get("market_status", "")
     result = data.get("result", "")
-    if new_status not in ("finalized", "settled") or not ticker:
+    if new_status not in ("finalized", "settled") or not ticker or not result:
         return
 
     log.info(f"WS lifecycle: {ticker} -> {new_status} result={result}")

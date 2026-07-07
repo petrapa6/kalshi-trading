@@ -12,6 +12,8 @@ summary.
 
 from typing import cast
 
+import httpx
+
 import predictions.db as db_module
 from predictions.db import Trade
 from predictions.kalshi_client import KalshiClient
@@ -410,6 +412,249 @@ def test_settle_trade_null_fee_counts_as_zero():
     settle_trade(trade, "yes")
     assert trade.status == "settled_win"
     assert trade.pnl_cents == 25
+
+
+class RaisingClient(FakeClient):
+    """FakeClient that raises a stored exception for selected tickers."""
+
+    def __init__(self, market_state: dict[str, dict], errors: dict[str, Exception]):
+        super().__init__(market_state)
+        self.errors = errors
+
+    async def get_market(self, ticker: str) -> dict:
+        if ticker in self.errors:
+            raise self.errors[ticker]
+        return await super().get_market(ticker)
+
+
+def _http_status_error(ticker: str, status_code: int) -> httpx.HTTPStatusError:
+    request = httpx.Request("GET", f"https://api.example/markets/{ticker}")
+    return httpx.HTTPStatusError(
+        f"{status_code}",
+        request=request,
+        response=httpx.Response(status_code, request=request),
+    )
+
+
+async def test_check_settlements_skips_finalized_without_result(isolated_db):
+    """Kalshi can report status=finalized before result is populated; settling
+    on the empty result would stamp a permanent settled_loss on a winner."""
+    from predictions.scanner import check_settlements
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-NORES",
+            event_ticker="KX-NORES",
+            status="placed",
+            dry_run=False,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
+        )
+    )
+    session.commit()
+    session.close()
+
+    client = FakeClient({"KX-NORES": {"status": "finalized", "result": ""}})
+    await check_settlements(cast(KalshiClient, client))
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-NORES").one()
+    assert trade.status == "placed"
+    assert trade.pnl_cents is None
+    assert trade.settled_at is None
+    session.close()
+
+    client = FakeClient({"KX-NORES": {"status": "finalized", "result": "yes"}})
+    await check_settlements(cast(KalshiClient, client))
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-NORES").one()
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 25
+    session.close()
+
+
+async def test_on_lifecycle_skips_empty_result(isolated_db):
+    """WS lifecycle with finalized status but no result must not settle."""
+    from predictions.scanner import on_lifecycle
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-NORES",
+            event_ticker="KX-NORES",
+            status="placed",
+            dry_run=False,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
+        )
+    )
+    session.commit()
+    session.close()
+
+    await on_lifecycle({"msg": {"market_ticker": "KX-NORES", "market_status": "finalized"}})
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-NORES").one()
+    assert trade.status == "placed"
+    assert trade.pnl_cents is None
+    session.close()
+
+
+async def test_on_lifecycle_legacy_null_cents_does_not_poison_batch(isolated_db):
+    """A legacy process dry-run with NULL cost/profit cents must not blow up
+    the loop and roll back a real trade's settlement in the same batch."""
+    from predictions.scanner import on_lifecycle
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-BATCH",
+            event_ticker="KX-BATCH",
+            status="dry_run",
+            dry_run=True,
+            strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=None,
+            potential_profit_cents=None,
+        )
+    )
+    session.add(
+        Trade(
+            ticker="KX-BATCH",
+            event_ticker="KX-BATCH",
+            status="placed",
+            dry_run=False,
+            side="yes",
+            count=10,
+            yes_price=95,
+            cost_cents=950,
+            potential_profit_cents=50,
+            fee_cents=7,
+        )
+    )
+    session.commit()
+    session.close()
+
+    await on_lifecycle(
+        {"msg": {"market_ticker": "KX-BATCH", "market_status": "finalized", "result": "no"}}
+    )
+
+    session = db_module.get_session()
+    real = session.query(Trade).filter(Trade.dry_run == False).one()
+    legacy = session.query(Trade).filter(Trade.dry_run == True).one()
+    assert real.status == "settled_loss"
+    assert real.pnl_cents == -957
+    assert legacy.status == "settled_loss"
+    assert legacy.pnl_cents == 0
+    session.close()
+
+
+async def test_check_settlements_settles_legacy_null_cents(isolated_db):
+    """REST path: legacy NULL-cents rows settle (pnl 0) instead of erroring
+    on every pass and clogging max_positions forever."""
+    from predictions.scanner import check_settlements
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-LEG",
+            event_ticker="KX-LEG",
+            status="dry_run",
+            dry_run=True,
+            strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=None,
+            potential_profit_cents=None,
+        )
+    )
+    session.commit()
+    session.close()
+
+    client = FakeClient({"KX-LEG": {"status": "finalized", "result": "yes"}})
+    await check_settlements(cast(KalshiClient, client))
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-LEG").one()
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 0
+    assert trade.settled_at is not None
+    session.close()
+
+
+async def test_check_settlements_closes_trade_on_market_404(isolated_db):
+    """A delisted market (404) must terminally close the trade so it stops
+    counting against max_positions and stops burning a REST call per pass."""
+    from predictions.scanner import check_settlements
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-GONE",
+            event_ticker="KX-GONE",
+            status="dry_run",
+            dry_run=True,
+            strategy_name=None,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
+        )
+    )
+    session.commit()
+    session.close()
+
+    client = RaisingClient({}, {"KX-GONE": _http_status_error("KX-GONE", 404)})
+    await check_settlements(cast(KalshiClient, client))
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-GONE").one()
+    assert trade.status == "error"
+    assert trade.error is not None and "404" in trade.error
+    session.close()
+
+
+async def test_check_settlements_keeps_trade_on_transient_error(isolated_db):
+    """Transient HTTP failures (e.g. 500) must not terminally close a trade."""
+    from predictions.scanner import check_settlements
+
+    session = db_module.get_session()
+    session.add(
+        Trade(
+            ticker="KX-FLAKY",
+            event_ticker="KX-FLAKY",
+            status="placed",
+            dry_run=False,
+            side="yes",
+            count=5,
+            yes_price=95,
+            cost_cents=475,
+            potential_profit_cents=25,
+        )
+    )
+    session.commit()
+    session.close()
+
+    client = RaisingClient({}, {"KX-FLAKY": _http_status_error("KX-FLAKY", 500)})
+    await check_settlements(cast(KalshiClient, client))
+
+    session = db_module.get_session()
+    trade = session.query(Trade).filter(Trade.ticker == "KX-FLAKY").one()
+    assert trade.status == "placed"
+    assert trade.error is None
+    session.close()
 
 
 def test_countable_trades_predicate(isolated_db):
