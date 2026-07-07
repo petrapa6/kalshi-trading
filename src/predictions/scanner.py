@@ -18,7 +18,7 @@ import asyncio
 import logging
 import os
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -36,6 +36,7 @@ from predictions.db import (
     get_session,
     init_db,
 )
+from predictions.decision import live_trigger, trigger_matches, within_expiry_window
 from predictions.espn import (
     get_categorized_games,
     match_kalshi_to_espn,
@@ -48,7 +49,7 @@ from predictions.sports import (
     SPORT_PERIOD_LENGTH_SECS,
     SPORTS_GAME_SERIES,
 )
-from predictions.strategies import Strategy, Trigger, load_strategies
+from predictions.strategies import Strategy, load_strategies
 
 logging.basicConfig(
     level=logging.INFO,
@@ -335,36 +336,6 @@ async def record_balance(client: KalshiClient):
         log.warning(f"Failed to record balance: {e}")
 
 
-def trigger_matches(
-    trigger: Trigger,
-    *,
-    family: str | None,
-    elapsed: int | None,
-    score_diff: int,
-    yes_ask: int,
-) -> bool:
-    """Evaluate a single trigger's AND-conditions.
-
-    Missing field on the trigger means "no constraint on that dimension"
-    (per Phase 2 D-03 / STR-02). For min_minute on a clockless sport
-    (elapsed is None), the trigger does NOT match.
-    """
-    if trigger.sport is not None and trigger.sport != family:
-        return False
-    if trigger.min_minute is not None:
-        if elapsed is None:
-            return False
-        if elapsed < trigger.min_minute:
-            return False
-    if trigger.min_lead is not None and score_diff < trigger.min_lead:
-        return False
-    if trigger.min_yes_price is not None and yes_ask < trigger.min_yes_price:
-        return False
-    if trigger.max_yes_price is not None and yes_ask > trigger.max_yes_price:
-        return False
-    return True
-
-
 def place_strategy_trade(
     session,
     opp: MarketOpportunity,
@@ -559,25 +530,16 @@ async def scan_kalshi_with_espn(
                         if not has_liquidity(market):
                             continue
 
-                        # Filter out future games in the series (e.g. Game 2 vs Game 1)
-                        # by requiring the expected expiration time to be within 12 hours
-                        exp_str = market.get("expected_expiration_time", "")
-                        if exp_str:
-                            try:
-                                exp_time = datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
-                                now = datetime.now(timezone.utc)
-                                if exp_time - now > timedelta(hours=12):
-                                    continue
-                                if now - exp_time > timedelta(hours=12):
-                                    continue
-                            except (ValueError, TypeError):
-                                pass
+                        if not within_expiry_window(
+                            market.get("expected_expiration_time", ""),
+                            datetime.now(timezone.utc),
+                        ):
+                            continue
 
                         yes_bid = extract_cents(market, "yes_bid")
                         yes_ask = extract_cents(market, "yes_ask")
                         ticker = market.get("ticker", "")
-
-                        if not (yes_ask and yes_ask >= min_yes_price and yes_ask <= 99):
+                        if not yes_ask:
                             continue
 
                         espn_game = match_kalshi_to_espn(ticker, title, espn_games)
@@ -585,7 +547,13 @@ async def scan_kalshi_with_espn(
                             continue
 
                         min_lead = get_config_int(f"lead:{espn_game.sport_path}")
-                        if espn_game.score_diff < min_lead:
+                        if not trigger_matches(
+                            live_trigger(min_yes_price, min_lead),
+                            family=None,
+                            elapsed=None,
+                            score_diff=espn_game.score_diff,
+                            yes_ask=yes_ask,
+                        ):
                             continue
 
                         log.info(f"new opportunity: {title}")
