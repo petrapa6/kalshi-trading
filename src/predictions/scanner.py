@@ -17,6 +17,7 @@ collect $1 at settlement. High volume, high win rate.
 import asyncio
 import logging
 import os
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -61,6 +62,45 @@ log = logging.getLogger(__name__)
 
 # Module-level market prices dict, populated by WS/API in run_scanner
 market_prices: dict[str, dict] = {}
+
+
+@dataclass(frozen=True)
+class MarketOpportunity:
+    """Typed currency between market discovery and order placement (#7).
+
+    Core identity + price are required; ESPN game context is optional
+    because the strategy path fires off the slim WS price cache, which
+    has no ESPN display state.
+    """
+
+    ticker: str
+    event_ticker: str
+    title: str
+    yes_ask: int  # integer cents
+    yes_bid: int | None = None
+    yes_sub_title: str = ""
+    volume: int | None = None
+    close_time: str = ""
+    expected_expiration: str = ""
+    series_ticker: str = ""
+    sport_path: str | None = None
+    espn_period: int | None = None
+    espn_clock: str | None = None
+    espn_clock_seconds: int | None = None
+    espn_home: str | None = None
+    espn_away: str | None = None
+    espn_home_score: int | None = None
+    espn_away_score: int | None = None
+    espn_lead: int = 0
+
+    @property
+    def spread(self) -> int:
+        return 100 - self.yes_ask
+
+    @property
+    def espn_score(self) -> str:
+        return f"{self.espn_away_score}-{self.espn_home_score}"
+
 
 # Minimum volume on the market to ensure there's liquidity
 MIN_VOLUME = 50
@@ -120,12 +160,14 @@ def has_liquidity(market: dict, min_volume: int = MIN_VOLUME) -> bool:
 
 
 async def place_bet(
-    client: KalshiClient,
-    opp: dict,
+    client: KalshiClient | None,
+    opp: MarketOpportunity,
     max_cost_cents: int,
     dry_run: bool = True,
 ) -> Optional[dict]:
-    yes_price = opp["yes_ask"]
+    """`client` may be None only when dry_run=True (tests); the live
+    branch requires one."""
+    yes_price = opp.yes_ask
     count = max_cost_cents // yes_price
     if count < 1:
         log.info(f"  Cannot afford any contracts at {yes_price}c (budget: {max_cost_cents}c)")
@@ -138,14 +180,14 @@ async def place_bet(
     log.info(
         f"  Order: BUY {count}x YES @ {yes_price}c = ${total_cost / 100:.2f} cost, "
         f"${total_profit_if_win / 100:.2f} potential profit | "
-        f"ESPN: P{opp.get('espn_period', '')} {opp.get('espn_clock', '')}"
+        f"ESPN: P{opp.espn_period} {opp.espn_clock}"
     )
 
     session = get_session()
     trade = Trade(
-        ticker=opp["ticker"],
-        event_ticker=opp["event_ticker"],
-        title=opp["title"],
+        ticker=opp.ticker,
+        event_ticker=opp.event_ticker,
+        title=opp.title,
         side="yes",
         action="buy",
         count=count,
@@ -153,7 +195,7 @@ async def place_bet(
         cost_cents=total_cost,
         potential_profit_cents=total_profit_if_win,
         dry_run=dry_run,
-        espn_clock_seconds=opp.get("espn_clock_seconds"),
+        espn_clock_seconds=opp.espn_clock_seconds,
     )
 
     if dry_run:
@@ -164,9 +206,10 @@ async def place_bet(
         session.close()
         return {"dry_run": True, "count": count, "yes_price": yes_price}
 
+    assert client is not None
     try:
         result = await client.create_order(
-            ticker=opp["ticker"],
+            ticker=opp.ticker,
             side="yes",
             action="buy",
             count=count,
@@ -324,7 +367,7 @@ def trigger_matches(
 
 def place_strategy_trade(
     session,
-    opp: dict,
+    opp: MarketOpportunity,
     strategy_name: str,
     max_cost_cents: int,
 ) -> None:
@@ -334,9 +377,9 @@ def place_strategy_trade(
     DRY_RUN branch — see 03-CONTEXT.md D-13 specifics. yes_price is
     sourced from market_prices cache (Kalshi yes_ask, integer cents).
     """
-    yes_price = opp["yes_ask"]
+    yes_price = opp.yes_ask
     if not yes_price:
-        log.warning("place_strategy_trade: missing yes_ask for %s", opp["ticker"])
+        log.warning("place_strategy_trade: missing yes_ask for %s", opp.ticker)
         return
     count = max_cost_cents // yes_price
     if count < 1:
@@ -351,14 +394,14 @@ def place_strategy_trade(
     total_cost = count * yes_price
     total_profit = count * (100 - yes_price)
     log.info(
-        f"STRATEGY FIRE {strategy_name}: BUY {count}x YES {opp['ticker']} @ {yes_price}c = "
+        f"STRATEGY FIRE {strategy_name}: BUY {count}x YES {opp.ticker} @ {yes_price}c = "
         f"${total_cost / 100:.2f} cost, ${total_profit / 100:.2f} potential profit"
     )
 
     trade = Trade(
-        ticker=opp["ticker"],
-        event_ticker=opp.get("event_ticker", ""),
-        title=opp.get("title", ""),
+        ticker=opp.ticker,
+        event_ticker=opp.event_ticker,
+        title=opp.title,
         side="yes",
         action="buy",
         count=count,
@@ -368,7 +411,7 @@ def place_strategy_trade(
         status="dry_run",
         dry_run=True,
         strategy_name=strategy_name,
-        espn_clock_seconds=opp.get("espn_clock_seconds"),
+        espn_clock_seconds=opp.espn_clock_seconds,
     )
     session.add(trade)
     session.commit()
@@ -442,13 +485,13 @@ async def evaluate_strategies(
                         try:
                             place_strategy_trade(
                                 session=session,
-                                opp={
-                                    "ticker": ticker,
-                                    "event_ticker": prices.get("event_ticker", ""),
-                                    "title": title,
-                                    "yes_ask": yes_ask,
-                                    "espn_clock_seconds": int(game.clock_seconds),
-                                },
+                                opp=MarketOpportunity(
+                                    ticker=ticker,
+                                    event_ticker=prices.get("event_ticker", ""),
+                                    title=title,
+                                    yes_ask=yes_ask,
+                                    espn_clock_seconds=int(game.clock_seconds),
+                                ),
                                 strategy_name=strategy.name,
                                 max_cost_cents=max_bet_cents,
                             )
@@ -481,7 +524,7 @@ async def scan_kalshi_with_espn(
     caller (kalshi_scan_loop) and passed in here. Same value is also
     passed to evaluate_strategies. NO balance fetch inside this function.
     """
-    opportunities = []
+    opportunities: list[MarketOpportunity] = []
 
     if not espn_final:
         log.info("No ESPN games in final minutes — skipping Kalshi scan")
@@ -546,31 +589,28 @@ async def scan_kalshi_with_espn(
                             continue
 
                         log.info(f"new opportunity: {title}")
-                        spread = 100 - yes_ask
                         opportunities.append(
-                            {
-                                "ticker": ticker,
-                                "event_ticker": event_ticker,
-                                "title": title,
-                                "yes_sub_title": market.get("yes_sub_title", ""),
-                                "yes_bid": yes_bid,
-                                "yes_ask": yes_ask,
-                                "spread": spread,
-                                "volume": extract_volume(market),
-                                "close_time": market.get("close_time", ""),
-                                "expected_expiration": market.get("expected_expiration_time", ""),
-                                "series_ticker": series_ticker,
-                                "sport_path": espn_game.sport_path,
-                                "espn_period": espn_game.period,
-                                "espn_clock": espn_game.display_clock,
-                                "espn_clock_seconds": int(espn_game.clock_seconds),
-                                "espn_home": espn_game.home_team,
-                                "espn_away": espn_game.away_team,
-                                "espn_home_score": espn_game.home_score,
-                                "espn_away_score": espn_game.away_score,
-                                "espn_score": f"{espn_game.away_score}-{espn_game.home_score}",
-                                "espn_lead": espn_game.score_diff,
-                            }
+                            MarketOpportunity(
+                                ticker=ticker,
+                                event_ticker=event_ticker,
+                                title=title,
+                                yes_sub_title=market.get("yes_sub_title", ""),
+                                yes_bid=yes_bid,
+                                yes_ask=yes_ask,
+                                volume=extract_volume(market),
+                                close_time=market.get("close_time", ""),
+                                expected_expiration=market.get("expected_expiration_time", ""),
+                                series_ticker=series_ticker,
+                                sport_path=espn_game.sport_path,
+                                espn_period=espn_game.period,
+                                espn_clock=espn_game.display_clock,
+                                espn_clock_seconds=int(espn_game.clock_seconds),
+                                espn_home=espn_game.home_team,
+                                espn_away=espn_game.away_team,
+                                espn_home_score=espn_game.home_score,
+                                espn_away_score=espn_game.away_score,
+                                espn_lead=espn_game.score_diff,
+                            )
                         )
 
                 cursor = data.get("cursor", "")
@@ -581,7 +621,7 @@ async def scan_kalshi_with_espn(
             log.warning(f"Error scanning series {series_ticker}: {e}")
             continue
 
-    opportunities.sort(key=lambda x: (-x["spread"], -x["espn_lead"]))
+    opportunities.sort(key=lambda x: (-x.spread, -x.espn_lead))
 
     # Record scan and process opportunities
     session = get_session()
@@ -608,38 +648,38 @@ async def scan_kalshi_with_espn(
         )
         for opp in opportunities:
             log.info(
-                f"  {opp['ticker']} | {opp['yes_sub_title']} | "
-                f"Yes Ask: {opp['yes_ask']}c | Spread: {opp['spread']}c | "
-                f"ESPN: P{opp['espn_period']} {opp['espn_clock']} "
-                f"{opp['espn_away']}@{opp['espn_home']} {opp['espn_score']} | "
-                f"Vol: {opp['volume']}"
+                f"  {opp.ticker} | {opp.yes_sub_title} | "
+                f"Yes Ask: {opp.yes_ask}c | Spread: {opp.spread}c | "
+                f"ESPN: P{opp.espn_period} {opp.espn_clock} "
+                f"{opp.espn_away}@{opp.espn_home} {opp.espn_score} | "
+                f"Vol: {opp.volume}"
             )
 
             db_opp = Opportunity(
                 scan_id=scan_id,
-                ticker=opp["ticker"],
-                event_ticker=opp["event_ticker"],
-                series_ticker=opp["series_ticker"],
-                title=opp["title"],
-                yes_sub_title=opp["yes_sub_title"],
-                yes_bid=opp["yes_bid"],
-                yes_ask=opp["yes_ask"],
-                spread=opp["spread"],
-                volume=opp["volume"],
-                close_time=opp["close_time"],
-                sport_path=opp.get("sport_path"),
-                espn_period=opp.get("espn_period"),
-                espn_clock=opp.get("espn_clock"),
-                espn_home=opp.get("espn_home"),
-                espn_away=opp.get("espn_away"),
-                espn_home_score=opp.get("espn_home_score"),
-                espn_away_score=opp.get("espn_away_score"),
-                espn_score_diff=opp.get("espn_lead"),
+                ticker=opp.ticker,
+                event_ticker=opp.event_ticker,
+                series_ticker=opp.series_ticker,
+                title=opp.title,
+                yes_sub_title=opp.yes_sub_title,
+                yes_bid=opp.yes_bid,
+                yes_ask=opp.yes_ask,
+                spread=opp.spread,
+                volume=opp.volume,
+                close_time=opp.close_time,
+                sport_path=opp.sport_path,
+                espn_period=opp.espn_period,
+                espn_clock=opp.espn_clock,
+                espn_home=opp.espn_home,
+                espn_away=opp.espn_away,
+                espn_home_score=opp.espn_home_score,
+                espn_away_score=opp.espn_away_score,
+                espn_score_diff=opp.espn_lead,
             )
             session.add(db_opp)
 
-            if opp["event_ticker"] in open_event_tickers:
-                log.info(f"  SKIP: already have position on {opp['event_ticker']}")
+            if opp.event_ticker in open_event_tickers:
+                log.info(f"  SKIP: already have position on {opp.event_ticker}")
                 continue
 
             max_pos = get_config_int("max_positions") or 20
@@ -653,7 +693,7 @@ async def scan_kalshi_with_espn(
 
             result = await place_bet(client, opp, max_cost_cents=max_bet_cents, dry_run=dry_run)
             if result:
-                open_event_tickers.add(opp["event_ticker"])
+                open_event_tickers.add(opp.event_ticker)
                 open_count += 1
 
     session.commit()
