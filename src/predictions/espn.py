@@ -10,36 +10,9 @@ from typing import Optional
 
 import httpx
 
+from predictions.sports import KALSHI_TO_ESPN, SPORT_FINAL_PERIOD
+
 ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports"
-
-# Map Kalshi series prefixes to ESPN sport/league paths
-KALSHI_TO_ESPN = {
-    "KXNBAGAME": "basketball/nba",
-    "KXNHLGAME": "hockey/nhl",
-    "KXNFLGAME": "football/nfl",
-    "KXMLBGAME": "baseball/mlb",
-    "KXNCAAMBGAME": "basketball/mens-college-basketball",
-    "KXNCAAFBGAME": "football/college-football",
-    # "KXUFCFIGHT": "mma/ufc",
-    "KXEPLGAME": "soccer/eng.1",
-    "KXLALIGAGAME": "soccer/esp.1",
-    "KXMLSGAME": "soccer/usa.1",
-    "KXMLBSTGAME": "baseball/mlb",
-}
-
-# How many periods/quarters each sport has in regulation
-SPORT_FINAL_PERIOD = {
-    "basketball/nba": 4,
-    "hockey/nhl": 3,
-    "football/nfl": 4,
-    "baseball/mlb": 9,
-    "basketball/mens-college-basketball": 2,
-    "football/college-football": 4,
-    "mma/ufc": 5,  # 5 rounds max
-    "soccer/eng.1": 2,
-    "soccer/esp.1": 2,
-    "soccer/usa.1": 2,
-}
 
 
 @dataclass

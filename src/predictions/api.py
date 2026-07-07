@@ -20,18 +20,23 @@ from predictions.db import (
     Scan,
     Trade,
     get_all_config,
+    get_config_int,
     get_session,
     init_db,
     set_config,
 )
 from predictions.espn import (
-    KALSHI_TO_ESPN,
-    SPORT_FINAL_PERIOD,
     get_scoreboard,
     match_kalshi_to_espn,
 )
 from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
-from predictions.scanner import MIN_SCORE_LEAD
+from predictions.sports import (
+    KALSHI_TO_ESPN,
+    SPORT_CLOCK_DIR,
+    SPORT_DISPLAY_NAMES,
+    SPORT_FINAL_PERIOD,
+    TICKER_PREFIX_LABELS,
+)
 from predictions.strategies import load_strategies
 
 # --- Pydantic response models ---
@@ -714,23 +719,8 @@ def get_total_sport_stats():
         if sport not in stats:
             stats[sport] = {"played": 0, "wins": 0, "pnl": 0}
 
-    # Helper to map kalshi ticker prefix to label — most specific match first
-    ticker_prefix_map = [
-        ("KXMLBST", "MLBST"),
-        ("KXMLB", "MLB"),
-        ("KXNBA", "NBA"),
-        ("KXNHL", "NHL"),
-        ("KXNFL", "NFL"),
-        ("KXNCAAMB", "NCAAMB"),
-        ("KXNCAAFB", "NCAAFB"),
-        ("KXEPL", "EPL"),
-        ("KXLALIGA", "La Liga"),
-        ("KXMLSG", "MLS"),
-        ("KXUFC", "UFC"),
-    ]
-
     def get_label_from_ticker(t: str):
-        for prefix, label in ticker_prefix_map:
+        for prefix, label in TICKER_PREFIX_LABELS:
             if t.startswith(prefix):
                 return label
         return "Other"
@@ -893,7 +883,7 @@ async def _get_live_games() -> list[dict]:
             if g.state != "in":
                 continue
 
-            min_lead = MIN_SCORE_LEAD.get(sport_path, 5)
+            min_lead = get_config_int(f"lead:{sport_path}")
             meets_score_lead = g.score_diff >= min_lead
             is_target = g.is_in_final_minutes and meets_score_lead
             is_watching = (
@@ -999,34 +989,6 @@ def reset_config_endpoint():
     return {"status": "ok", "message": "Config reset to defaults."}
 
 
-SPORT_DISPLAY_NAMES = {
-    "basketball/nba": "NBA",
-    "basketball/mens-college-basketball": "NCAAMB",
-    "hockey/nhl": "NHL",
-    "football/nfl": "NFL",
-    "football/college-football": "NCAAFB",
-    "baseball/mlb": "MLB",
-    "soccer/eng.1": "EPL",
-    "soccer/esp.1": "La Liga",
-    "soccer/usa.1": "MLS",
-    "mma/ufc": "UFC",
-}
-
-# Clock direction per sport: "down" = countdown, "up" = counts up, "none" = no clock
-SPORT_CLOCK_DIR = {
-    "basketball/nba": "down",
-    "basketball/mens-college-basketball": "down",
-    "hockey/nhl": "down",
-    "football/nfl": "down",
-    "football/college-football": "down",
-    "baseball/mlb": "none",
-    "soccer/eng.1": "up",
-    "soccer/esp.1": "up",
-    "soccer/usa.1": "up",
-    "mma/ufc": "down",
-}
-
-
 def _format_final_minutes(clock_dir: str, secs: int) -> str:
     if clock_dir == "none":
         return "final period"
@@ -1049,8 +1011,6 @@ def get_config_endpoint():
         if not final_secs:
             final_secs = 4500 if clock_dir == "up" else 300
         lead = int(cfg.get(f"lead:{sport_path}", "0"))
-        if not lead and sport_path in MIN_SCORE_LEAD:
-            lead = MIN_SCORE_LEAD[sport_path]
         stretch_lead = max(1, lead - (lead * 4 // 10))
 
         sports.append(

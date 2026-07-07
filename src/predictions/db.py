@@ -8,6 +8,8 @@ load_dotenv()
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
+from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, CONFIG_LEAD_DEFAULTS
+
 # Default SQLite path at the repo root (src/predictions/db.py → repo/predictions.db)
 _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _default_db = os.path.join(_repo_root, "predictions.db")
@@ -215,27 +217,10 @@ _CONFIG_DEFAULTS: dict[str, str] = {
     "min_volume": "50",
     "stretch_price_min": "85",
     "trading_paused": "false",
-    # Per-sport score leads: sport_path -> min lead
-    "lead:basketball/nba": "12",  # 8
-    "lead:basketball/mens-college-basketball": "12",  # 8
-    "lead:hockey/nhl": "2",
-    "lead:football/nfl": "10",
-    "lead:football/college-football": "10",
-    "lead:baseball/mlb": "3",
-    "lead:soccer/eng.1": "2",
-    "lead:soccer/esp.1": "2",
-    "lead:soccer/usa.1": "2",
-    "lead:mma/ufc": "0",
-    # Per-sport final minutes (seconds): clock <= X for countdown, clock >= X for count-up
-    "final_seconds:basketball/nba": "180",
-    "final_seconds:basketball/mens-college-basketball": "180",
-    "final_seconds:hockey/nhl": "300",  # 300
-    "final_seconds:football/nfl": "300",  # 300
-    "final_seconds:football/college-football": "300",  # 300
-    "final_seconds:soccer/eng.1": "4500",  # 4500
-    "final_seconds:soccer/esp.1": "4500",  # 4500
-    "final_seconds:soccer/usa.1": "4500",  # 4500
-    "final_seconds:mma/ufc": "300",
+    # Per-sport defaults (lead:<path>, final_seconds:<path>) come from the
+    # sport registry; DB rows override them.
+    **CONFIG_LEAD_DEFAULTS,
+    **CONFIG_FINAL_SECONDS_DEFAULTS,
 }
 
 

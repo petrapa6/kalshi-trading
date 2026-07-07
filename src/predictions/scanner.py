@@ -41,6 +41,13 @@ from predictions.espn import (
     match_kalshi_to_espn,
 )
 from predictions.kalshi_client import KalshiClient, KalshiWebSocket, extract_cents, extract_volume
+from predictions.sports import (
+    CLOCKLESS_SPORT_PATHS,
+    COUNT_UP_SPORT_PATHS,
+    SPORT_PATH_TO_FAMILY,
+    SPORT_PERIOD_LENGTH_SECS,
+    SPORTS_GAME_SERIES,
+)
 from predictions.strategies import Strategy, Trigger, load_strategies
 
 logging.basicConfig(
@@ -58,73 +65,6 @@ market_prices: dict[str, dict] = {}
 
 # Minimum volume on the market to ensure there's liquidity
 MIN_VOLUME = 50
-
-# Minimum score lead by sport to filter out close games that could flip
-MIN_SCORE_LEAD = {
-    "basketball/nba": 8,
-    "basketball/mens-college-basketball": 8,
-    "hockey/nhl": 2,
-    "football/nfl": 10,
-    "football/college-football": 10,
-    "baseball/mlb": 3,
-    "soccer/eng.1": 2,
-    "soccer/esp.1": 2,
-    "soccer/usa.1": 2,
-    "mma/ufc": 0,  # no score lead in fights
-}
-
-# Sport-family literals (UK terminology, per Phase 2 D-02 OVERRIDE in
-# 02-CONTEXT.md lines 482-496 + Phase 3 D-07): trigger.sport in YAML is
-# matched to Kalshi/ESPN sport_paths through this map. Only paths actually
-# present in espn.KALSHI_TO_ESPN are enumerated; expand when KALSHI_TO_ESPN
-# grows.
-SPORT_FAMILY_TO_PATHS: dict[str, frozenset[str]] = {
-    "football": frozenset({"soccer/eng.1", "soccer/esp.1", "soccer/usa.1"}),
-    "basketball": frozenset({"basketball/nba", "basketball/mens-college-basketball"}),
-    "baseball": frozenset({"baseball/mlb"}),
-    "american_football": frozenset({"football/nfl", "football/college-football"}),
-    "hockey": frozenset({"hockey/nhl"}),
-    "tennis": frozenset(),  # KXTENNISGAME exists but no ESPN match today
-}
-
-# Reverse lookup (path -> family) computed once at module import.
-SPORT_PATH_TO_FAMILY: dict[str, str] = {
-    path: family for family, paths in SPORT_FAMILY_TO_PATHS.items() for path in paths
-}
-
-# Per-sport regulation period length in seconds. Phase 3 D-09 uses these
-# to derive elapsed_minutes from ESPN clock_seconds + period.
-SPORT_PERIOD_LENGTH_SECS: dict[str, int] = {
-    "basketball/nba": 12 * 60,
-    "basketball/mens-college-basketball": 20 * 60,
-    "football/nfl": 15 * 60,
-    "football/college-football": 15 * 60,
-    "hockey/nhl": 20 * 60,
-    "soccer/eng.1": 45 * 60,
-    "soccer/esp.1": 45 * 60,
-    "soccer/usa.1": 45 * 60,
-    "mma/ufc": 5 * 60,
-}
-
-# Sports with no game clock — min_minute triggers cannot be evaluated;
-# elapsed_minutes returns None and the caller skips the trigger.
-CLOCKLESS_SPORT_PATHS: frozenset[str] = frozenset(
-    {
-        "baseball/mlb",
-    }
-)
-
-# Sports where ESPN's displayClock counts UP cumulatively across the match
-# (45:00 at half, 90:00 at full time). Verified by espn.py:88's
-# `clock_seconds >= 4500` threshold check (only meaningful on a cumulative
-# clock).
-COUNT_UP_SPORT_PATHS: frozenset[str] = frozenset(
-    {
-        "soccer/eng.1",
-        "soccer/esp.1",
-        "soccer/usa.1",
-    }
-)
 
 
 def elapsed_minutes(sport_path: str, clock_seconds: float, period: int) -> int | None:
@@ -144,24 +84,6 @@ def elapsed_minutes(sport_path: str, clock_seconds: float, period: int) -> int |
     completed_periods = max(0, period - 1)
     elapsed_in_current = max(0, period_secs - int(clock_seconds))
     return (completed_periods * period_secs + elapsed_in_current) // 60
-
-
-# Sports game series on Kalshi - these are individual game markets
-# (not futures/championships which have long expiry windows)
-SPORTS_GAME_SERIES = [
-    "KXNBAGAME",  # NBA games
-    "KXNFLGAME",  # NFL games
-    "KXNHLGAME",  # NHL games
-    "KXMLBGAME",  # MLB games
-    "KXNCAAMBGAME",  # College basketball games
-    "KXNCAAFBGAME",  # College football games
-    "KXUFCFIGHT",  # UFC fights
-    "KXLALIGAGAME",  # La Liga games
-    "KXEPLGAME",  # Premier League games
-    "KXMLSGAME",  # MLS games
-    "KXMLBSTGAME",  # MLB spring training games
-    "KXTENNISGAME",  # Tennis matches
-]
 
 
 def load_client() -> KalshiClient:
@@ -641,9 +563,7 @@ async def scan_kalshi_with_espn(
                         if not espn_game:
                             continue
 
-                        db_lead = get_config_int(f"lead:{espn_game.sport_path}")
-                        fallback = MIN_SCORE_LEAD.get(espn_game.sport_path, 5)
-                        min_lead = db_lead if db_lead else fallback
+                        min_lead = get_config_int(f"lead:{espn_game.sport_path}")
                         if espn_game.score_diff < min_lead:
                             continue
 
