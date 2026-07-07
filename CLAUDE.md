@@ -122,3 +122,21 @@ Prefer LSP over Grep/Glob/Read for navigation:
 
 After writing or editing code, pause briefly for LSP, then check
 diagnostics. Fix type errors and missing imports immediately.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (uses the `gh` CLI); external PRs are not a
+triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`,
+`ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout: `CONTEXT.md` + `docs/adr/` at the repo root (separate
+from `.planning/`, which remains the primary docs system for this project).
+See `docs/agents/domain.md`.
