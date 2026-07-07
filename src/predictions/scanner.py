@@ -24,13 +24,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from sqlalchemy import and_, or_
-
 from predictions.db import (
     BalanceSnapshot,
     Opportunity,
     Scan,
     Trade,
+    countable_trades,
     get_config,
     get_config_int,
     get_session,
@@ -196,22 +195,37 @@ async def place_bet(
         return None
 
 
-async def check_settlements(client: KalshiClient):
-    """Check open trades for settlement and update P&L.
+def settle_trade(trade: Trade, result: str) -> None:
+    """Apply the settlement transition to a trade in place (pure, no I/O).
 
-    D-16: combined filter handles real trades AND strategy dry-runs
-    (dry_run=True AND strategy_name IS NOT NULL). Legacy process-level
-    dry-runs (dry_run=True AND strategy_name IS NULL) are EXCLUDED.
+    Single home for the win/loss/fee/status/pnl_cents math; both
+    settlement discovery paths (check_settlements, on_lifecycle) call it.
     """
+    fee = trade.fee_cents or 0
+    tag = "STRATEGY" if trade.strategy_name else "REAL"
+    trade.settled_at = datetime.now(timezone.utc)
+    if result == trade.side:
+        trade.status = "settled_win"
+        trade.pnl_cents = trade.potential_profit_cents - fee
+        log.info(
+            f"  {tag} WIN: {trade.ticker} settled {result} | P&L: +${trade.pnl_cents / 100:.2f}"
+        )
+    else:
+        trade.status = "settled_loss"
+        trade.pnl_cents = -trade.cost_cents - fee
+        log.info(
+            f"  {tag} LOSS: {trade.ticker} settled {result} | P&L: ${trade.pnl_cents / 100:.2f}"
+        )
+
+
+async def check_settlements(client: KalshiClient):
+    """Check open trades for settlement and update P&L."""
     session = get_session()
     open_trades = (
         session.query(Trade)
         .filter(
             Trade.status.in_(("placed", "filled", "dry_run")),
-            or_(
-                Trade.dry_run == False,
-                and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
-            ),
+            countable_trades(),
         )
         .all()
     )
@@ -223,23 +237,7 @@ async def check_settlements(client: KalshiClient):
             result = market.get("result", "")
 
             if status in ("finalized", "settled"):
-                fee = trade.fee_cents or 0
-                tag = "STRATEGY" if trade.strategy_name else "REAL"
-                trade.settled_at = datetime.now(timezone.utc)
-                if result == trade.side:
-                    trade.status = "settled_win"
-                    trade.pnl_cents = trade.potential_profit_cents - fee
-                    log.info(
-                        f"  {tag} WIN: {trade.ticker} settled {result} | "
-                        f"P&L: +${trade.pnl_cents / 100:.2f}"
-                    )
-                else:
-                    trade.status = "settled_loss"
-                    trade.pnl_cents = -trade.cost_cents - fee
-                    log.info(
-                        f"  {tag} LOSS: {trade.ticker} settled {result} | "
-                        f"P&L: ${trade.pnl_cents / 100:.2f}"
-                    )
+                settle_trade(trade, result)
         except Exception as e:
             log.warning(f"  Failed to check {trade.ticker}: {e}")
 
@@ -251,8 +249,7 @@ async def on_lifecycle(msg: dict, client: KalshiClient | None = None) -> None:
     """WS market_lifecycle_v2 handler — settle trades on finalized markets.
 
     Module-level (extracted from run_scanner closure) so tests can call
-    it directly. D-17: combined filter mirrors check_settlements (D-16)
-    for symmetry — same row set, same math, same status transitions.
+    it directly.
 
     `client` is optional so tests can call this without a Kalshi
     client; production passes one so post-settlement record_balance runs.
@@ -271,25 +268,12 @@ async def on_lifecycle(msg: dict, client: KalshiClient | None = None) -> None:
         .filter(
             Trade.ticker == ticker,
             Trade.status.in_(("placed", "filled", "dry_run")),
-            or_(
-                Trade.dry_run == False,
-                and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
-            ),
+            countable_trades(),
         )
         .all()
     )
     for trade in open_trades:
-        fee = trade.fee_cents or 0
-        tag = "STRATEGY" if trade.strategy_name else "REAL"
-        trade.settled_at = datetime.now(timezone.utc)
-        if result == trade.side:
-            trade.status = "settled_win"
-            trade.pnl_cents = trade.potential_profit_cents - fee
-            log.info(f"  {tag} WIN: {trade.ticker} | P&L: +${trade.pnl_cents / 100:.2f}")
-        else:
-            trade.status = "settled_loss"
-            trade.pnl_cents = -trade.cost_cents - fee
-            log.info(f"  {tag} LOSS: {trade.ticker} | P&L: ${trade.pnl_cents / 100:.2f}")
+        settle_trade(trade, result)
     session.commit()
     session.close()
     if client is not None:
