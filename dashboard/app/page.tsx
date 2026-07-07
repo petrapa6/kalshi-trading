@@ -1,7 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Tweet } from "react-tweet";
+import { type ReactNode, useEffect, useState } from "react";
+import {
+  Area,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ComposedChart,
+  Rectangle,
+  type RectangleProps,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  type AccountStep,
+  accountValueSteps,
+  pnlByPrice,
+  pnlByTime,
+  priceBins,
+  timeBins,
+  type ViewMode,
+} from "@/lib/chart-data";
 import { login, checkAuth, updateConfig } from "./actions";
 
 // Proxied via Next.js to provide secure token headers transparently from the server
@@ -57,12 +79,6 @@ interface Opportunity {
   spread: number;
   volume: number;
   series_ticker: string;
-}
-
-interface BalanceSnapshot {
-  recorded_at: string;
-  balance_cents: number;
-  portfolio_value_cents: number;
 }
 
 interface KalshiMarket {
@@ -253,6 +269,160 @@ function StatusBadge({ status, dryRun }: { status: string; dryRun: boolean }) {
   );
 }
 
+const WIN_COLOR = "#4ade80";
+const LOSS_COLOR = "#f87171";
+const CHART_TICK = {
+  fill: "#78716c",
+  fontSize: 9,
+  fontFamily: "monospace",
+} as const;
+const CHART_CURSOR_LINE = {
+  stroke: "#d4a017",
+  strokeDasharray: "3 3",
+  opacity: 0.5,
+} as const;
+const CHART_CURSOR_FILL = { fill: "#d4a017", fillOpacity: 0.08 } as const;
+
+function ChartTooltipFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-md border border-amber-800/60 bg-stone-900/95 px-2.5 py-1.5 font-mono">
+      {children}
+    </div>
+  );
+}
+
+function AccountTooltip({
+  active,
+  payload,
+  viewMode,
+}: {
+  active?: boolean;
+  payload?: { payload: AccountStep }[];
+  viewMode: ViewMode;
+}) {
+  if (!active || !payload?.length) return null;
+  const step = payload[0].payload;
+  return (
+    <ChartTooltipFrame>
+      <div className="text-xs font-bold text-amber-400">
+        {cents(step.value)}
+      </div>
+      {step.kind === "bucket" && (
+        <div
+          className="text-[10px]"
+          style={{ color: step.periodPnl >= 0 ? WIN_COLOR : LOSS_COLOR }}
+        >
+          {step.periodPnl >= 0 ? "+" : ""}
+          {cents(step.periodPnl)}
+          {viewMode !== "trade" ? ` · ${step.label}` : ""}
+        </div>
+      )}
+    </ChartTooltipFrame>
+  );
+}
+
+function WinLossTooltip({
+  active,
+  payload,
+  label,
+  formatLabel,
+}: {
+  active?: boolean;
+  payload?: { payload: { wins: number; losses: number } }[];
+  label?: number;
+  formatLabel: (label: number) => string;
+}) {
+  if (!active || !payload?.length || label === undefined) return null;
+  const { wins, losses } = payload[0].payload;
+  return (
+    <ChartTooltipFrame>
+      <div className="text-xs font-bold text-amber-400">
+        {formatLabel(label)}
+      </div>
+      <div className="text-[10px]" style={{ color: WIN_COLOR }}>
+        ✓ {wins} win{wins !== 1 ? "s" : ""}
+      </div>
+      <div className="text-[10px]" style={{ color: LOSS_COLOR }}>
+        ✗ {losses} loss{losses !== 1 ? "es" : ""}
+      </div>
+    </ChartTooltipFrame>
+  );
+}
+
+function PnlBarTooltip({
+  active,
+  payload,
+  label,
+  formatLabel,
+}: {
+  active?: boolean;
+  payload?: { payload: { pnl: number } }[];
+  label?: number;
+  formatLabel: (label: number) => string;
+}) {
+  if (!active || !payload?.length || label === undefined) return null;
+  const { pnl } = payload[0].payload;
+  return (
+    <ChartTooltipFrame>
+      <div className="text-xs font-bold text-amber-400">
+        {formatLabel(label)}
+      </div>
+      <div
+        className="text-[10px]"
+        style={{ color: pnl >= 0 ? WIN_COLOR : LOSS_COLOR }}
+      >
+        {pnl === 0 ? "No P&L" : `${pnl >= 0 ? "+" : ""}${cents(pnl)}`}
+      </div>
+    </ChartTooltipFrame>
+  );
+}
+
+function WinLossLegend({ wins, losses }: { wins: number; losses: number }) {
+  return (
+    <div className="flex items-center gap-4 text-xs text-zinc-500">
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-sm bg-green-500/70 inline-block" />
+        Wins ({wins})
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-sm bg-red-500/70 inline-block" />
+        Losses ({losses})
+      </span>
+    </div>
+  );
+}
+
+function pnlBarShape(props: RectangleProps & { payload?: { pnl: number } }) {
+  return (
+    <Rectangle
+      {...props}
+      fill={(props.payload?.pnl ?? 0) >= 0 ? WIN_COLOR : LOSS_COLOR}
+    />
+  );
+}
+
+function stepDot(props: {
+  cx?: number;
+  cy?: number;
+  index?: number;
+  payload?: AccountStep;
+}) {
+  const { cx, cy, index, payload } = props;
+  if (payload?.kind !== "bucket" || cx == null || cy == null)
+    return <g key={`dot-${index}`} />;
+  return (
+    <circle
+      key={`dot-${index}`}
+      cx={cx}
+      cy={cy}
+      r={3.5}
+      fill={payload.periodPnl >= 0 ? WIN_COLOR : LOSS_COLOR}
+      stroke="#000"
+      strokeWidth={1}
+    />
+  );
+}
+
 function PnlChart({
   trades,
   balanceCents,
@@ -262,179 +432,28 @@ function PnlChart({
   balanceCents: number;
   portfolioCents: number;
 }) {
-  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
-  const [viewMode, setViewMode] = useState<"trade" | "day" | "week" | "month">(
-    "trade",
-  );
+  const [viewMode, setViewMode] = useState<ViewMode>("trade");
 
   const totalNow = balanceCents + portfolioCents;
 
-  const settledTrades = trades
-    .filter((t) => !t.dry_run && t.pnl_cents !== null && t.placed_at)
-    .sort(
-      (a, b) =>
-        new Date(a.placed_at).getTime() - new Date(b.placed_at).getTime(),
-    );
+  const settledTrades = trades.filter(
+    (t) => !t.dry_run && t.pnl_cents !== null && t.placed_at,
+  );
+  const { steps, windowStartBalance, hiddenCount } = accountValueSteps(
+    settledTrades.map((t) => ({
+      placed_at: t.placed_at,
+      pnl_cents: t.pnl_cents!,
+    })),
+    totalNow,
+    viewMode,
+  );
 
-  let totalPnl = 0;
-  for (const t of settledTrades) totalPnl += t.pnl_cents!;
-  const startingBalance = totalNow - totalPnl;
+  const totalPnl = settledTrades.reduce((s, t) => s + t.pnl_cents!, 0);
+  const lineColor = totalPnl >= 0 ? WIN_COLOR : LOSS_COLOR;
+  const fillColor = totalNow >= windowStartBalance ? WIN_COLOR : LOSS_COLOR;
+  const windowPnl = totalNow - windowStartBalance;
 
-  // --- Bucket helpers ---
-  const bucketKey = (d: Date): string => {
-    if (viewMode === "day")
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    if (viewMode === "week") {
-      const tmp = new Date(d);
-      tmp.setHours(0, 0, 0, 0);
-      tmp.setDate(tmp.getDate() - (tmp.getDay() === 0 ? 6 : tmp.getDay() - 1));
-      return `${tmp.getFullYear()}-W${String(tmp.getMonth() + 1).padStart(2, "0")}-${String(tmp.getDate()).padStart(2, "0")}`;
-    }
-    if (viewMode === "month")
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    return d.toISOString(); // "trade": unique per trade
-  };
-
-  const formatBucketLabel = (d: Date): string => {
-    if (viewMode === "trade")
-      return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`;
-    if (viewMode === "day") return `${d.getMonth() + 1}/${d.getDate()}`;
-    if (viewMode === "week") {
-      const tmp = new Date(d);
-      tmp.setDate(tmp.getDate() - (tmp.getDay() === 0 ? 6 : tmp.getDay() - 1));
-      return `${tmp.getMonth() + 1}/${tmp.getDate()}`;
-    }
-    return d.toLocaleString("default", { month: "short", year: "2-digit" });
-  };
-
-  // Group into ordered buckets (Map preserves insertion order, trades already sorted)
-  const bucketMap = new Map<string, { pnl: number; date: Date }>();
-  for (const t of settledTrades) {
-    const d = new Date(t.placed_at);
-    const key = bucketKey(d);
-    if (!bucketMap.has(key)) bucketMap.set(key, { pnl: 0, date: d });
-    bucketMap.get(key)!.pnl += t.pnl_cents!;
-  }
-  const allBuckets = Array.from(bucketMap.values());
-
-  // Limit to last 20 points; accumulate earlier P&L into windowStartBalance
-  const WINDOW = 20;
-  const hiddenBuckets =
-    allBuckets.length > WINDOW ? allBuckets.slice(0, -WINDOW) : [];
-  const buckets =
-    allBuckets.length > WINDOW ? allBuckets.slice(-WINDOW) : allBuckets;
-  const windowStartBalance =
-    startingBalance + hiddenBuckets.reduce((s, b) => s + b.pnl, 0);
-
-  type Step = {
-    value: number;
-    label: string;
-    date: Date | null;
-    periodPnl: number;
-  };
-  const steps: Step[] = [
-    {
-      value: windowStartBalance,
-      label: "Start",
-      date: buckets.length > 0 ? buckets[0].date : null,
-      periodPnl: 0,
-    },
-  ];
-  let runningValue = windowStartBalance;
-  for (const { pnl, date } of buckets) {
-    runningValue += pnl;
-    steps.push({
-      value: runningValue,
-      label: formatBucketLabel(date),
-      date,
-      periodPnl: pnl,
-    });
-  }
-  steps.push({ value: totalNow, label: "Now", date: new Date(), periodPnl: 0 });
-
-  // --- SVG geometry ---
-  const values = steps.map((s) => s.value);
-  const rawMin = Math.min(...values);
-  const rawMax = Math.max(...values);
-  const dataRange = rawMax - rawMin || 1;
-  const padding = dataRange * 0.35;
-  const yMin = rawMin - padding;
-  const yMax = rawMax + padding;
-  const range = yMax - yMin;
-
-  const w = 800,
-    h = 200;
-  const padLeft = 60,
-    padRight = 12,
-    padTop = 14,
-    padBottom = 24;
-  const chartW = w - padLeft - padRight;
-  const chartH = h - padTop - padBottom;
-
-  const toY = (val: number) =>
-    padTop + chartH - ((val - yMin) / range) * chartH;
-
-  type Point = {
-    x: number;
-    y: number;
-    value: number;
-    label: string;
-    date: Date | null;
-    periodPnl: number;
-  };
-  const points: Point[] = [];
-  for (let i = 0; i < steps.length; i++) {
-    const x = padLeft + (i / (steps.length - 1)) * chartW;
-    const y = toY(steps[i].value);
-    // Step-function: horizontal helper point (same x, previous y) then the real data point
-    if (i > 0)
-      points.push({
-        x,
-        y: toY(steps[i - 1].value),
-        value: steps[i - 1].value,
-        label: "",
-        date: null,
-        periodPnl: 0,
-      });
-    points.push({
-      x,
-      y,
-      value: steps[i].value,
-      label: steps[i].label,
-      date: steps[i].date,
-      periodPnl: steps[i].periodPnl,
-    });
-  }
-
-  const line = points
-    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`)
-    .join(" ");
-  const baseY = toY(windowStartBalance);
-  const area = `${line} L${points[points.length - 1].x},${baseY} L${points[0].x},${baseY} Z`;
-
-  // X-axis labels only on named (non-blank) points that have a date
-  const timeLabels = points
-    .filter((p) => p.label && p.date)
-    .map((p) => ({ x: p.x, label: p.label }));
-
-  // Only snap hover to real labeled data points — never to intermediate step-function helpers
-  const snapPoints = points.filter((p) => p.label !== "");
-  const findClosest = (mouseX: number) => {
-    let closest = 0,
-      closestDist = Infinity;
-    for (let i = 0; i < snapPoints.length; i++) {
-      const d = Math.abs(snapPoints[i].x - mouseX);
-      if (d < closestDist) {
-        closestDist = d;
-        closest = i;
-      }
-    }
-    return closest;
-  };
-
-  const hp = hoverIdx !== null ? snapPoints[hoverIdx] : null;
-
-  const MODES: { key: "trade" | "day" | "week" | "month"; label: string }[] = [
+  const MODES: { key: ViewMode; label: string }[] = [
     { key: "trade", label: "Trade" },
     { key: "day", label: "Day" },
     { key: "week", label: "Week" },
@@ -451,10 +470,7 @@ function PnlChart({
             {MODES.map(({ key, label }) => (
               <button
                 key={key}
-                onClick={() => {
-                  setViewMode(key);
-                  setHoverIdx(null);
-                }}
+                onClick={() => setViewMode(key)}
                 className={`px-2.5 py-0.5 text-xs rounded-md transition-all font-medium ${
                   viewMode === key
                     ? "bg-amber-900/60 text-amber-300 border border-amber-700/50"
@@ -467,8 +483,8 @@ function PnlChart({
           </div>
           {/* Value summary */}
           <div className="flex items-center gap-3 text-sm">
-            {hiddenBuckets.length > 0 && (
-              <span className="text-zinc-600 text-xs">last {WINDOW}</span>
+            {hiddenCount > 0 && (
+              <span className="text-zinc-600 text-xs">last 20</span>
             )}
             <span className="text-zinc-500 font-mono">
               {cents(windowStartBalance)}
@@ -476,223 +492,83 @@ function PnlChart({
             <span className="text-amber-200 font-bold font-mono">
               {cents(totalNow)}
             </span>
-            {(() => {
-              const windowPnl = totalNow - windowStartBalance;
-              if (windowPnl === 0) return null;
-              return (
-                <span
-                  className={`font-bold font-mono px-2 py-0.5 rounded ${windowPnl > 0 ? "text-green-400 bg-green-900/30" : "text-red-400 bg-red-900/30"}`}
-                >
-                  {windowPnl > 0 ? "+" : ""}
-                  {cents(windowPnl)}
-                </span>
-              );
-            })()}
+            {windowPnl !== 0 && (
+              <span
+                className={`font-bold font-mono px-2 py-0.5 rounded ${windowPnl > 0 ? "text-green-400 bg-green-900/30" : "text-red-400 bg-red-900/30"}`}
+              >
+                {windowPnl > 0 ? "+" : ""}
+                {cents(windowPnl)}
+              </span>
+            )}
           </div>
         </div>
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="w-full"
-        style={{ display: "block", aspectRatio: `${w}/${h}` }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          setHoverIdx(findClosest(((e.clientX - rect.left) / rect.width) * w));
-        }}
-        onMouseLeave={() => setHoverIdx(null)}
-        onTouchMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const touch = e.touches[0];
-          setHoverIdx(
-            findClosest(((touch.clientX - rect.left) / rect.width) * w),
-          );
-        }}
-        onTouchEnd={() => setHoverIdx(null)}
-      >
-        <defs>
-          <linearGradient id="pnlGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="0%"
-              stopColor={totalNow >= windowStartBalance ? "#4ade80" : "#f87171"}
-              stopOpacity="0.3"
-            />
-            <stop
-              offset="100%"
-              stopColor={totalNow >= windowStartBalance ? "#4ade80" : "#f87171"}
-              stopOpacity="0.02"
-            />
-          </linearGradient>
-        </defs>
-
-        {/* Window-start baseline */}
-        <line
-          x1={padLeft}
-          y1={baseY}
-          x2={w - padRight}
-          y2={baseY}
-          stroke="#78716c"
-          strokeWidth="1"
-          strokeDasharray="4,4"
-        />
-        <text
-          x={padLeft - 6}
-          y={baseY + 4}
-          textAnchor="end"
-          fill="#78716c"
-          fontSize="10"
-          fontFamily="monospace"
+      <ResponsiveContainer width="100%" aspect={4}>
+        <ComposedChart
+          data={steps}
+          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
         >
-          {cents(windowStartBalance)}
-        </text>
-
-        {/* Current value — dashed ref line only when different from baseline */}
-        {totalNow !== windowStartBalance && (
-          <line
-            x1={padLeft}
-            y1={toY(totalNow)}
-            x2={w - padRight}
-            y2={toY(totalNow)}
-            stroke={totalNow >= windowStartBalance ? "#4ade80" : "#f87171"}
-            strokeWidth="0.5"
-            strokeDasharray="2,4"
-            opacity="0.4"
+          <defs>
+            <linearGradient id="pnlGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={fillColor} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={fillColor} stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="label"
+            tick={CHART_TICK}
+            axisLine={false}
+            tickLine={false}
           />
-        )}
-
-        {/* X-axis labels */}
-        {timeLabels.map(({ x, label }, i) => {
-          const parts = label.split(" ");
-          return (
-            <text
-              key={i}
-              x={x}
-              y={h - (parts.length > 1 ? 14 : 4)}
-              textAnchor="middle"
-              fill="#78716c"
-              fontSize="9"
-              fontFamily="monospace"
-            >
-              {parts.map((p, j) => (
-                <tspan key={j} x={x} dy={j === 0 ? 0 : 10}>
-                  {p}
-                </tspan>
-              ))}
-            </text>
-          );
-        })}
-
-        {/* Area + step line */}
-        <path d={area} fill="url(#pnlGrad)" />
-        <path
-          d={line}
-          fill="none"
-          stroke={totalPnl >= 0 ? "#4ade80" : "#f87171"}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Dots at each data point */}
-        {points
-          .filter((p) => p.label && !["Start", "Now", ""].includes(p.label))
-          .map((p, i) => (
-            <circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r={viewMode === "trade" ? 4 : 3}
-              fill={p.periodPnl >= 0 ? "#4ade80" : "#f87171"}
-              stroke="#000"
-              strokeWidth="1"
-            />
-          ))}
-
-        {/* Animated end dot */}
-        {hoverIdx === null && points.length > 0 && (
-          <circle
-            cx={points[points.length - 1].x}
-            cy={points[points.length - 1].y}
-            r="4"
-            fill={totalPnl >= 0 ? "#4ade80" : "#f87171"}
-            className="animate-pulse"
+          <YAxis
+            tick={CHART_TICK}
+            tickFormatter={cents}
+            width={56}
+            axisLine={false}
+            tickLine={false}
+            domain={["auto", "auto"]}
           />
-        )}
-
-        {/* Hover tooltip */}
-        {hp && (
-          <>
-            <line
-              x1={hp.x}
-              y1={padTop}
-              x2={hp.x}
-              y2={padTop + chartH}
-              stroke="#d4a017"
-              strokeWidth="1"
-              strokeDasharray="3,3"
-              opacity="0.5"
+          <ReferenceLine
+            y={windowStartBalance}
+            stroke="#78716c"
+            strokeDasharray="4 4"
+          />
+          {totalNow !== windowStartBalance && (
+            <ReferenceLine
+              y={totalNow}
+              stroke={fillColor}
+              strokeWidth={0.5}
+              strokeDasharray="2 4"
+              opacity={0.4}
             />
-            <circle
-              cx={hp.x}
-              cy={hp.y}
-              r="5"
-              fill="#f0d060"
-              stroke="#000"
-              strokeWidth="1.5"
-            />
-            {(() => {
-              const showPeriod =
-                hp.label && !["Start", "Now", ""].includes(hp.label);
-              const tx = hp.x < w / 2 ? hp.x + 10 : hp.x - 140;
-              const ty = Math.max(hp.y - 32, padTop);
-              return (
-                <>
-                  <rect
-                    x={tx}
-                    y={ty}
-                    width="130"
-                    height={showPeriod ? 46 : 36}
-                    rx="5"
-                    fill="#1c1917"
-                    stroke="#92400e"
-                    strokeWidth="0.5"
-                    opacity="0.95"
-                  />
-                  <text
-                    x={tx + 8}
-                    y={ty + 16}
-                    fill="#fbbf24"
-                    fontSize="12"
-                    fontWeight="bold"
-                    fontFamily="monospace"
-                  >
-                    {cents(hp.value)}
-                  </text>
-                  {showPeriod && (
-                    <text
-                      x={tx + 8}
-                      y={ty + 32}
-                      fill={hp.periodPnl >= 0 ? "#4ade80" : "#f87171"}
-                      fontSize="10"
-                      fontFamily="monospace"
-                    >
-                      {hp.periodPnl >= 0 ? "+" : ""}
-                      {cents(hp.periodPnl)}
-                      {viewMode !== "trade" ? ` · ${hp.label}` : ""}
-                    </text>
-                  )}
-                </>
-              );
-            })()}
-          </>
-        )}
-      </svg>
+          )}
+          <Tooltip
+            content={<AccountTooltip viewMode={viewMode} />}
+            cursor={CHART_CURSOR_LINE}
+          />
+          <Area
+            type="stepAfter"
+            dataKey="value"
+            stroke={lineColor}
+            strokeWidth={2.5}
+            fill="url(#pnlGrad)"
+            baseValue={windowStartBalance}
+            dot={stepDot}
+            activeDot={{
+              r: 5,
+              fill: "#f0d060",
+              stroke: "#000",
+              strokeWidth: 1.5,
+            }}
+            isAnimationActive={false}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
 function ContractValueHistogram({ trades }: { trades: Trade[] }) {
-  const [hoverBin, setHoverBin] = useState<number | null>(null);
-
   // Only settled, non-dry-run trades with a known price and outcome
   const settled = trades.filter(
     (t) =>
@@ -715,55 +591,9 @@ function ContractValueHistogram({ trades }: { trades: Trade[] }) {
     );
   }
 
-  const BIN_SIZE = 1; // cents per bucket
-  const MIN_PRICE = 85;
-  const MAX_PRICE = 100;
-  const numBins = (MAX_PRICE - MIN_PRICE) / BIN_SIZE; // 20 bins
-
-  // Count wins and losses per bin
-  const bins: { wins: number; losses: number }[] = Array.from(
-    { length: numBins },
-    () => ({ wins: 0, losses: 0 }),
+  const bins = priceBins(
+    settled.map((t) => ({ yes_price: t.yes_price, pnl_cents: t.pnl_cents! })),
   );
-
-  for (const t of settled) {
-    const binIdx = Math.min(
-      Math.floor((t.yes_price - MIN_PRICE) / BIN_SIZE),
-      numBins - 1,
-    );
-    if (binIdx < 0) continue;
-    if (t.pnl_cents! >= 0) {
-      bins[binIdx].wins++;
-    } else {
-      bins[binIdx].losses++;
-    }
-  }
-
-  const maxCount = Math.max(...bins.map((b) => b.wins + b.losses), 1);
-
-  const w = 800;
-  const h = 200;
-  const padLeft = 40;
-  const padRight = 12;
-  const padTop = 14;
-  const padBottom = 30;
-  const chartW = w - padLeft - padRight;
-  const chartH = h - padTop - padBottom;
-
-  const barGap = 2;
-  const barW = chartW / numBins - barGap;
-
-  const toBarH = (count: number) => (count / maxCount) * chartH;
-  const toX = (binIdx: number) =>
-    padLeft + binIdx * (chartW / numBins) + barGap / 2;
-
-  // Y-axis grid lines
-  const gridLines = [
-    Math.round(maxCount * 0.25),
-    Math.round(maxCount * 0.5),
-    Math.round(maxCount * 0.75),
-    maxCount,
-  ].filter((v, i, arr) => arr.indexOf(v) === i && v > 0);
 
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
@@ -771,215 +601,62 @@ function ContractValueHistogram({ trades }: { trades: Trade[] }) {
         <h2 className="text-sm text-amber-600 font-medium">
           Contract Value Distribution
         </h2>
-        <div className="flex items-center gap-4 text-xs text-zinc-500">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-green-500/70 inline-block" />
-            Wins ({settled.filter((t) => t.pnl_cents! >= 0).length})
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-red-500/70 inline-block" />
-            Losses ({settled.filter((t) => t.pnl_cents! < 0).length})
-          </span>
-        </div>
+        <WinLossLegend
+          wins={settled.filter((t) => t.pnl_cents! >= 0).length}
+          losses={settled.filter((t) => t.pnl_cents! < 0).length}
+        />
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="w-full"
-        style={{ display: "block", aspectRatio: `${w}/${h}` }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const svgX = ((e.clientX - rect.left) / rect.width) * w;
-          if (svgX < padLeft || svgX > w - padRight) {
-            setHoverBin(null);
-            return;
-          }
-          const binIdx = Math.floor(((svgX - padLeft) / chartW) * numBins);
-          setHoverBin(Math.min(Math.max(binIdx, 0), numBins - 1));
-        }}
-        onMouseLeave={() => setHoverBin(null)}
-      >
-        <defs>
-          <linearGradient id="histWinGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4ade80" stopOpacity="0.35" />
-          </linearGradient>
-          <linearGradient id="histLossGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f87171" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#f87171" stopOpacity="0.35" />
-          </linearGradient>
-        </defs>
-
-        {/* Y-axis grid lines */}
-        {gridLines.map((count) => {
-          const y = padTop + chartH - toBarH(count);
-          return (
-            <g key={count}>
-              <line
-                x1={padLeft}
-                y1={y}
-                x2={w - padRight}
-                y2={y}
-                stroke="#3f3f46"
-                strokeWidth="0.5"
-                strokeDasharray="3,3"
-              />
-              <text
-                x={padLeft - 4}
-                y={y + 4}
-                textAnchor="end"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {count}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Bars */}
-        {bins.map((bin, i) => {
-          const x = toX(i);
-          const winsH = toBarH(bin.wins);
-          const lossH = toBarH(bin.losses);
-          const baseY = padTop + chartH;
-          const isHovered = hoverBin === i;
-
-          return (
-            <g key={i} opacity={isHovered ? 1 : 0.85}>
-              {/* Losses bar (bottom) */}
-              {bin.losses > 0 && (
-                <rect
-                  x={x}
-                  y={baseY - lossH}
-                  width={barW}
-                  height={lossH}
-                  fill="url(#histLossGrad)"
-                  rx="1"
-                  stroke={isHovered ? "#f87171" : "none"}
-                  strokeWidth="0.5"
-                />
-              )}
-              {/* Wins bar (stacked on top of losses) */}
-              {bin.wins > 0 && (
-                <rect
-                  x={x}
-                  y={baseY - lossH - winsH}
-                  width={barW}
-                  height={winsH}
-                  fill="url(#histWinGrad)"
-                  rx="1"
-                  stroke={isHovered ? "#4ade80" : "none"}
-                  strokeWidth="0.5"
-                />
-              )}
-            </g>
-          );
-        })}
-
-        {/* X-axis labels centered under each bar */}
-        {Array.from({ length: numBins }, (_, i) => MIN_PRICE + i).map(
-          (val, i) => (
-            <text
-              key={val}
-              x={toX(i) + barW / 2}
-              y={h - 4}
-              textAnchor="middle"
-              fill="#78716c"
-              fontSize="9"
-              fontFamily="monospace"
-            >
-              {val}
-            </text>
-          ),
-        )}
-
-        {/* Hover indicator & tooltip */}
-        {hoverBin !== null &&
-          (() => {
-            const bin = bins[hoverBin];
-            const x = toX(hoverBin) + barW / 2;
-            const total = bin.wins + bin.losses;
-            const tooltipX = x < w / 2 ? x + 10 : x - 130;
-            const tooltipY = padTop;
-            const priceLabel = `${MIN_PRICE + hoverBin * BIN_SIZE}¢`;
-
-            return (
-              <>
-                <line
-                  x1={x}
-                  y1={padTop}
-                  x2={x}
-                  y2={padTop + chartH}
-                  stroke="#d4a017"
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
-                />
-                <rect
-                  x={tooltipX}
-                  y={tooltipY}
-                  width="120"
-                  height={total > 0 ? 56 : 36}
-                  rx="5"
-                  fill="#1c1917"
-                  stroke="#92400e"
-                  strokeWidth="0.5"
-                  opacity="0.95"
-                />
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 16}
-                  fill="#fbbf24"
-                  fontSize="11"
-                  fontWeight="bold"
-                  fontFamily="monospace"
-                >
-                  {priceLabel}
-                </text>
-                {total > 0 ? (
-                  <>
-                    <text
-                      x={tooltipX + 8}
-                      y={tooltipY + 32}
-                      fill="#4ade80"
-                      fontSize="10"
-                      fontFamily="monospace"
-                    >
-                      ✓ {bin.wins} win{bin.wins !== 1 ? "s" : ""}
-                    </text>
-                    <text
-                      x={tooltipX + 8}
-                      y={tooltipY + 46}
-                      fill="#f87171"
-                      fontSize="10"
-                      fontFamily="monospace"
-                    >
-                      ✗ {bin.losses} loss{bin.losses !== 1 ? "es" : ""}
-                    </text>
-                  </>
-                ) : (
-                  <text
-                    x={tooltipX + 8}
-                    y={tooltipY + 32}
-                    fill="#78716c"
-                    fontSize="10"
-                    fontFamily="monospace"
-                  >
-                    No trades
-                  </text>
-                )}
-              </>
-            );
-          })()}
-      </svg>
+      <ResponsiveContainer width="100%" aspect={4}>
+        <BarChart
+          data={bins}
+          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
+        >
+          <CartesianGrid
+            vertical={false}
+            stroke="#3f3f46"
+            strokeWidth={0.5}
+            strokeDasharray="3 3"
+          />
+          <XAxis
+            dataKey="price"
+            tick={CHART_TICK}
+            interval={0}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            allowDecimals={false}
+            width={36}
+            tick={CHART_TICK}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            content={<WinLossTooltip formatLabel={(p) => `${p}¢`} />}
+            cursor={CHART_CURSOR_FILL}
+          />
+          <Bar
+            dataKey="losses"
+            stackId="wl"
+            fill={LOSS_COLOR}
+            fillOpacity={0.6}
+            isAnimationActive={false}
+          />
+          <Bar
+            dataKey="wins"
+            stackId="wl"
+            fill={WIN_COLOR}
+            fillOpacity={0.6}
+            radius={[2, 2, 0, 0]}
+            isAnimationActive={false}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
 function PnlHistogram({ trades }: { trades: Trade[] }) {
-  const [hoverBin, setHoverBin] = useState<number | null>(null);
-
   const settled = trades.filter(
     (t) =>
       !t.dry_run &&
@@ -1001,71 +678,10 @@ function PnlHistogram({ trades }: { trades: Trade[] }) {
     );
   }
 
-  const BIN_SIZE = 1;
-  const MIN_PRICE = 85;
-  const MAX_PRICE = 100;
-  const numBins = (MAX_PRICE - MIN_PRICE) / BIN_SIZE;
-
-  // Sum pnl_cents per bin
-  const bins: { pnl: number }[] = Array.from({ length: numBins }, () => ({
-    pnl: 0,
-  }));
-  for (const t of settled) {
-    const binIdx = Math.min(
-      Math.floor((t.yes_price - MIN_PRICE) / BIN_SIZE),
-      numBins - 1,
-    );
-    if (binIdx < 0) continue;
-    bins[binIdx].pnl += t.pnl_cents!;
-  }
-
-  const pnlValues = bins.map((b) => b.pnl);
-  const maxPnl = Math.max(...pnlValues, 0);
-  const minPnl = Math.min(...pnlValues, 0);
-  const absMax = Math.max(Math.abs(maxPnl), Math.abs(minPnl), 1);
-  const totalPnl = pnlValues.reduce((a, b) => a + b, 0);
-
-  const w = 800;
-  const h = 200;
-  const padLeft = 52; // wider for "$" labels
-  const padRight = 12;
-  const padTop = 14;
-  const padBottom = 30;
-  const chartW = w - padLeft - padRight;
-  const chartH = h - padTop - padBottom;
-
-  const barGap = 2;
-  const barW = chartW / numBins - barGap;
-  const toX = (i: number) => padLeft + i * (chartW / numBins) + barGap / 2;
-
-  // Zero baseline — proportional to the range
-  const zeroFrac = Math.abs(minPnl) / (absMax * 2 || 1);
-  const zeroY =
-    padTop +
-    chartH -
-    (Math.abs(minPnl) / (absMax === 0 ? 1 : absMax)) * (chartH / 2);
-  // Simpler: zero is always in the middle when both sides are non-zero, else at edge
-  const posZone = maxPnl >= 0 ? (maxPnl / (maxPnl - minPnl || 1)) * chartH : 0;
-  const baseY = padTop + posZone; // y coordinate of the zero line
-
-  const toBarY = (pnl: number) => {
-    if (pnl >= 0) {
-      const frac = pnl / (absMax || 1);
-      return baseY - frac * posZone;
-    } else {
-      const negZone = chartH - posZone;
-      const frac = Math.abs(pnl) / (absMax || 1);
-      return baseY + frac * negZone;
-    }
-  };
-  const toBarH = (pnl: number) => Math.abs(toBarY(pnl) - baseY);
-
-  // Y-axis reference lines: 25/50/75/100% of absMax on both sides
-  const gridValues: number[] = [];
-  for (const frac of [0.5, 1.0]) {
-    const v = Math.round(absMax * frac);
-    if (v > 0) gridValues.push(v, -v);
-  }
+  const bins = pnlByPrice(
+    settled.map((t) => ({ yes_price: t.yes_price, pnl_cents: t.pnl_cents! })),
+  );
+  const totalPnl = settled.reduce((s, t) => s + t.pnl_cents!, 0);
 
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
@@ -1080,198 +696,59 @@ function PnlHistogram({ trades }: { trades: Trade[] }) {
           {cents(totalPnl)} total
         </span>
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="w-full"
-        style={{ display: "block", aspectRatio: `${w}/${h}` }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const svgX = ((e.clientX - rect.left) / rect.width) * w;
-          if (svgX < padLeft || svgX > w - padRight) {
-            setHoverBin(null);
-            return;
-          }
-          setHoverBin(
-            Math.min(
-              Math.max(Math.floor(((svgX - padLeft) / chartW) * numBins), 0),
-              numBins - 1,
-            ),
-          );
-        }}
-        onMouseLeave={() => setHoverBin(null)}
-      >
-        <defs>
-          <linearGradient id="pnlHistWinGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4ade80" stopOpacity="0.35" />
-          </linearGradient>
-          <linearGradient id="pnlHistLossGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f87171" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#f87171" stopOpacity="0.85" />
-          </linearGradient>
-        </defs>
-
-        {/* Y-axis grid lines */}
-        {gridValues.map((v) => {
-          const y = toBarY(v);
-          const label = `${v >= 0 ? "+" : ""}$${(v / 100).toFixed(2)}`;
-          return (
-            <g key={v}>
-              <line
-                x1={padLeft}
-                y1={y}
-                x2={w - padRight}
-                y2={y}
-                stroke="#3f3f46"
-                strokeWidth="0.5"
-                strokeDasharray="3,3"
-              />
-              <text
-                x={padLeft - 4}
-                y={y + 4}
-                textAnchor="end"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {label}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Zero baseline */}
-        <line
-          x1={padLeft}
-          y1={baseY}
-          x2={w - padRight}
-          y2={baseY}
-          stroke="#78716c"
-          strokeWidth="1"
-        />
-        <text
-          x={padLeft - 4}
-          y={baseY + 4}
-          textAnchor="end"
-          fill="#78716c"
-          fontSize="9"
-          fontFamily="monospace"
+      <ResponsiveContainer width="100%" aspect={4}>
+        <BarChart
+          data={bins}
+          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
         >
-          $0
-        </text>
-
-        {/* Bars */}
-        {bins.map((bin, i) => {
-          const x = toX(i);
-          const isPos = bin.pnl >= 0;
-          const barH = toBarH(bin.pnl);
-          const barY = isPos ? baseY - barH : baseY;
-          const isHovered = hoverBin === i;
-          if (barH < 0.5) return null;
-          return (
-            <rect
-              key={i}
-              x={x}
-              y={barY}
-              width={barW}
-              height={barH}
-              fill={isPos ? "url(#pnlHistWinGrad)" : "url(#pnlHistLossGrad)"}
-              rx="1"
-              opacity={isHovered ? 1 : 0.85}
-              stroke={isHovered ? (isPos ? "#4ade80" : "#f87171") : "none"}
-              strokeWidth="0.5"
-            />
-          );
-        })}
-
-        {/* X-axis labels centered under each bar */}
-        {Array.from({ length: numBins }, (_, i) => MIN_PRICE + i).map(
-          (val, i) => (
-            <text
-              key={val}
-              x={toX(i) + barW / 2}
-              y={h - 4}
-              textAnchor="middle"
-              fill="#78716c"
-              fontSize="9"
-              fontFamily="monospace"
-            >
-              {val}
-            </text>
-          ),
-        )}
-
-        {/* Hover crosshair & tooltip */}
-        {hoverBin !== null &&
-          (() => {
-            const bin = bins[hoverBin];
-            const x = toX(hoverBin) + barW / 2;
-            const tooltipX = x < w / 2 ? x + 10 : x - 130;
-            const tooltipY = padTop;
-            const priceLabel = `${MIN_PRICE + hoverBin}¢`;
-            const pnlLabel = `${bin.pnl >= 0 ? "+" : ""}${cents(bin.pnl)}`;
-            const pnlColor = bin.pnl >= 0 ? "#4ade80" : "#f87171";
-
-            return (
-              <>
-                <line
-                  x1={x}
-                  y1={padTop}
-                  x2={x}
-                  y2={padTop + chartH}
-                  stroke="#d4a017"
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
-                />
-                <rect
-                  x={tooltipX}
-                  y={tooltipY}
-                  width="120"
-                  height="46"
-                  rx="5"
-                  fill="#1c1917"
-                  stroke="#92400e"
-                  strokeWidth="0.5"
-                  opacity="0.95"
-                />
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 16}
-                  fill="#fbbf24"
-                  fontSize="11"
-                  fontWeight="bold"
-                  fontFamily="monospace"
-                >
-                  {priceLabel}
-                </text>
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 32}
-                  fill={pnlColor}
-                  fontSize="10"
-                  fontFamily="monospace"
-                >
-                  {bin.pnl === 0 ? "No P&L" : pnlLabel}
-                </text>
-              </>
-            );
-          })()}
-      </svg>
+          <CartesianGrid
+            vertical={false}
+            stroke="#3f3f46"
+            strokeWidth={0.5}
+            strokeDasharray="3 3"
+          />
+          <XAxis
+            dataKey="price"
+            tick={CHART_TICK}
+            interval={0}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            width={56}
+            tick={CHART_TICK}
+            tickFormatter={(v: number) =>
+              `${v >= 0 ? "+" : ""}$${(v / 100).toFixed(2)}`
+            }
+            axisLine={false}
+            tickLine={false}
+            domain={["auto", "auto"]}
+          />
+          <ReferenceLine y={0} stroke="#78716c" />
+          <Tooltip
+            content={<PnlBarTooltip formatLabel={(p) => `${p}¢`} />}
+            cursor={CHART_CURSOR_FILL}
+          />
+          <Bar
+            dataKey="pnl"
+            fillOpacity={0.7}
+            shape={pnlBarShape}
+            isAnimationActive={false}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
 function TimeHistogram({ trades }: { trades: Trade[] }) {
-  const [hoverBin, setHoverBin] = useState<number | null>(null);
-
-  // Only countdown-sport settled trades with a known clock reading ≤ 15 min
+  // Only countdown-sport settled trades with a known clock reading ≤ 10 min
   const settled = trades.filter(
     (t) =>
       !t.dry_run &&
       t.pnl_cents !== null &&
       t.espn_clock_seconds !== null &&
-      t.espn_clock_seconds <= 600 && // ≤ 10 min
+      t.espn_clock_seconds <= 600 &&
       t.espn_clock_seconds >= 0 &&
       (t.status === "settled_win" || t.status === "settled_loss"),
   );
@@ -1289,40 +766,11 @@ function TimeHistogram({ trades }: { trades: Trade[] }) {
     );
   }
 
-  // Bins: 0 = [14:00–15:00), 1 = [13:00–14:00), ..., 14 = [0:00–1:00)
-  // i.e. bin i represents (14 - i) minutes remaining → so bin 0 = 15 min left, bin 14 = 0 min left
-  // We store as minutes_remaining = floor(seconds / 60), then bin = 9 - minutes_remaining
-  const NUM_BINS = 10; // 0–9 minutes
-
-  const bins: { wins: number; losses: number }[] = Array.from(
-    { length: NUM_BINS },
-    () => ({ wins: 0, losses: 0 }),
-  );
-
-  for (const t of settled) {
-    const minsRemaining = Math.min(Math.floor(t.espn_clock_seconds! / 60), 9);
-    const binIdx = 9 - minsRemaining; // 0 = 10 min left → bin 0 on left; 9 = 0 min → bin 9 on right
-    if (t.pnl_cents! >= 0) bins[binIdx].wins++;
-    else bins[binIdx].losses++;
-  }
-
-  const maxCount = Math.max(...bins.map((b) => b.wins + b.losses), 1);
-
-  const w = 800;
-  const h = 200;
-  const padLeft = 40;
-  const padRight = 12;
-  const padTop = 14;
-  const padBottom = 30;
-  const chartW = w - padLeft - padRight;
-  const chartH = h - padTop - padBottom;
-  const barGap = 4;
-  const barW = chartW / NUM_BINS - barGap;
-  const toX = (i: number) => padLeft + i * (chartW / NUM_BINS) + barGap / 2;
-  const toBarH = (count: number) => (count / maxCount) * chartH;
-
-  const gridLines = [Math.round(maxCount * 0.5), maxCount].filter(
-    (v, i, arr) => arr.indexOf(v) === i && v > 0,
+  const bins = timeBins(
+    settled.map((t) => ({
+      clock_seconds: t.espn_clock_seconds!,
+      pnl_cents: t.pnl_cents!,
+    })),
   );
 
   return (
@@ -1331,216 +779,63 @@ function TimeHistogram({ trades }: { trades: Trade[] }) {
         <h2 className="text-sm text-amber-600 font-medium">
           Trade Distribution by Time Remaining
         </h2>
-        <div className="flex items-center gap-4 text-xs text-zinc-500">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-green-500/70 inline-block" />
-            Wins ({settled.filter((t) => t.pnl_cents! >= 0).length})
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-red-500/70 inline-block" />
-            Losses ({settled.filter((t) => t.pnl_cents! < 0).length})
-          </span>
-        </div>
+        <WinLossLegend
+          wins={settled.filter((t) => t.pnl_cents! >= 0).length}
+          losses={settled.filter((t) => t.pnl_cents! < 0).length}
+        />
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="w-full"
-        style={{ display: "block", aspectRatio: `${w}/${h}` }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const svgX = ((e.clientX - rect.left) / rect.width) * w;
-          if (svgX < padLeft || svgX > w - padRight) {
-            setHoverBin(null);
-            return;
-          }
-          setHoverBin(
-            Math.min(
-              Math.max(Math.floor(((svgX - padLeft) / chartW) * NUM_BINS), 0),
-              NUM_BINS - 1,
-            ),
-          );
-        }}
-        onMouseLeave={() => setHoverBin(null)}
-      >
-        <defs>
-          <linearGradient id="timeWinGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4ade80" stopOpacity="0.35" />
-          </linearGradient>
-          <linearGradient id="timeLossGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f87171" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#f87171" stopOpacity="0.35" />
-          </linearGradient>
-        </defs>
-
-        {gridLines.map((count) => {
-          const y = padTop + chartH - toBarH(count);
-          return (
-            <g key={count}>
-              <line
-                x1={padLeft}
-                y1={y}
-                x2={w - padRight}
-                y2={y}
-                stroke="#3f3f46"
-                strokeWidth="0.5"
-                strokeDasharray="3,3"
-              />
-              <text
-                x={padLeft - 4}
-                y={y + 4}
-                textAnchor="end"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {count}
-              </text>
-            </g>
-          );
-        })}
-
-        {bins.map((bin, i) => {
-          const x = toX(i);
-          const winsH = toBarH(bin.wins);
-          const lossH = toBarH(bin.losses);
-          const baseY = padTop + chartH;
-          const isHovered = hoverBin === i;
-          return (
-            <g key={i} opacity={isHovered ? 1 : 0.85}>
-              {bin.losses > 0 && (
-                <rect
-                  x={x}
-                  y={baseY - lossH}
-                  width={barW}
-                  height={lossH}
-                  fill="url(#timeLossGrad)"
-                  rx="1"
-                  stroke={isHovered ? "#f87171" : "none"}
-                  strokeWidth="0.5"
-                />
-              )}
-              {bin.wins > 0 && (
-                <rect
-                  x={x}
-                  y={baseY - lossH - winsH}
-                  width={barW}
-                  height={winsH}
-                  fill="url(#timeWinGrad)"
-                  rx="1"
-                  stroke={isHovered ? "#4ade80" : "none"}
-                  strokeWidth="0.5"
-                />
-              )}
-            </g>
-          );
-        })}
-
-        {/* X-axis: left=10 min, right=0 min */}
-        {Array.from({ length: NUM_BINS }, (_, i) => 10 - i).map(
-          (minsLabel, i) => {
-            const x = toX(i) + barW / 2;
-            return (
-              <text
-                key={i}
-                x={x}
-                y={h - 4}
-                textAnchor="middle"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {minsLabel}m
-              </text>
-            );
-          },
-        )}
-
-        {hoverBin !== null &&
-          (() => {
-            const bin = bins[hoverBin];
-            const x = toX(hoverBin) + barW / 2;
-            const minsRemaining = 9 - hoverBin; // bin 0 = 10 min left, bin 9 = 0 min
-            const total = bin.wins + bin.losses;
-            const tooltipX = x < w / 2 ? x + 10 : x - 130;
-            const tooltipY = padTop;
-            const timeLabel = `~${minsRemaining + 1}m left`;
-            return (
-              <>
-                <line
-                  x1={x}
-                  y1={padTop}
-                  x2={x}
-                  y2={padTop + chartH}
-                  stroke="#d4a017"
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
-                />
-                <rect
-                  x={tooltipX}
-                  y={tooltipY}
-                  width="120"
-                  height={total > 0 ? 56 : 36}
-                  rx="5"
-                  fill="#1c1917"
-                  stroke="#92400e"
-                  strokeWidth="0.5"
-                  opacity="0.95"
-                />
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 16}
-                  fill="#fbbf24"
-                  fontSize="11"
-                  fontWeight="bold"
-                  fontFamily="monospace"
-                >
-                  {timeLabel}
-                </text>
-                {total > 0 ? (
-                  <>
-                    <text
-                      x={tooltipX + 8}
-                      y={tooltipY + 32}
-                      fill="#4ade80"
-                      fontSize="10"
-                      fontFamily="monospace"
-                    >
-                      ✓ {bin.wins} win{bin.wins !== 1 ? "s" : ""}
-                    </text>
-                    <text
-                      x={tooltipX + 8}
-                      y={tooltipY + 46}
-                      fill="#f87171"
-                      fontSize="10"
-                      fontFamily="monospace"
-                    >
-                      ✗ {bin.losses} loss{bin.losses !== 1 ? "es" : ""}
-                    </text>
-                  </>
-                ) : (
-                  <text
-                    x={tooltipX + 8}
-                    y={tooltipY + 32}
-                    fill="#78716c"
-                    fontSize="10"
-                    fontFamily="monospace"
-                  >
-                    No trades
-                  </text>
-                )}
-              </>
-            );
-          })()}
-      </svg>
+      <ResponsiveContainer width="100%" aspect={4}>
+        <BarChart
+          data={bins}
+          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
+        >
+          <CartesianGrid
+            vertical={false}
+            stroke="#3f3f46"
+            strokeWidth={0.5}
+            strokeDasharray="3 3"
+          />
+          <XAxis
+            dataKey="minutesLeft"
+            tickFormatter={(m: number) => `${m}m`}
+            tick={CHART_TICK}
+            interval={0}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            allowDecimals={false}
+            width={36}
+            tick={CHART_TICK}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            content={<WinLossTooltip formatLabel={(m) => `~${m}m left`} />}
+            cursor={CHART_CURSOR_FILL}
+          />
+          <Bar
+            dataKey="losses"
+            stackId="wl"
+            fill={LOSS_COLOR}
+            fillOpacity={0.6}
+            isAnimationActive={false}
+          />
+          <Bar
+            dataKey="wins"
+            stackId="wl"
+            fill={WIN_COLOR}
+            fillOpacity={0.6}
+            radius={[2, 2, 0, 0]}
+            isAnimationActive={false}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
 function TimePnlHistogram({ trades }: { trades: Trade[] }) {
-  const [hoverBin, setHoverBin] = useState<number | null>(null);
-
   const settled = trades.filter(
     (t) =>
       !t.dry_run &&
@@ -1564,48 +859,13 @@ function TimePnlHistogram({ trades }: { trades: Trade[] }) {
     );
   }
 
-  const NUM_BINS = 10;
-  const bins: { pnl: number }[] = Array.from({ length: NUM_BINS }, () => ({
-    pnl: 0,
-  }));
-  for (const t of settled) {
-    const minsRemaining = Math.min(Math.floor(t.espn_clock_seconds! / 60), 9);
-    const binIdx = 9 - minsRemaining;
-    bins[binIdx].pnl += t.pnl_cents!;
-  }
-
-  const pnlValues = bins.map((b) => b.pnl);
-  const maxPnl = Math.max(...pnlValues, 0);
-  const minPnl = Math.min(...pnlValues, 0);
-  const absMax = Math.max(Math.abs(maxPnl), Math.abs(minPnl), 1);
-  const totalPnl = pnlValues.reduce((a, b) => a + b, 0);
-
-  const w = 800;
-  const h = 200;
-  const padLeft = 52;
-  const padRight = 12;
-  const padTop = 14;
-  const padBottom = 30;
-  const chartW = w - padLeft - padRight;
-  const chartH = h - padTop - padBottom;
-  const barGap = 4;
-  const barW = chartW / NUM_BINS - barGap;
-  const toX = (i: number) => padLeft + i * (chartW / NUM_BINS) + barGap / 2;
-
-  const posZone = maxPnl >= 0 ? (maxPnl / (maxPnl - minPnl || 1)) * chartH : 0;
-  const baseY = padTop + posZone;
-
-  const toBarY = (pnl: number) => {
-    if (pnl >= 0) return baseY - (pnl / (absMax || 1)) * posZone;
-    return baseY + (Math.abs(pnl) / (absMax || 1)) * (chartH - posZone);
-  };
-  const toBarH = (pnl: number) => Math.abs(toBarY(pnl) - baseY);
-
-  const gridValues: number[] = [];
-  for (const frac of [0.5, 1.0]) {
-    const v = Math.round(absMax * frac);
-    if (v > 0) gridValues.push(v, -v);
-  }
+  const bins = pnlByTime(
+    settled.map((t) => ({
+      clock_seconds: t.espn_clock_seconds!,
+      pnl_cents: t.pnl_cents!,
+    })),
+  );
+  const totalPnl = settled.reduce((s, t) => s + t.pnl_cents!, 0);
 
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
@@ -1624,180 +884,48 @@ function TimePnlHistogram({ trades }: { trades: Trade[] }) {
           {cents(totalPnl)} total
         </span>
       </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="w-full"
-        style={{ display: "block", aspectRatio: `${w}/${h}` }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const svgX = ((e.clientX - rect.left) / rect.width) * w;
-          if (svgX < padLeft || svgX > w - padRight) {
-            setHoverBin(null);
-            return;
-          }
-          setHoverBin(
-            Math.min(
-              Math.max(Math.floor(((svgX - padLeft) / chartW) * NUM_BINS), 0),
-              NUM_BINS - 1,
-            ),
-          );
-        }}
-        onMouseLeave={() => setHoverBin(null)}
-      >
-        <defs>
-          <linearGradient id="timePnlWinGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4ade80" stopOpacity="0.35" />
-          </linearGradient>
-          <linearGradient id="timePnlLossGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f87171" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#f87171" stopOpacity="0.85" />
-          </linearGradient>
-        </defs>
-
-        {gridValues.map((v) => {
-          const y = toBarY(v);
-          return (
-            <g key={v}>
-              <line
-                x1={padLeft}
-                y1={y}
-                x2={w - padRight}
-                y2={y}
-                stroke="#3f3f46"
-                strokeWidth="0.5"
-                strokeDasharray="3,3"
-              />
-              <text
-                x={padLeft - 4}
-                y={y + 4}
-                textAnchor="end"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {v >= 0 ? "+" : ""}${(v / 100).toFixed(2)}
-              </text>
-            </g>
-          );
-        })}
-
-        <line
-          x1={padLeft}
-          y1={baseY}
-          x2={w - padRight}
-          y2={baseY}
-          stroke="#78716c"
-          strokeWidth="1"
-        />
-        <text
-          x={padLeft - 4}
-          y={baseY + 4}
-          textAnchor="end"
-          fill="#78716c"
-          fontSize="9"
-          fontFamily="monospace"
+      <ResponsiveContainer width="100%" aspect={4}>
+        <BarChart
+          data={bins}
+          margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
         >
-          $0
-        </text>
-
-        {bins.map((bin, i) => {
-          const x = toX(i);
-          const isPos = bin.pnl >= 0;
-          const barH = toBarH(bin.pnl);
-          const barY = isPos ? baseY - barH : baseY;
-          const isHovered = hoverBin === i;
-          if (barH < 0.5) return null;
-          return (
-            <rect
-              key={i}
-              x={x}
-              y={barY}
-              width={barW}
-              height={barH}
-              fill={isPos ? "url(#timePnlWinGrad)" : "url(#timePnlLossGrad)"}
-              rx="1"
-              opacity={isHovered ? 1 : 0.85}
-              stroke={isHovered ? (isPos ? "#4ade80" : "#f87171") : "none"}
-              strokeWidth="0.5"
-            />
-          );
-        })}
-
-        {Array.from({ length: NUM_BINS }, (_, i) => 10 - i).map(
-          (minsLabel, i) => {
-            const x = toX(i) + barW / 2;
-            return (
-              <text
-                key={i}
-                x={x}
-                y={h - 4}
-                textAnchor="middle"
-                fill="#78716c"
-                fontSize="9"
-                fontFamily="monospace"
-              >
-                {minsLabel}m
-              </text>
-            );
-          },
-        )}
-
-        {hoverBin !== null &&
-          (() => {
-            const bin = bins[hoverBin];
-            const x = toX(hoverBin) + barW / 2;
-            const minsRemaining = 9 - hoverBin;
-            const tooltipX = x < w / 2 ? x + 10 : x - 130;
-            const tooltipY = padTop;
-            const pnlLabel = `${bin.pnl >= 0 ? "+" : ""}${cents(bin.pnl)}`;
-            const pnlColor = bin.pnl >= 0 ? "#4ade80" : "#f87171";
-            return (
-              <>
-                <line
-                  x1={x}
-                  y1={padTop}
-                  x2={x}
-                  y2={padTop + chartH}
-                  stroke="#d4a017"
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.5"
-                />
-                <rect
-                  x={tooltipX}
-                  y={tooltipY}
-                  width="120"
-                  height="46"
-                  rx="5"
-                  fill="#1c1917"
-                  stroke="#92400e"
-                  strokeWidth="0.5"
-                  opacity="0.95"
-                />
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 16}
-                  fill="#fbbf24"
-                  fontSize="11"
-                  fontWeight="bold"
-                  fontFamily="monospace"
-                >
-                  ~{minsRemaining + 1}m left
-                </text>
-                <text
-                  x={tooltipX + 8}
-                  y={tooltipY + 32}
-                  fill={pnlColor}
-                  fontSize="10"
-                  fontFamily="monospace"
-                >
-                  {bin.pnl === 0 ? "No P&L" : pnlLabel}
-                </text>
-              </>
-            );
-          })()}
-      </svg>
+          <CartesianGrid
+            vertical={false}
+            stroke="#3f3f46"
+            strokeWidth={0.5}
+            strokeDasharray="3 3"
+          />
+          <XAxis
+            dataKey="minutesLeft"
+            tickFormatter={(m: number) => `${m}m`}
+            tick={CHART_TICK}
+            interval={0}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            width={56}
+            tick={CHART_TICK}
+            tickFormatter={(v: number) =>
+              `${v >= 0 ? "+" : ""}$${(v / 100).toFixed(2)}`
+            }
+            axisLine={false}
+            tickLine={false}
+            domain={["auto", "auto"]}
+          />
+          <ReferenceLine y={0} stroke="#78716c" />
+          <Tooltip
+            content={<PnlBarTooltip formatLabel={(m) => `~${m}m left`} />}
+            cursor={CHART_CURSOR_FILL}
+          />
+          <Bar
+            dataKey="pnl"
+            fillOpacity={0.7}
+            shape={pnlBarShape}
+            isAnimationActive={false}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -2161,7 +1289,6 @@ export default function Dashboard() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [allTrades, setAllTrades] = useState<Trade[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-  const [balanceHistory, _setBalanceHistory] = useState<BalanceSnapshot[]>([]); // unused, kept for type compat
   const [sportStats, setSportStats] = useState<Record<
     string,
     { played: number; wins: number; pnl: number }
