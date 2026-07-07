@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import and_, case, desc, func, or_
+from sqlalchemy import case, desc, func
 
 from predictions import backtest as backtest_mod
 from predictions.backtest import BacktestRequest, BacktestResponse
@@ -19,6 +19,7 @@ from predictions.db import (
     Opportunity,
     Scan,
     Trade,
+    countable_trades,
     get_all_config,
     get_config_int,
     get_session,
@@ -432,18 +433,11 @@ def get_strategy_analytics(strategy: str):
     """Per-strategy analytics for the dashboard /analytics page.
 
     DASH-03 / D-04: returns stat aggregates, full trade log (newest first),
-    and a per-trade-step running P&L curve over settled trades. Composite
-    filter (Phase 03 D-16 symmetry) excludes legacy process-level dry-run
-    rows even though strategy_name == :name already filters them — keeps
-    this query in lockstep with check_settlements if the schema ever evolves.
+    and a per-trade-step running P&L curve over settled trades.
     """
     session = get_session()
 
-    # Composite filter — D-04 + Phase 03 D-16 symmetry
-    strategy_filter = (Trade.strategy_name == strategy) & or_(
-        Trade.dry_run == False,
-        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
-    )
+    strategy_filter = (Trade.strategy_name == strategy) & countable_trades()
 
     total = session.query(Trade).filter(strategy_filter).count()
     wins = session.query(Trade).filter(strategy_filter, Trade.status == "settled_win").count()
@@ -537,12 +531,7 @@ def get_strategies_summary():
     """
     session = get_session()
 
-    # Composite filter (Phase 03 D-16 symmetry). NULL strategy_name is
-    # excluded by isnot(None); the dry_run clause is documentation.
-    filter_expr = Trade.strategy_name.isnot(None) & or_(
-        Trade.dry_run == False,
-        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
-    )
+    filter_expr = Trade.strategy_name.isnot(None) & countable_trades()
 
     rows = (
         session.query(

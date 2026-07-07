@@ -293,3 +293,82 @@ async def test_settlement_filter_symmetry(isolated_db):
     assert strat_after_rest == strat_after_ws == "settled_win"
     assert leg_after_rest == leg_after_ws == "dry_run"  # unchanged
     assert done_after_rest == done_after_ws == "settled_win"  # already settled, unchanged
+
+
+def test_settle_trade_win():
+    """settle_trade: win pays potential_profit minus fee, stamps settled_at."""
+    from predictions.scanner import settle_trade
+
+    trade = Trade(
+        ticker="KX-W",
+        side="yes",
+        count=10,
+        yes_price=95,
+        cost_cents=950,
+        potential_profit_cents=50,
+        fee_cents=7,
+        status="placed",
+        dry_run=False,
+    )
+    settle_trade(trade, "yes")
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 43  # potential_profit_cents - fee = 50 - 7
+    assert trade.settled_at is not None
+
+
+def test_settle_trade_loss():
+    """settle_trade: loss costs cost_cents plus fee."""
+    from predictions.scanner import settle_trade
+
+    trade = Trade(
+        ticker="KX-L",
+        side="yes",
+        count=10,
+        yes_price=95,
+        cost_cents=950,
+        potential_profit_cents=50,
+        fee_cents=7,
+        status="placed",
+        dry_run=False,
+    )
+    settle_trade(trade, "no")
+    assert trade.status == "settled_loss"
+    assert trade.pnl_cents == -957  # -cost_cents - fee = -950 - 7
+    assert trade.settled_at is not None
+
+
+def test_settle_trade_null_fee_counts_as_zero():
+    """settle_trade: NULL fee_cents (strategy dry-runs) means zero fee."""
+    from predictions.scanner import settle_trade
+
+    trade = Trade(
+        ticker="KX-NF",
+        side="yes",
+        count=5,
+        yes_price=95,
+        cost_cents=475,
+        potential_profit_cents=25,
+        fee_cents=None,
+        status="dry_run",
+        dry_run=True,
+        strategy_name="s1",
+    )
+    settle_trade(trade, "yes")
+    assert trade.status == "settled_win"
+    assert trade.pnl_cents == 25
+
+
+def test_countable_trades_predicate(isolated_db):
+    """countable_trades: live trades and strategy dry-runs count; legacy
+    process-level dry-runs (dry_run=True, strategy_name NULL) never do."""
+    from predictions.db import countable_trades
+
+    session = db_module.get_session()
+    session.add(Trade(ticker="KX-REAL", status="placed", dry_run=False, strategy_name=None))
+    session.add(Trade(ticker="KX-STRAT", status="dry_run", dry_run=True, strategy_name="s1"))
+    session.add(Trade(ticker="KX-LEG", status="dry_run", dry_run=True, strategy_name=None))
+    session.commit()
+
+    tickers = {t.ticker for t in session.query(Trade).filter(countable_trades()).all()}
+    session.close()
+    assert tickers == {"KX-REAL", "KX-STRAT"}

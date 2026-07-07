@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_engine
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, and_, create_engine, or_
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, CONFIG_LEAD_DEFAULTS
@@ -93,6 +93,16 @@ class Trade(Base):
     # process-level dry-runs (DRY_RUN env). Set to a strategy.name
     # string for dry-run strategy fires (D-13).
     strategy_name = Column(String, nullable=True, index=True)
+
+
+def countable_trades():
+    """SQLAlchemy filter for trades that count: live trades and strategy
+    dry-runs. Legacy process-level dry-runs (dry_run=True, strategy_name
+    NULL) never count (D-16)."""
+    return or_(
+        Trade.dry_run == False,
+        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
+    )
 
 
 class BalanceSnapshot(Base):
