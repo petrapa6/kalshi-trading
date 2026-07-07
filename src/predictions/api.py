@@ -21,7 +21,6 @@ from predictions.db import (
     Trade,
     countable_trades,
     get_all_config,
-    get_config_int,
     get_final_seconds_thresholds,
     get_session,
     init_db,
@@ -35,6 +34,7 @@ from predictions.espn import (
 from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
 from predictions.sports import (
     KALSHI_TO_ESPN,
+    SPORT_BY_PATH,
     SPORT_CLOCK_DIR,
     SPORT_DISPLAY_NAMES,
     SPORT_FINAL_PERIOD,
@@ -870,12 +870,13 @@ async def _get_live_games() -> list[dict]:
     )
 
     thresholds = get_final_seconds_thresholds()
+    cfg = get_all_config()
     for sport_path, _primary_series, games in espn_results:
+        min_lead = int(cfg.get(f"lead:{sport_path}") or "0")
         for g in games:
             if g.state != "in":
                 continue
 
-            min_lead = get_config_int(f"lead:{sport_path}")
             meets_score_lead = g.score_diff >= min_lead
             in_final_minutes = is_in_final_minutes(g, thresholds)
             is_target = in_final_minutes and meets_score_lead
@@ -1000,9 +1001,9 @@ def get_config_endpoint():
     sports = []
     for sport_path, kalshi_series in sorted([(v, k) for k, v in KALSHI_TO_ESPN.items()]):
         clock_dir = SPORT_CLOCK_DIR.get(sport_path, "down")
-        final_secs = int(cfg.get(f"final_seconds:{sport_path}", "0"))
-        if not final_secs:
-            final_secs = 4500 if clock_dir == "up" else 300
+        final_secs = int(cfg.get(f"final_seconds:{sport_path}", "0")) or (
+            SPORT_BY_PATH[sport_path].default_final_seconds or 0
+        )
         lead = int(cfg.get(f"lead:{sport_path}", "0"))
         stretch_lead = max(1, lead - (lead * 4 // 10))
 
