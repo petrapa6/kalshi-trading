@@ -95,7 +95,7 @@ A trade written by a strategy fire. Simulation-only by construction — never re
 _Avoid_: paper trade, what-if trade
 
 **Process dry-run**:
-A trade produced by the process-level `DRY_RUN` mode rather than a strategy. Still written while `DRY_RUN` is on; never settled, excluded from stats — diagnostics only.
+A trade produced by the process-level `DRY_RUN` mode rather than a strategy. Still written while `DRY_RUN` is on; settles like a live trade (ADR-0001) but stays excluded from strategy analytics.
 _Avoid_: legacy dry-run (rows are still being produced)
 
 **Position**:
