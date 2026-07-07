@@ -8,8 +8,9 @@
         "build": "next build",
         "start": "next start",
         "lint": "oxlint",
-        "fmt": "oxfmt --write .",
-        "fmt:check": "oxfmt --check ."
+        "fmt": "oxfmt .",
+        "fmt:check": "oxfmt --check .",
+        "test": "vitest run"
     },
     "dependencies": {
         "next": "16.1.6",
@@ -27,6 +28,7 @@
         "oxfmt": "^0.7",
         "oxlint": "^0.16",
         "tailwindcss": "^4",
-        "typescript": "^5"
+        "typescript": "^5",
+        "vitest": "^4.1.10"
     }
 }
