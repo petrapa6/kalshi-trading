@@ -2,7 +2,7 @@
 
 Automated scanner that watches live sports games across multiple leagues, cross-references ESPN scores with Kalshi YES contract prices, and buys YES at 88–99¢ on games that are already effectively decided. Settled contracts pay $1; the edge comes from Kalshi's market lag behind live game state.
 
-**Disclaimer.** This software is provided as-is. Prediction markets involve real financial risk and regulatory constraints that vary by jurisdiction. Run with `DRY_RUN=true` first, review every trade placed, and do not deploy with real funds unless you understand the strategy, the risks, and your local regulations.
+**Disclaimer.** This software is provided as-is. Prediction markets involve real financial risk and regulatory constraints that vary by jurisdiction. Run with `DRY_RUN=true` first (see [How to dry-run](#how-to-dry-run)), review every trade placed, and do not deploy with real funds unless you understand the strategy, the risks, and your local regulations.
 
 ---
 
@@ -118,6 +118,79 @@ Scanner tuning (min YES price, bet percentage, per-sport score leads, etc.) live
 **Per-sport minimum score lead** — keys like `lead:basketball/nba`, `lead:hockey/nhl`. Current defaults live in `db.py`; the NBA/NCAAMB defaults are `12`, NFL/NCAAFB `10`, MLB `3`, NHL/soccer `2`, UFC `0`.
 
 **Per-sport end-of-game timing** — keys like `final_seconds:basketball/nba` (countdown sports: clock ≤ value) or `final_seconds:soccer/eng.1` (count-up sports: clock ≥ value). See `db.py` for defaults.
+
+---
+
+## How to dry-run
+
+Dry-run mode runs the **full live pipeline** — ESPN polling, Kalshi market
+discovery, WebSocket price ticks, balance reads, and the complete bet-decision
+logic — but skips the final order placement. Instead of sending an order to
+Kalshi, the scanner writes the would-be trade to SQLite with status
+`dry_run` and logs `[DRY RUN] Order not placed`.
+
+Dry-run is controlled by the `DRY_RUN` environment variable. It defaults to
+`true` everywhere except production (`sst.config.ts` sets `DRY_RUN=false` on
+the deployed ECS service; `sst dev` keeps it `true`).
+
+> **Note:** dry-run still requires real Kalshi API credentials. Market
+> discovery, prices, and the balance snapshot are all live reads — only
+> order placement is suppressed. There is no fully-offline mode.
+
+### 1. Configure
+
+```bash
+cp .env.example .env   # if you haven't already (install.sh does this)
+```
+
+Edit `.env` and set at minimum:
+
+```bash
+KALSHI_API_KEY=your-key-id
+KALSHI_PRIVATE_KEY_PATH=./secrets/kalshi.pem   # or inline KALSHI_PRIVATE_KEY
+DRY_RUN=true                                    # already the default
+```
+
+### 2. Run
+
+```bash
+pnpm dev:api
+```
+
+Startup logs confirm the mode: `Starting scanner: … dry_run=True`.
+
+Dry-run only produces trades while games are live **and** near their end
+(high YES price + big score lead). Run it during an active game window for
+NBA/NFL/etc., otherwise expect the scanner to idle — that's normal.
+
+### 3. Inspect results
+
+Any of:
+
+```bash
+pnpm cli trades                 # recent trades — dry-run rows show status "dry_run"
+pnpm cli stats                  # includes a dry_run_trades count
+sqlite3 predictions.db "SELECT ticker, count, yes_price, cost_cents, placed_at
+                        FROM trades WHERE status='dry_run' ORDER BY id DESC LIMIT 20;"
+```
+
+Or open the dashboard at http://localhost:3777 (`pnpm dev:dashboard` in a
+second terminal).
+
+Dry-run trades are excluded from real P&L stats (`dry_run=1` in the DB), so
+they never pollute live accounting.
+
+### Going live
+
+Set `DRY_RUN=false` in `.env` and restart. Two further locks apply on top of
+`DRY_RUN`:
+
+- the `trading_paused` runtime config key (set via `pnpm cli config set
+  trading_paused true`) stops real order placement without a restart;
+- `max_positions` caps concurrent exposure.
+
+The [Home Assistant add-on](#run-as-a-home-assistant-add-on-dry-run-only)
+hardcodes `DRY_RUN=true` in `run.sh` and cannot go live.
 
 ---
 
