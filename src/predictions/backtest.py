@@ -1,7 +1,5 @@
 """Soccer backtest: simulate trigger-based trading strategies on historical matches."""
 
-import re
-import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
@@ -11,6 +9,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from predictions import soccer_cache as _soccer_cache
 from predictions.soccer_cache import SoccerGoal, ensure_matches_cached
+from predictions.teams import canonical_team, canonicalize_title, market_mentions_both_teams
 
 LeagueCode = Literal["PL", "PD", "BL1"]
 
@@ -128,126 +127,6 @@ def simulate_match(match, req: BacktestRequest) -> Trigger | None:
     return None
 
 
-# Canonical team-name aliases. Each entry maps an alias to its canonical
-# display name. Lookup is case-insensitive after _normalize_team. This is
-# the systematic-correction surface — grow lazily as Kalshi/API-Football
-# mismatches are observed.
-_TEAM_ALIASES: dict[str, str] = {
-    # Premier League
-    "man utd": "manchester united",
-    "man united": "manchester united",
-    "manchester utd": "manchester united",
-    "man city": "manchester city",
-    "spurs": "tottenham hotspur",
-    "tottenham": "tottenham hotspur",
-    "wolves": "wolverhampton wanderers",
-    "brighton": "brighton hove albion",
-    "brighton and hove albion": "brighton hove albion",
-    "brighton & hove albion": "brighton hove albion",
-    "newcastle": "newcastle united",
-    "nott'm forest": "nottingham forest",
-    "leeds": "leeds united",
-    "west ham": "west ham united",
-    # La Liga
-    "atletico madrid": "atletico madrid",
-    "atletico": "atletico madrid",
-    "atleti": "atletico madrid",
-    "real": "real madrid",
-    "real madrid": "real madrid",
-    "barca": "barcelona",
-    "barça": "barcelona",
-    "fc barcelona": "barcelona",
-    "athletic bilbao": "athletic club",
-    "real sociedad": "real sociedad",
-    # Bundesliga
-    "bayern": "bayern munchen",
-    "bayern munich": "bayern munchen",
-    "bayern munchen": "bayern munchen",
-    "fc bayern munchen": "bayern munchen",
-    "dortmund": "borussia dortmund",
-    "bvb": "borussia dortmund",
-    "leverkusen": "bayer leverkusen",
-    "gladbach": "borussia monchengladbach",
-    "monchengladbach": "borussia monchengladbach",
-    "rb leipzig": "rb leipzig",
-    "leipzig": "rb leipzig",
-    "schalke": "schalke 04",
-    "union berlin": "union berlin",
-    "eintracht frankfurt": "eintracht frankfurt",
-    "frankfurt": "eintracht frankfurt",
-    "freiburg": "sc freiburg",
-    "stuttgart": "vfb stuttgart",
-}
-
-_NOISE_PREFIXES = ("1. ", "fc ", "afc ")
-_NOISE_SUFFIXES = (" fc", " cf", " sc", " ac", " afc", " cfc")
-
-
-def _normalize_team(name: str) -> str:
-    """Lower-case, strip accents + leading/trailing club suffixes, collapse whitespace."""
-    s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
-    s = s.lower().strip()
-    # Strip noise prefixes BEFORE alphanumeric filtering so patterns like
-    # "1. " (with a literal dot) can still match before the dot is normalized away.
-    for pref in _NOISE_PREFIXES:
-        if s.startswith(pref):
-            s = s[len(pref) :].strip()
-    s = re.sub(r"[^a-z0-9\s]", " ", s)
-    s = re.sub(r"\s+", " ", s).strip()
-    for suf in _NOISE_SUFFIXES:
-        if s.endswith(suf):
-            s = s[: -len(suf)].strip()
-    return s
-
-
-def _canonical_team(name: str) -> str:
-    """Return the canonical (alias-resolved) form of a team name."""
-    norm = _normalize_team(name)
-    return _TEAM_ALIASES.get(norm, norm)
-
-
-def _canonicalize_title(market_title: str) -> str:
-    """Tokenize a normalized title and rewrite alias phrases to canonical forms.
-
-    Walks tokens left-to-right; at each position tries the longest matching
-    alias-phrase and advances past the consumed tokens. Once an alias is
-    consumed, shorter aliases cannot re-enter the same span — this prevents
-    "real" → "real madrid" from firing on the "real" in "real sociedad".
-    """
-    tokens = _normalize_team(market_title).split()
-    # Pre-split aliases into token tuples so membership comparison is token-level.
-    alias_items = sorted(
-        ((alias.split(), canon) for alias, canon in _TEAM_ALIASES.items()),
-        key=lambda item: -len(item[0]),
-    )
-    out: list[str] = []
-    i = 0
-    n = len(tokens)
-    while i < n:
-        matched = False
-        for alias_tokens, canon in alias_items:
-            k = len(alias_tokens)
-            if k <= n - i and tokens[i : i + k] == alias_tokens:
-                out.append(canon)
-                i += k
-                matched = True
-                break
-        if not matched:
-            out.append(tokens[i])
-            i += 1
-    return " ".join(out)
-
-
-def _market_mentions_both_teams(market_title: str, team_a: str, team_b: str) -> bool:
-    """Conservative containment check: the title must contain both canonical
-    forms as substrings. Prefers a non-match over a wrong match.
-    """
-    title_canon = _canonicalize_title(market_title)
-    a = _canonical_team(team_a)
-    b = _canonical_team(team_b)
-    return a in title_canon and b in title_canon
-
-
 def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | None:
     """Best-effort lookup of the Kalshi YES ask observed by the live scanner
     closest to `kickoff + fire_minute × 60s`.
@@ -269,7 +148,7 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
     target = kickoff_naive + timedelta(minutes=fire_minute)
 
     leading_team = match.home_team if leading_side == "home" else match.away_team
-    leading_canon_tokens = _canonical_team(leading_team).split()
+    leading_canon_tokens = canonical_team(leading_team).split()
 
     session = get_session()
     try:
@@ -285,13 +164,13 @@ def find_observed_yes_ask(match, fire_minute: int, leading_side: str) -> int | N
         best_delta = None
         for row in rows:
             title = row.title or ""
-            if not _market_mentions_both_teams(title, match.home_team, match.away_team):
+            if not market_mentions_both_teams(title, match.home_team, match.away_team):
                 continue
             # The Kalshi YES side is identified by yes_sub_title, not title.
             # Require all canonical tokens of the leading team to appear in
             # the canonicalized yes_sub_title — token-level membership avoids
             # "real" matching "real sociedad" via substring.
-            sub_tokens = set(_canonicalize_title(row.yes_sub_title or "").split())
+            sub_tokens = set(canonicalize_title(row.yes_sub_title or "").split())
             if not all(tok in sub_tokens for tok in leading_canon_tokens):
                 continue
             found_at = row.found_at

@@ -951,11 +951,11 @@ async def _get_live_games() -> list[dict]:
                         matched = match_kalshi_to_espn(ticker, title, [g])
                         if matched:
                             kalshi_code = ticker.split("-")[-1].upper() if "-" in ticker else ""
-                            from predictions.espn import _espn_to_kalshi_codes
+                            from predictions.teams import espn_to_kalshi_codes
 
                             espn_team = ""
                             for team in (g.home_team, g.away_team):
-                                if kalshi_code in [c.upper() for c in _espn_to_kalshi_codes(team)]:
+                                if kalshi_code in [c.upper() for c in espn_to_kalshi_codes(team)]:
                                     espn_team = team
                                     break
                             game_data["kalshi_markets"].append(

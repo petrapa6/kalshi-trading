@@ -11,6 +11,7 @@ from typing import Optional
 import httpx
 
 from predictions.sports import KALSHI_TO_ESPN, SPORT_FINAL_PERIOD
+from predictions.teams import espn_to_kalshi_codes
 
 ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports"
 
@@ -177,31 +178,6 @@ def game_meets_timing(game: GameState, countdown_secs: int, countup_secs: int) -
     return game.clock_seconds <= countdown_secs
 
 
-# ESPN abbreviations that differ from Kalshi ticker abbreviations.
-# Only entries where ESPN and Kalshi use DIFFERENT codes.
-# Map ESPN abbreviation → list of Kalshi equivalents to check.
-ESPN_TO_KALSHI_ABBR: dict[str, list[str]] = {
-    # NBA
-    "GS": ["GSW"],
-    "UTAH": ["UTA"],
-    "SA": ["SAS"],
-    # MLS
-    "DC": ["DCU"],
-    "LA": ["LAG", "LA"],  # ESPN "LA" = LA Galaxy; Kalshi uses "LAG"
-    # NFL
-    "JAX": ["JAC"],
-}
-
-
-def _espn_to_kalshi_codes(espn_abbr: str) -> list[str]:
-    """Return Kalshi codes that an ESPN abbreviation could map to."""
-    codes = ESPN_TO_KALSHI_ABBR.get(espn_abbr.upper(), [])
-    # Always include the original ESPN abbreviation itself
-    if espn_abbr.upper() not in [c.upper() for c in codes]:
-        codes = [espn_abbr.upper()] + codes
-    return codes
-
-
 def match_kalshi_to_espn(
     kalshi_ticker: str,
     kalshi_title: str,
@@ -210,16 +186,13 @@ def match_kalshi_to_espn(
     """
     Try to match a Kalshi market to an ESPN game by team abbreviations.
     Kalshi tickers contain team abbreviations (e.g., KXNBAGAME-26MAR07NYKLAC-LAC).
-
-    Uses exact abbreviation matching first, then falls back to fuzzy title matching
-    for soccer leagues where team names may differ between ESPN and Kalshi.
     """
     ticker_upper = kalshi_ticker.upper()
     title_upper = kalshi_title.upper()
 
     for game in espn_games:
-        home_codes = _espn_to_kalshi_codes(game.home_team)
-        away_codes = _espn_to_kalshi_codes(game.away_team)
+        home_codes = espn_to_kalshi_codes(game.home_team)
+        away_codes = espn_to_kalshi_codes(game.away_team)
 
         home_match = any(c in ticker_upper or c in title_upper for c in home_codes)
         away_match = any(c in ticker_upper or c in title_upper for c in away_codes)
@@ -228,25 +201,5 @@ def match_kalshi_to_espn(
         # against future games (e.g., tomorrow's MIL game matching today's MIL game)
         if home_match and away_match:
             return game
-
-    # Fallback: fuzzy title matching for soccer (team name substrings)
-    # Kalshi titles often use full team names like "Villarreal vs Elche"
-    if espn_games and "soccer" in espn_games[0].sport_path:
-        for game in espn_games:
-            home_name = game.home_team.upper()
-            away_name = game.away_team.upper()
-            # Check if ESPN abbreviations appear in the Kalshi ticker parts
-            # Kalshi ticker format: KXLALIGAGAME-26MAR08BETGET-GET
-            # Extract the team codes from ticker by splitting on '-'
-            parts = ticker_upper.split("-")
-            if len(parts) >= 2:
-                teams_part = parts[1]  # e.g., "26MAR08BETGET"
-                # Remove date prefix (digits and month abbreviation)
-                import re
-
-                teams_only = re.sub(r"^\d+[A-Z]{3}\d+", "", teams_part)
-                if len(teams_only) >= 6:  # at least two 3-char codes
-                    if home_name in teams_only and away_name in teams_only:
-                        return game
 
     return None

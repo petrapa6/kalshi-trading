@@ -39,7 +39,11 @@ _Avoid_: resolution, expiry
 A live real-world competition as reported by ESPN. The counterpart a market gets matched to.
 
 **Matching**:
-Pairing a Kalshi market with the ESPN game it settles on, by team abbreviations (with fuzzy title fallback for football).
+Pairing a Kalshi market with the ESPN game it settles on, by team abbreviations.
+
+**Team alias**:
+An alternative identity for one team across data sources — ESPN abbreviation vs Kalshi ticker code, or Kalshi title name vs API-Football name. All alias knowledge lives in one reconciliation surface.
+_Avoid_: mapping, abbreviation table
 
 **Final period**:
 A live game in its last regulation period (4th quarter, 9th inning, 2nd half). The broad net.

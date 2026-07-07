@@ -7,7 +7,8 @@ are ESPN abbreviations (espn.py builds them from team.abbreviation).
 
 import pytest
 
-from predictions.espn import ESPN_TO_KALSHI_ABBR, GameState, match_kalshi_to_espn
+from predictions.espn import GameState, match_kalshi_to_espn
+from predictions.teams import ESPN_TO_KALSHI_ABBR
 
 
 def make_game(home: str, away: str, sport_path: str = "basketball/nba") -> GameState:
