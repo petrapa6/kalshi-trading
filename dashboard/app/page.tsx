@@ -1200,6 +1200,129 @@ function useLiveGames(authed: boolean | null) {
   return games;
 }
 
+interface RawStrategy {
+  name: string;
+  live: boolean;
+}
+
+// Raw-YAML catalog editor. Load pulls the current strategies.yaml text; Save
+// validates server-side, atomically writes the file, and the scanner hot-reloads
+// it on the next tick. A failed save shows the loader's error verbatim and leaves
+// the running catalog untouched.
+function CatalogEditor({ dryRun }: { dryRun: boolean }) {
+  const [content, setContent] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState<RawStrategy[] | null>(null);
+
+  const load = async () => {
+    setError(null);
+    setSaved(null);
+    try {
+      const res = await fetch(`${API}/api/strategies/raw`);
+      if (res.ok) setContent((await res.json()).content);
+      else setError(`Load failed (${res.status})`);
+    } catch {
+      setError("Cannot reach API");
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const save = async () => {
+    if (content === null) return;
+    setSaving(true);
+    setError(null);
+    setSaved(null);
+    try {
+      const res = await fetch(`${API}/api/strategies/raw`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSaved(data.strategies as RawStrategy[]);
+      } else {
+        setError(
+          typeof data.detail === "string"
+            ? data.detail
+            : JSON.stringify(data.detail, null, 2),
+        );
+      }
+    } catch {
+      setError("Save request failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Live money moves on the next tick only when a live-enabled strategy was
+  // saved while dry-run mode is off.
+  const liveWarning = saved && !dryRun && saved.some((s) => s.live);
+
+  return (
+    <div className="bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 backdrop-blur-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm text-amber-600 font-medium">
+          Strategy Catalog (strategies.yaml)
+        </h2>
+        <div className="flex gap-2">
+          <button
+            onClick={load}
+            disabled={saving}
+            className="px-4 py-1.5 rounded-lg text-sm font-bold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 disabled:opacity-50 transition-all"
+          >
+            Reload
+          </button>
+          <button
+            onClick={save}
+            disabled={saving || content === null}
+            className="px-4 py-1.5 rounded-lg text-sm font-bold bg-amber-600 text-black hover:bg-amber-500 disabled:opacity-50 transition-all"
+          >
+            {saving ? "Saving…" : "Save"}
+          </button>
+        </div>
+      </div>
+
+      <textarea
+        value={content ?? ""}
+        onChange={(e) => {
+          setContent(e.target.value);
+          setSaved(null);
+          setError(null);
+        }}
+        spellCheck={false}
+        rows={20}
+        placeholder={content === null ? "Loading…" : ""}
+        className="w-full bg-black/40 border border-zinc-800 rounded-lg p-3 font-mono text-xs text-amber-100 focus:outline-none focus:border-amber-600 transition-colors resize-y"
+      />
+
+      {error && (
+        <pre className="mt-3 whitespace-pre-wrap break-words rounded-lg border border-red-900/60 bg-red-950/40 p-3 font-mono text-xs text-red-300">
+          {error}
+        </pre>
+      )}
+
+      {saved && !error && (
+        <div className="mt-3 rounded-lg border border-green-900/60 bg-green-950/30 p-3 text-xs text-green-300">
+          Saved {saved.length} strateg{saved.length === 1 ? "y" : "ies"}. The
+          scanner picks it up on the next tick.
+        </div>
+      )}
+
+      {liveWarning && (
+        <div className="mt-3 rounded-lg border border-yellow-700/70 bg-yellow-950/40 p-3 text-xs font-bold text-yellow-300">
+          ⚠ A live-enabled strategy is active and dry-run mode is OFF — real
+          money moves on the next scan tick.
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -1567,6 +1690,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 )}
+                <CatalogEditor dryRun={config?.trading.dry_run ?? true} />
               </div>
             </div>
           </>

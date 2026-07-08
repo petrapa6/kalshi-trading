@@ -66,6 +66,32 @@ class StrategiesFile(BaseModel):
     strategies: dict[str, Strategy]
 
 
+def parse_strategies_text(text: str) -> list[Strategy]:
+    """Validate a strategies-catalog YAML string, RAISING on any error.
+
+    Same strict, all-or-nothing contract as load_strategies (any error in
+    any strategy rejects the whole file) but surfaces the error instead of
+    swallowing it — the catalog-editor save path needs the message verbatim.
+
+    Raises:
+        yaml.YAMLError: malformed YAML or !!python tags.
+        ValueError: empty document.
+        pydantic.ValidationError: schema violation.
+    """
+    raw = yaml.safe_load(text)
+    if raw is None:
+        raise ValueError("strategies file is empty")
+
+    parsed = StrategiesFile.model_validate(raw)
+
+    result: list[Strategy] = []
+    for name, strat in parsed.strategies.items():
+        data = strat.model_dump()
+        data["name"] = name
+        result.append(Strategy.model_validate(data))
+    return result
+
+
 def load_strategies(path: Optional[str] = None) -> list[Strategy]:
     """Load and validate strategies from YAML.
 
@@ -87,7 +113,7 @@ def load_strategies(path: Optional[str] = None) -> list[Strategy]:
 
     try:
         with open(path, encoding="utf-8") as f:
-            raw = yaml.safe_load(f)
+            text = f.read()
     except FileNotFoundError:
         log.warning(
             "strategies.yaml not found at %s — running with no strategies",
@@ -97,28 +123,21 @@ def load_strategies(path: Optional[str] = None) -> list[Strategy]:
     except OSError as e:
         log.warning("Failed to read strategies file %s: %s", path, e)
         return []
+
+    try:
+        result = parse_strategies_text(text)
     except yaml.YAMLError as e:
         # Covers ConstructorError from !!python tags and parse errors.
         log.warning("Failed to parse strategies file %s: %s", path, e)
         return []
-
-    if raw is None:
-        log.warning("strategies file %s is empty — running with no strategies", path)
-        return []
-
-    try:
-        parsed = StrategiesFile.model_validate(raw)
     except ValidationError as e:
+        # Subclass of ValueError — must precede the empty-document branch.
         log.warning("strategies file %s failed validation:\n%s", path, e)
         return []
-
-    # Inject `name` from the dict key. Insertion order is preserved by
-    # dict iteration in Python 3.7+.
-    result: list[Strategy] = []
-    for name, strat in parsed.strategies.items():
-        data = strat.model_dump()
-        data["name"] = name
-        result.append(Strategy.model_validate(data))
+    except ValueError:
+        # Empty document (parse_strategies_text raises).
+        log.warning("strategies file %s is empty — running with no strategies", path)
+        return []
 
     log.info("Loaded %d strategies from %s", len(result), path)
     return result

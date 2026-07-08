@@ -3,10 +3,12 @@
 import asyncio
 import logging
 import os
+import tempfile
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Optional
 
+import yaml
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -40,7 +42,7 @@ from predictions.sports import (
     SPORT_FINAL_PERIOD,
     TICKER_PREFIX_LABELS,
 )
-from predictions.strategies import load_strategies
+from predictions.strategies import load_strategies, parse_strategies_text
 
 # --- Pydantic response models ---
 
@@ -152,6 +154,25 @@ class StrategyResponse(BaseModel):
 
 class StrategiesResponse(BaseModel):
     strategies: list[StrategyResponse]
+
+
+class StrategyRawResponse(BaseModel):
+    content: str
+
+
+class StrategyRawUpdate(BaseModel):
+    content: str
+
+
+class RawStrategyEntry(BaseModel):
+    name: str
+    live: bool
+    description: Optional[str] = None
+    triggers: list[TriggerResponse]
+
+
+class StrategyRawSaveResponse(BaseModel):
+    strategies: list[RawStrategyEntry]
 
 
 class StrategyAnalyticsStats(BaseModel):
@@ -417,6 +438,70 @@ def get_strategies():
         strategies=[
             StrategyResponse(
                 name=s.name,
+                description=s.description,
+                triggers=[TriggerResponse(**t.model_dump()) for t in s.triggers],
+            )
+            for s in strategies
+        ]
+    )
+
+
+def _strategies_path() -> str:
+    return os.getenv("STRATEGIES_PATH", "strategies.yaml")
+
+
+@app.get(
+    "/api/strategies/raw",
+    response_model=StrategyRawResponse,
+    dependencies=[Depends(_check_token)],
+)
+def get_strategies_raw():
+    """Raw catalog file text for the dashboard editor. Missing file → empty."""
+    try:
+        with open(_strategies_path(), encoding="utf-8") as f:
+            content = f.read()
+    except FileNotFoundError:
+        content = ""
+    return StrategyRawResponse(content=content)
+
+
+@app.put(
+    "/api/strategies/raw",
+    response_model=StrategyRawSaveResponse,
+    response_model_exclude_none=True,
+    dependencies=[Depends(_check_token)],
+)
+def put_strategies_raw(body: StrategyRawUpdate):
+    """Validate submitted catalog text, then atomically replace the file.
+
+    Validation runs first: on any error the running file is left untouched
+    and the loader's message is returned verbatim (422). On success the file
+    is written temp-file-then-rename so a concurrent scan tick never reads a
+    half-written catalog; the next tick re-reads it (hot reload, ADR-0002).
+    """
+    try:
+        # ValidationError subclasses ValueError, so this covers schema
+        # violations, empty documents, and malformed/unsafe YAML.
+        strategies = parse_strategies_text(body.content)
+    except (yaml.YAMLError, ValueError) as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    path = _strategies_path()
+    dir_ = os.path.dirname(os.path.abspath(path))
+    fd, tmp = tempfile.mkstemp(dir=dir_, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(body.content)
+        os.replace(tmp, path)
+    except BaseException:
+        os.unlink(tmp)
+        raise
+
+    return StrategyRawSaveResponse(
+        strategies=[
+            RawStrategyEntry(
+                name=s.name,
+                live=s.live,
                 description=s.description,
                 triggers=[TriggerResponse(**t.model_dump()) for t in s.triggers],
             )

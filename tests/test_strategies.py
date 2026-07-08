@@ -1,5 +1,7 @@
 """Tests for the YAML strategy loader (src/predictions/strategies.py)."""
 
+import pytest
+
 
 def test_load_empty_file(tmp_path):
     """STR-01: an empty file logs a warning and returns []."""
@@ -161,3 +163,48 @@ def test_yaml_safe_load_rejects_python_object_tags(tmp_path):
     # safe_load raises a ConstructorError for !!python tags; loader catches and returns []
     result = load_strategies(str(f))
     assert result == []
+
+
+# --- parse_strategies_text: the raising validation variant (issue #15) ---
+
+
+def test_parse_text_valid_returns_strategies():
+    """A well-formed catalog parses to typed Strategy objects with names injected."""
+    from predictions.strategies import parse_strategies_text
+
+    result = parse_strategies_text(
+        "strategies:\n  s:\n    live: true\n    triggers:\n      - min_lead: 2\n"
+    )
+    assert len(result) == 1
+    assert result[0].name == "s"
+    assert result[0].live is True
+
+
+def test_parse_text_invalid_schema_raises():
+    """Unlike load_strategies, a schema violation raises (error surfaced verbatim)."""
+    from pydantic import ValidationError
+
+    from predictions.strategies import parse_strategies_text
+
+    with pytest.raises(ValidationError):
+        parse_strategies_text(
+            "strategies:\n  s:\n    triggers:\n      - min_minutes: 80\n"  # typo
+        )
+
+
+def test_parse_text_malformed_yaml_raises():
+    """Non-parseable YAML raises a YAMLError rather than being swallowed."""
+    import yaml
+
+    from predictions.strategies import parse_strategies_text
+
+    with pytest.raises(yaml.YAMLError):
+        parse_strategies_text("strategies: : :\n  - broken")
+
+
+def test_parse_text_empty_raises():
+    """Empty text is not a valid catalog for the save path."""
+    from predictions.strategies import parse_strategies_text
+
+    with pytest.raises(ValueError):
+        parse_strategies_text("")
