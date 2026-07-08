@@ -107,6 +107,26 @@ def test_stats_partitions_populations(client, isolated_db):
     assert "total_opportunities" in data
 
 
+def test_stats_open_positions_counts_filled_excludes_error(client, isolated_db):
+    """Open positions cover the canonical open statuses (placed/filled/dry_run);
+    error rows are neither open nor counted as trades.
+    """
+    seed_trades(
+        isolated_db,
+        [
+            _row("L-P", "placed", None, dry_run=False, cost_cents=40, potential=60),
+            _row("L-F", "filled", None, dry_run=False, cost_cents=50, potential=50),
+            _row("L-E", "error", None, dry_run=False, cost_cents=99, potential=1),
+        ],
+    )
+
+    live = client.get("/api/stats", headers=_auth()).json()["live"]
+    assert live["open_positions"] == 2  # placed + filled, not error
+    assert live["open_cost_cents"] == 90  # 40 + 50
+    assert live["open_potential_profit_cents"] == 110  # 60 + 50
+    assert live["trades"] == 2  # error excluded from trade count
+
+
 def test_stats_empty_win_rate_is_zero(client, isolated_db):
     """No settled trades in a population → win_rate 0.0, no divide-by-zero."""
     seed_trades(isolated_db, [_row("D-O", "dry_run", None, dry_run=True)])

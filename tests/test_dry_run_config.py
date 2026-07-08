@@ -91,6 +91,7 @@ def _seed_prices(monkeypatch) -> None:
         {
             _TICKER: {
                 "yes_ask": 94,
+                "yes_bid": 92,
                 "volume": 500,
                 "title": "Los Angeles at Seattle",
                 "event_ticker": _EVENT,

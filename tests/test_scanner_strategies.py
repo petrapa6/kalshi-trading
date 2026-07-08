@@ -341,6 +341,7 @@ def _nba_market_prices(volume: int) -> dict:
     return {
         "KXNBAGAME-20260101-SEALAL": {
             "yes_ask": 95,
+            "yes_bid": 93,
             "volume": volume,
             "title": "T",
             "event_ticker": "KXNBAGAME-20260101",
@@ -556,12 +557,14 @@ async def test_one_strategy_one_open_position_per_event(isolated_db, monkeypatch
     prices = {
         "KXNBAGAME-20260101-SEALAL-A": {
             "yes_ask": 95,
+            "yes_bid": 93,
             "volume": 500,
             "title": "T",
             "event_ticker": "KXNBAGAME-20260101",
         },
         "KXNBAGAME-20260101-SEALAL-B": {
             "yes_ask": 95,
+            "yes_bid": 93,
             "volume": 500,
             "title": "T",
             "event_ticker": "KXNBAGAME-20260101",
@@ -743,3 +746,185 @@ def test_place_bet_has_single_caller():
         line for line in src.splitlines() if "place_bet(" in line and "def place_bet(" not in line
     ]
     assert len(call_lines) == 1, call_lines
+
+
+# --- Restored safety guards (findings #1-#5) ---
+
+
+async def test_live_fire_rejects_one_sided_book(isolated_db, monkeypatch, tmp_path):
+    """#1: a live strategy does NOT place a real order when yes_bid<=0
+    (one-sided book = no exit liquidity), even though volume/ask clear."""
+    from typing import cast
+
+    from predictions.kalshi_client import KalshiClient
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(_strategy_yaml(("s1", True, 90)))
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    db_module.set_config("dry_run", "false")
+    prices = {
+        "KXNBAGAME-20260101-SEALAL": {
+            "yes_ask": 95,
+            "yes_bid": 0,  # one-sided book — nobody bidding
+            "volume": 500,
+            "title": "T",
+            "event_ticker": "KXNBAGAME-20260101",
+        }
+    }
+    client = FakeKalshiClient()
+
+    session = db_module.get_session()
+    await _eval(session, monkeypatch, prices, cast(KalshiClient, client))
+    session.close()
+
+    assert client.orders_placed == []
+    session = db_module.get_session()
+    assert session.query(Trade).filter(Trade.dry_run == False).count() == 0
+    session.close()
+
+
+async def test_live_fire_rejects_full_price_market(isolated_db, monkeypatch, tmp_path):
+    """#5: a live strategy without a yaml max_yes_price still refuses a real
+    order at yes_ask=100c (guaranteed-zero-profit) via the code ceiling."""
+    from typing import cast
+
+    from predictions.kalshi_client import KalshiClient
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(_strategy_yaml(("s1", True, 90)))
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    db_module.set_config("dry_run", "false")
+    prices = {
+        "KXNBAGAME-20260101-SEALAL": {
+            "yes_ask": 100,
+            "yes_bid": 98,
+            "volume": 500,
+            "title": "T",
+            "event_ticker": "KXNBAGAME-20260101",
+        }
+    }
+    client = FakeKalshiClient()
+
+    session = db_module.get_session()
+    await _eval(session, monkeypatch, prices, cast(KalshiClient, client))
+    session.close()
+
+    assert client.orders_placed == []
+    session = db_module.get_session()
+    assert session.query(Trade).filter(Trade.dry_run == False).count() == 0
+    session.close()
+
+
+async def test_swallowed_placement_error_stays_retryable(isolated_db, monkeypatch, tmp_path):
+    """#2: a transient create_order failure records an error row but does NOT
+    block the (strategy, market) from firing on a later tick."""
+    from typing import cast
+
+    from predictions.kalshi_client import KalshiClient
+
+    class FlakyClient:
+        def __init__(self):
+            self.orders_placed: list[dict] = []
+            self.calls = 0
+
+        async def create_order(self, **kwargs) -> dict:
+            self.calls += 1
+            if self.calls == 1:
+                raise RuntimeError("transient Kalshi blip")
+            self.orders_placed.append(kwargs)
+            return {"order": {"order_id": "ord-1", "fee": 3}}
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(_strategy_yaml(("s1", True, 90)))
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    db_module.set_config("dry_run", "false")
+    client = FlakyClient()
+
+    # First tick: create_order raises → error row, no order, no successful fire.
+    session = db_module.get_session()
+    await _eval(session, monkeypatch, _nba_market_prices(volume=500), cast(KalshiClient, client))
+    session.close()
+
+    session = db_module.get_session()
+    assert session.query(Trade).filter(Trade.status == "error").count() == 1
+    assert session.query(Trade).filter(Trade.status == "placed").count() == 0
+    session.close()
+
+    # Second tick: same market retries and succeeds — the error row didn't
+    # permanently forfeit the (strategy, market).
+    session = db_module.get_session()
+    await _eval(session, monkeypatch, _nba_market_prices(volume=500), cast(KalshiClient, client))
+    session.close()
+
+    assert len(client.orders_placed) == 1
+    session = db_module.get_session()
+    assert session.query(Trade).filter(Trade.status == "placed").count() == 1
+    session.close()
+
+
+async def test_noop_placement_does_not_consume_cap(isolated_db, monkeypatch, tmp_path):
+    """#4: an unaffordable (no-op) fire earlier in the tick must not consume the
+    per-population cap, so an affordable market later in the tick still fires."""
+    import predictions.scanner as scanner_module
+    from predictions.scanner import evaluate_strategies
+
+    f = tmp_path / "strats.yaml"
+    # Dry-run strategy with a low min_yes_price so both markets match.
+    f.write_text(_strategy_yaml(("s1", False, 30)))
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    db_module.set_config("max_positions", "1")
+    # Market A (iterated first) is unaffordable at a 50c budget; market B is
+    # affordable. Distinct events so per-event dedup doesn't confound the cap.
+    prices = {
+        "KXNBAGAME-A-SEALAL": {
+            "yes_ask": 99,
+            "volume": 100,
+            "title": "T",
+            "event_ticker": "EV-A",
+        },
+        "KXNBAGAME-B-SEALAL": {
+            "yes_ask": 40,
+            "volume": 100,
+            "title": "T",
+            "event_ticker": "EV-B",
+        },
+    }
+    monkeypatch.setattr(scanner_module, "market_prices", prices)
+
+    session = db_module.get_session()
+    await evaluate_strategies(
+        session, {"KXNBAGAME": [_nba_game(clock_seconds=60.0)]}, max_bet_cents=50
+    )
+    session.close()
+
+    session = db_module.get_session()
+    trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
+    session.close()
+    assert [t.ticker for t in trades] == ["KXNBAGAME-B-SEALAL"]
+
+
+async def test_expiry_window_skips_far_future_market(isolated_db, monkeypatch, tmp_path):
+    """#3: a matched market whose expiration is far outside the window (a
+    different instance of the series) is not fired on."""
+    from datetime import datetime, timedelta, timezone
+
+    import predictions.scanner as scanner_module
+    from predictions.scanner import evaluate_strategies
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(_strategy_yaml(("s1", False, 30)))
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    monkeypatch.setattr(scanner_module, "market_prices", _nba_market_prices(volume=500))
+    far = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
+    monkeypatch.setattr(scanner_module, "market_expirations", {"KXNBAGAME-20260101-SEALAL": far})
+
+    session = db_module.get_session()
+    await evaluate_strategies(
+        session, {"KXNBAGAME": [_nba_game(clock_seconds=60.0)]}, max_bet_cents=500
+    )
+    session.close()
+
+    session = db_module.get_session()
+    trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
+    session.close()
+    assert trades == []

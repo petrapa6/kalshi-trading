@@ -66,6 +66,12 @@ log = logging.getLogger(__name__)
 # Module-level market prices dict, populated by WS/API in run_scanner
 market_prices: dict[str, dict] = {}
 
+# Static per-market expected-expiration timestamps, seeded from the Kalshi API
+# during discovery. Kept separate from market_prices because WS ticker updates
+# replace the price entry wholesale and would drop the expiration; expiration
+# never changes over a game's life, so a one-time seed here survives WS churn.
+market_expirations: dict[str, str] = {}
+
 
 @dataclass(frozen=True)
 class MarketOpportunity:
@@ -174,6 +180,12 @@ async def place_bet(
     dry_run=True (tests); the live branch requires one. `strategy_name`
     attributes the fire to its strategy."""
     yes_price = opp.yes_ask
+    # Hard price ceiling, independent of any yaml max_yes_price (which the raw
+    # editor may omit): a real order at >=100c has zero (or negative) edge —
+    # guaranteed fee loss. Floor-of-last-resort restoring the old max_yes_price=99.
+    if yes_price >= 100:
+        log.info(f"  Refusing live order at {yes_price}c — above the 99c ceiling")
+        return None
     count = max_cost_cents // yes_price
     if count < 1:
         log.info(f"  Cannot afford any contracts at {yes_price}c (budget: {max_cost_cents}c)")
@@ -358,17 +370,20 @@ def place_strategy_trade(
     opp: MarketOpportunity,
     strategy_name: str,
     max_cost_cents: int,
-) -> None:
+) -> Trade | None:
     """Write a dry-run Trade row from a strategy fire (D-13).
 
     NEVER calls Kalshi REST. Distinct from place_bet's runtime dry-run
     branch — see 03-CONTEXT.md D-13 specifics. yes_price is
     sourced from market_prices cache (Kalshi yes_ask, integer cents).
+
+    Returns the inserted Trade, or None when no row was written (missing
+    price or unaffordable budget) so the caller can avoid consuming the cap.
     """
     yes_price = opp.yes_ask
     if not yes_price:
         log.warning("place_strategy_trade: missing yes_ask for %s", opp.ticker)
-        return
+        return None
     count = max_cost_cents // yes_price
     if count < 1:
         log.info(
@@ -377,7 +392,7 @@ def place_strategy_trade(
             yes_price,
             max_cost_cents,
         )
-        return
+        return None
 
     total_cost = count * yes_price
     total_profit = count * (100 - yes_price)
@@ -403,6 +418,7 @@ def place_strategy_trade(
     )
     session.add(trade)
     session.commit()
+    return trade
 
 
 async def evaluate_strategies(
@@ -442,11 +458,14 @@ async def evaluate_strategies(
 
     dry_run_mode = dry_run_enabled()
 
-    # Fire-once: one trade per (strategy, market) ever.
+    # Fire-once: one trade per (strategy, market) ever. Error rows are excluded
+    # so a swallowed placement failure (a transient Kalshi/network blip) leaves
+    # the (strategy, market) retryable — consistent with how api.py treats
+    # status="error" as a non-position everywhere else.
     existing: set[tuple[str, str]] = {
         (sn, t)
         for sn, t in session.query(Trade.strategy_name, Trade.ticker)
-        .filter(Trade.strategy_name.isnot(None))
+        .filter(Trade.strategy_name.isnot(None), Trade.status != "error")
         .all()
     }
 
@@ -473,11 +492,18 @@ async def evaluate_strategies(
 
             for ticker, prices in list(market_prices.items()):
                 yes_ask = prices.get("yes_ask")
+                yes_bid = prices.get("yes_bid", 0) or 0
                 volume = prices.get("volume", 0) or 0
                 if not yes_ask or volume < MIN_VOLUME:
                     continue
                 title = prices.get("title", "")
                 if not match_kalshi_to_espn(ticker, title, [game]):
+                    continue
+                # Expiry window filters out other instances of the series
+                # (e.g. Game 2 vs Game 1) whose markets share team codes.
+                if not within_expiry_window(
+                    market_expirations.get(ticker, ""), datetime.now(timezone.utc)
+                ):
                     continue
                 event_ticker = prices.get("event_ticker", "")
 
@@ -524,7 +550,17 @@ async def evaluate_strategies(
                         )
                         try:
                             if is_live:
-                                await place_bet(
+                                # Real money needs a two-sided book: yes_bid<=0
+                                # means no exit liquidity — restore the old
+                                # has_liquidity gate on the live path only.
+                                if yes_bid <= 0:
+                                    log.info(
+                                        "  SKIP %s: no exit liquidity (yes_bid<=0) on %s",
+                                        strategy.name,
+                                        ticker,
+                                    )
+                                    break
+                                placed = await place_bet(
                                     client,
                                     opp,
                                     max_bet_cents,
@@ -532,7 +568,9 @@ async def evaluate_strategies(
                                     strategy_name=strategy.name,
                                 )
                             else:
-                                place_strategy_trade(session, opp, strategy.name, max_bet_cents)
+                                placed = place_strategy_trade(
+                                    session, opp, strategy.name, max_bet_cents
+                                )
                         except Exception as e:
                             log.warning(
                                 "fire failed strategy=%s ticker=%s: %s",
@@ -540,6 +578,11 @@ async def evaluate_strategies(
                                 ticker,
                                 e,
                             )
+                            break
+                        # No Trade row created (unaffordable budget, price
+                        # ceiling, or a swallowed placement error): don't consume
+                        # the cap or mark the market fired — it stays retryable.
+                        if placed is None:
                             break
                         existing.add((strategy.name, ticker))
                         open_positions.add((strategy.name, event_ticker))
@@ -743,8 +786,9 @@ async def run_scanner(
     espn_lock = asyncio.Lock()
 
     # Track live market prices from WebSocket ticker updates (module-level for what-if access)
-    global market_prices
+    global market_prices, market_expirations
     market_prices = {}  # ticker -> {yes_bid, yes_ask, volume}
+    market_expirations = {}  # ticker -> expected_expiration_time (static per game)
 
     # Track which market tickers we're subscribed to
     subscribed_tickers: set[str] = set()
@@ -855,6 +899,9 @@ async def run_scanner(
                                                 "title": event_title,
                                                 "event_ticker": event_ticker,
                                             }
+                                        market_expirations[t] = market.get(
+                                            "expected_expiration_time", ""
+                                        )
                             cursor = data.get("cursor", "")
                             if not cursor:
                                 break

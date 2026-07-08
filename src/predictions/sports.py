@@ -129,8 +129,6 @@ TICKER_PREFIX_LABELS: list[tuple[str, str]] = sorted(
     reverse=True,
 )
 
-CONFIG_LEAD_DEFAULTS: dict[str, str] = {f"lead:{s.path}": str(s.default_lead) for s in SPORTS}
-
 CONFIG_FINAL_SECONDS_DEFAULTS: dict[str, str] = {
     f"final_seconds:{s.path}": str(s.default_final_seconds)
     for s in SPORTS

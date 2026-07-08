@@ -345,56 +345,85 @@ def health():
     return {"status": "ok"}
 
 
-def _population_stats(session, is_dry: bool) -> PopulationStats:
-    """Aggregate one Trade population (dry_run == is_dry). Non-error rows
-    count as trades; open positions are any non-terminal status (live sits
-    in placed/filled, dry-run in dry_run). Fees only count rows that
-    recorded a fee_cents (pre-tracking rows are NULL, not inferred).
+# Canonical open-trade statuses: a position is open once placed (live sits in
+# placed/filled, dry-run in dry_run) until it settles or errors. Mirrors the
+# scanner's open-trade filter.
+_OPEN_STATUSES = ("placed", "filled", "dry_run")
+
+
+def _population_stats(session) -> dict[bool, PopulationStats]:
+    """Aggregate both Trade populations in a single grouped pass, keyed by
+    dry_run. Non-error rows count as trades; open positions are the canonical
+    open statuses; fees only count rows that recorded a fee_cents (pre-tracking
+    rows are NULL, not inferred). Missing populations default to all-zero.
     """
-    pop = Trade.dry_run == is_dry
+    non_error = Trade.status != "error"
+    is_open = Trade.status.in_(_OPEN_STATUSES)
 
-    trades = session.query(Trade).filter(pop, Trade.status != "error").count()
-    wins = session.query(Trade).filter(pop, Trade.status == "settled_win").count()
-    losses = session.query(Trade).filter(pop, Trade.status == "settled_loss").count()
-    settled = wins + losses
-    win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
-
-    realized_pnl = (
-        session.query(func.sum(Trade.pnl_cents)).filter(pop, Trade.pnl_cents.isnot(None)).scalar()
-        or 0
-    )
-    total_cost = (
-        session.query(func.sum(Trade.cost_cents)).filter(pop, Trade.status != "error").scalar() or 0
-    )
-    total_potential = (
-        session.query(func.sum(Trade.potential_profit_cents))
-        .filter(pop, Trade.status != "error")
-        .scalar()
-        or 0
-    )
-    total_fees = (
-        session.query(func.sum(Trade.fee_cents)).filter(pop, Trade.fee_cents.isnot(None)).scalar()
-        or 0
-    )
-
-    open_trades = (
-        session.query(Trade)
-        .filter(pop, Trade.status.notin_(("settled_win", "settled_loss", "error")))
+    rows = (
+        session.query(
+            Trade.dry_run,
+            func.sum(case((non_error, 1), else_=0)),
+            func.sum(case((Trade.status == "settled_win", 1), else_=0)),
+            func.sum(case((Trade.status == "settled_loss", 1), else_=0)),
+            func.sum(case((Trade.pnl_cents.isnot(None), Trade.pnl_cents), else_=0)),
+            func.sum(case((non_error, Trade.cost_cents), else_=0)),
+            func.sum(case((non_error, Trade.potential_profit_cents), else_=0)),
+            func.sum(case((Trade.fee_cents.isnot(None), Trade.fee_cents), else_=0)),
+            func.sum(case((is_open, 1), else_=0)),
+            func.sum(case((is_open, Trade.cost_cents), else_=0)),
+            func.sum(case((is_open, Trade.potential_profit_cents), else_=0)),
+        )
+        .group_by(Trade.dry_run)
         .all()
     )
 
+    stats = {is_dry: _empty_population() for is_dry in (False, True)}
+    for row in rows:
+        (
+            is_dry,
+            trades,
+            wins,
+            losses,
+            realized_pnl,
+            total_cost,
+            total_potential,
+            total_fees,
+            open_positions,
+            open_cost,
+            open_potential,
+        ) = row
+        settled = wins + losses
+        win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
+        stats[bool(is_dry)] = PopulationStats(
+            trades=trades,
+            wins=wins,
+            losses=losses,
+            win_rate=win_rate,
+            realized_pnl_cents=realized_pnl or 0,
+            total_cost_cents=total_cost or 0,
+            total_potential_profit_cents=total_potential or 0,
+            total_fees_cents=total_fees or 0,
+            open_positions=open_positions,
+            open_cost_cents=open_cost or 0,
+            open_potential_profit_cents=open_potential or 0,
+        )
+    return stats
+
+
+def _empty_population() -> PopulationStats:
     return PopulationStats(
-        trades=trades,
-        wins=wins,
-        losses=losses,
-        win_rate=win_rate,
-        realized_pnl_cents=realized_pnl,
-        total_cost_cents=total_cost,
-        total_potential_profit_cents=total_potential,
-        total_fees_cents=total_fees,
-        open_positions=len(open_trades),
-        open_cost_cents=sum(t.cost_cents for t in open_trades),
-        open_potential_profit_cents=sum(t.potential_profit_cents for t in open_trades),
+        trades=0,
+        wins=0,
+        losses=0,
+        win_rate=0.0,
+        realized_pnl_cents=0,
+        total_cost_cents=0,
+        total_potential_profit_cents=0,
+        total_fees_cents=0,
+        open_positions=0,
+        open_cost_cents=0,
+        open_potential_profit_cents=0,
     )
 
 
@@ -402,8 +431,9 @@ def _population_stats(session, is_dry: bool) -> PopulationStats:
 def get_stats():
     session = get_session()
 
-    live = _population_stats(session, is_dry=False)
-    dry_run = _population_stats(session, is_dry=True)
+    populations = _population_stats(session)
+    live = populations[False]
+    dry_run = populations[True]
 
     total_scans = session.query(Scan).count()
     total_opportunities = session.query(func.count(func.distinct(Opportunity.ticker))).scalar() or 0
@@ -526,7 +556,9 @@ def get_strategy_analytics(strategy: str):
     total = session.query(Trade).filter(strategy_filter).count()
     wins = session.query(Trade).filter(strategy_filter, Trade.status == "settled_win").count()
     losses = session.query(Trade).filter(strategy_filter, Trade.status == "settled_loss").count()
-    open_trades = session.query(Trade).filter(strategy_filter, Trade.status == "dry_run").count()
+    open_trades = (
+        session.query(Trade).filter(strategy_filter, Trade.status.in_(_OPEN_STATUSES)).count()
+    )
     settled = wins + losses
     win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
 

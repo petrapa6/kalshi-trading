@@ -82,6 +82,33 @@ def test_analytics_returns_correct_stats(client, isolated_db):
     assert len(data["trades"]) == 4
 
 
+def test_analytics_open_trades_counts_live_positions(client, isolated_db):
+    """Issue #6: open_trades must count OPEN positions regardless of dry-run
+    vs live. A live fire writes status 'placed' (or 'filled'), not 'dry_run';
+    counting only 'dry_run' undercounts real-money exposure. Settled/error
+    rows must NOT be counted as open.
+    """
+    seed_trades(
+        isolated_db,
+        [
+            _make_row("KX-PLACED", "placed", None, dry_run=False, settled_at=None),
+            _make_row("KX-FILLED", "filled", None, dry_run=False, settled_at=None),
+            _make_row("KX-DRY", "dry_run", None, dry_run=True, settled_at=None),
+            _make_row("KX-WIN", "settled_win", 50),
+            _make_row("KX-ERR", "error", None, settled_at=None),
+        ],
+    )
+
+    resp = client.get(
+        "/api/strategy-analytics?strategy=alpha",
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    # placed + filled + dry_run = 3 open; settled_win and error excluded.
+    assert data["stats"]["open_trades"] == 3
+
+
 def test_analytics_pnl_curve_running_sum(client, isolated_db):
     """DASH-03 / D-05 / D-09: pnl_curve is a running sum of pnl_cents
     over settled trades, ordered by settled_at ascending.

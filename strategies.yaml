@@ -49,54 +49,45 @@ strategies:
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: basketball/mens-college-basketball
         min_lead: 12
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: hockey/nhl
         min_lead: 2
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: football/nfl
         min_lead: 10
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: football/college-football
         min_lead: 10
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: soccer/eng.1
         min_lead: 2
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: soccer/esp.1
         min_lead: 2
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: soccer/usa.1
         min_lead: 2
         min_yes_price: 92
         max_yes_price: 99
         final_minutes: true
-        min_volume: 50
       - sport_path: baseball/mlb
         min_lead: 3
         min_yes_price: 92
         max_yes_price: 99
-        min_volume: 50
 
   conservative_late_lead:
     description: "Late game, modest lead, premium price — lowest variance preset"
