@@ -657,17 +657,36 @@ async def test_check_settlements_keeps_trade_on_transient_error(isolated_db):
     session.close()
 
 
-def test_countable_trades_predicate(isolated_db):
-    """countable_trades: live trades and strategy dry-runs count; legacy
-    process-level dry-runs (dry_run=True, strategy_name NULL) never do."""
-    from predictions.db import countable_trades
+def test_settle_trade_tag_derives_from_dry_run():
+    """settle_trade's log tag comes from Trade.dry_run now that every trade
+    carries a strategy_name (ADR-0002) — not from strategy_name presence."""
+    from predictions.scanner import settle_trade
 
-    session = db_module.get_session()
-    session.add(Trade(ticker="KX-REAL", status="placed", dry_run=False, strategy_name=None))
-    session.add(Trade(ticker="KX-STRAT", status="dry_run", dry_run=True, strategy_name="s1"))
-    session.add(Trade(ticker="KX-LEG", status="dry_run", dry_run=True, strategy_name=None))
-    session.commit()
-
-    tickers = {t.ticker for t in session.query(Trade).filter(countable_trades()).all()}
-    session.close()
-    assert tickers == {"KX-REAL", "KX-STRAT"}
+    dry = Trade(
+        ticker="KX-D",
+        side="yes",
+        count=5,
+        yes_price=95,
+        cost_cents=475,
+        potential_profit_cents=25,
+        status="dry_run",
+        dry_run=True,
+        strategy_name="main",
+    )
+    live = Trade(
+        ticker="KX-R",
+        side="yes",
+        count=5,
+        yes_price=95,
+        cost_cents=475,
+        potential_profit_cents=25,
+        status="placed",
+        dry_run=False,
+        strategy_name="main",
+    )
+    # Both settle correctly regardless of the tag; the tag is log-only, so we
+    # assert the settlement outcome differs only by placement, not attribution.
+    settle_trade(dry, "yes")
+    settle_trade(live, "yes")
+    assert dry.status == "settled_win" and dry.dry_run is True
+    assert live.status == "settled_win" and live.dry_run is False

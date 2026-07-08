@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
-from predictions.decision import live_trigger, trigger_matches, within_expiry_window
+from predictions.decision import trigger_matches, within_expiry_window
 from predictions.strategies import Trigger
 
 
@@ -154,17 +154,3 @@ def test_expiry_window_naive_timestamp_passes():
     # Kalshi timestamp without a timezone offset must not raise (naive - aware)
     now = datetime(2026, 7, 7, 12, 0, tzinfo=timezone.utc)
     assert within_expiry_window("2026-07-07T22:00:00", now)
-
-
-def test_live_trigger_is_price_band_plus_lead():
-    trigger = live_trigger(min_yes_price=91, min_lead=12)
-
-    def decide(yes_ask: int, lead: int) -> bool:
-        return trigger_matches(trigger, family=None, elapsed=None, score_diff=lead, yes_ask=yes_ask)
-
-    assert decide(94, 12)
-    assert not decide(90, 12)  # under price floor
-    assert not decide(100, 12)  # over 99c cap
-    assert not decide(94, 11)  # lead too small
-    # no sport/timing constraint: clockless + unknown family still passes
-    assert decide(94, 12) and decide(99, 30)

@@ -69,6 +69,30 @@ def test_endpoint_preserves_yaml_order(client, tmp_path, monkeypatch):
     assert names == ["zebra", "alpha", "monkey"]
 
 
+def test_endpoint_exposes_sport_path_final_minutes_volume(client, tmp_path, monkeypatch):
+    """Issue #14: triggers using the extended vocabulary (sport_path,
+    final_minutes, min_volume) — as the `main` strategy does — surface in the
+    response instead of being silently dropped."""
+    f = tmp_path / "s.yaml"
+    f.write_text(
+        "strategies:\n"
+        "  main:\n"
+        "    live: true\n"
+        "    triggers:\n"
+        "      - sport_path: basketball/nba\n"
+        "        final_minutes: true\n"
+        "        min_volume: 50\n"
+        "        min_yes_price: 92\n"
+    )
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    resp = client.get("/api/strategies", headers={"Authorization": "Bearer test-token"})
+    assert resp.status_code == 200
+    trigger = resp.json()["strategies"][0]["triggers"][0]
+    assert trigger["sport_path"] == "basketball/nba"
+    assert trigger["final_minutes"] is True
+    assert trigger["min_volume"] == 50
+
+
 def test_endpoint_missing_file_returns_empty(client, monkeypatch):
     """STR-01: missing file path → 200 with {strategies: []}."""
     monkeypatch.setenv("STRATEGIES_PATH", "/nonexistent/path.yaml")

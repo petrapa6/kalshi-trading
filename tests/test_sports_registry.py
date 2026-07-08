@@ -189,18 +189,21 @@ def test_ticker_prefix_labels_most_specific_first():
 def test_config_defaults_per_sport_golden():
     from predictions.db import _CONFIG_DEFAULTS
 
-    leads = {k: v for k, v in _CONFIG_DEFAULTS.items() if k.startswith("lead:")}
+    # Per-sport lead is retired from config (issue #14) — the sport registry
+    # is now the source of truth for entry-rule leads (via strategies.yaml).
+    assert not any(k.startswith("lead:") for k in _CONFIG_DEFAULTS)
+    leads = {s.path: s.default_lead for s in SPORTS}
     assert leads == {
-        "lead:basketball/nba": "12",
-        "lead:basketball/mens-college-basketball": "12",
-        "lead:hockey/nhl": "2",
-        "lead:football/nfl": "10",
-        "lead:football/college-football": "10",
-        "lead:baseball/mlb": "3",
-        "lead:soccer/eng.1": "2",
-        "lead:soccer/esp.1": "2",
-        "lead:soccer/usa.1": "2",
-        "lead:mma/ufc": "0",
+        "basketball/nba": 12,
+        "basketball/mens-college-basketball": 12,
+        "hockey/nhl": 2,
+        "football/nfl": 10,
+        "football/college-football": 10,
+        "baseball/mlb": 3,
+        "soccer/eng.1": 2,
+        "soccer/esp.1": 2,
+        "soccer/usa.1": 2,
+        "mma/ufc": 0,
     }
     finals = {k: v for k, v in _CONFIG_DEFAULTS.items() if k.startswith("final_seconds:")}
     assert finals == {
