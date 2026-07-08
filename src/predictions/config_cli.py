@@ -3,13 +3,9 @@
 Usage (run from the repo root):
     uv run python -m predictions.config_cli                     # show all config
     uv run python -m predictions.config_cli set KEY VALUE       # set a config value
-    uv run python -m predictions.config_cli set min_yes_price 88
     uv run python -m predictions.config_cli set bet_percent 5
-    uv run python -m predictions.config_cli set max_positions 20
-    uv run python -m predictions.config_cli set min_volume 50
+    uv run python -m predictions.config_cli set max_positions 30
     uv run python -m predictions.config_cli set stretch_price_min 85
-    uv run python -m predictions.config_cli set lead:basketball/nba 8
-    uv run python -m predictions.config_cli set lead:hockey/nhl 2
     uv run python -m predictions.config_cli set final_seconds:soccer/eng.1 4800
     uv run python -m predictions.config_cli delete KEY          # remove override
     uv run python -m predictions.config_cli reset               # reset to defaults
@@ -36,20 +32,15 @@ def show_config():
 
     # Group into categories
     trading = {}
-    leads = {}
     finals = {}
     other = {}
 
     for k, v in sorted(cfg.items()):
-        if k.startswith("lead:"):
-            leads[k.removeprefix("lead:")] = v
-        elif k.startswith("final_seconds:"):
+        if k.startswith("final_seconds:"):
             finals[k.removeprefix("final_seconds:")] = v
         elif k in (
-            "min_yes_price",
             "bet_percent",
             "max_positions",
-            "min_volume",
             "stretch_price_min",
         ):
             trading[k] = v
@@ -59,10 +50,6 @@ def show_config():
     print("\n=== Trading Parameters ===")
     for k, v in sorted(trading.items()):
         print(f"  {k:25s} = {v}")
-
-    print("\n=== Min Score Lead by Sport ===")
-    for sport, lead in sorted(leads.items()):
-        print(f"  {sport:40s} = {lead}")
 
     print("\n=== Final Minutes (seconds) by Sport ===")
     for sport, secs in sorted(finals.items()):

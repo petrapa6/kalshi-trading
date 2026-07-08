@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, and_, create_engine, or_
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, CONFIG_LEAD_DEFAULTS, SPORTS
+from predictions.sports import CONFIG_FINAL_SECONDS_DEFAULTS, SPORTS
 
 # Default SQLite path at the repo root (src/predictions/db.py → repo/predictions.db)
 _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -89,20 +89,10 @@ class Trade(Base):
         Integer, nullable=True
     )  # seconds remaining (or elapsed for count-up sports)
     fee_cents = Column(Integer, nullable=True)  # trading fees charged by Kalshi
-    # Strategy attribution: NULL for legacy real trades + legacy
-    # process-level dry-runs (pre-runtime-toggle). Set to a strategy.name
-    # string for dry-run strategy fires (D-13).
+    # Strategy attribution: every fire carries its strategy.name (ADR-0002 —
+    # strategy fires are the single placement path). NULL only on legacy rows
+    # from before the unified-placement slice.
     strategy_name = Column(String, nullable=True, index=True)
-
-
-def countable_trades():
-    """SQLAlchemy filter for trades that count: live trades and strategy
-    dry-runs. Legacy process-level dry-runs (dry_run=True, strategy_name
-    NULL) never count (D-16)."""
-    return or_(
-        Trade.dry_run == False,
-        and_(Trade.dry_run == True, Trade.strategy_name.isnot(None)),
-    )
 
 
 class BalanceSnapshot(Base):
@@ -221,15 +211,13 @@ def get_session():
 
 # Defaults used when no DB override exists
 _CONFIG_DEFAULTS: dict[str, str] = {
-    "min_yes_price": "91",  # 92
     "bet_percent": "10",  # 5
-    "max_positions": "20",
-    "min_volume": "50",
+    "max_positions": "30",
     "stretch_price_min": "85",
     "trading_paused": "false",
-    # Per-sport defaults (lead:<path>, final_seconds:<path>) come from the
-    # sport registry; DB rows override them.
-    **CONFIG_LEAD_DEFAULTS,
+    # Per-sport final_seconds:<path> defaults come from the sport registry;
+    # DB rows override them. Entry rules (leads, price band) now live in
+    # strategies.yaml (ADR-0002), not config.
     **CONFIG_FINAL_SECONDS_DEFAULTS,
 }
 

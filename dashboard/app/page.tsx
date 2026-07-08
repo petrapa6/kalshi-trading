@@ -117,8 +117,6 @@ interface SportConfig {
   name: string;
   kalshi_series: string;
   final_period: number;
-  min_score_lead: number;
-  stretch_score_lead: number;
   clock_direction: "down" | "up" | "none";
   final_minutes_desc: string;
   final_minutes_seconds: number | null;
@@ -126,10 +124,8 @@ interface SportConfig {
 
 interface AppConfig {
   trading: {
-    min_yes_price: number;
     bet_percent: number;
     max_positions: number;
-    min_volume: number;
     dry_run: boolean;
     paused: boolean;
   };
@@ -1486,15 +1482,7 @@ export default function Dashboard() {
                     <h2 className="text-sm text-amber-600 font-medium mb-4">
                       Scanner Configuration
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
-                      <div className="bg-black/30 rounded-lg p-3 border border-zinc-800">
-                        <div className="text-zinc-500 text-xs">
-                          Min YES Price
-                        </div>
-                        <div className="text-amber-200 text-lg font-bold font-mono">
-                          {config.trading.min_yes_price}¢
-                        </div>
-                      </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
                       <div className="bg-black/30 rounded-lg p-3 border border-zinc-800">
                         <div className="text-zinc-500 text-xs">Max Bet</div>
                         <div className="text-amber-200 text-lg font-bold font-mono">
@@ -1507,12 +1495,6 @@ export default function Dashboard() {
                         </div>
                         <div className="text-amber-200 text-lg font-bold font-mono">
                           {config.trading.max_positions}
-                        </div>
-                      </div>
-                      <div className="bg-black/30 rounded-lg p-3 border border-zinc-800">
-                        <div className="text-zinc-500 text-xs">Min Volume</div>
-                        <div className="text-amber-200 text-lg font-bold font-mono">
-                          {config.trading.min_volume}
                         </div>
                       </div>
                       <div className="bg-black/30 rounded-lg p-3 border border-zinc-800">
@@ -1556,10 +1538,6 @@ export default function Dashboard() {
                             <th className="text-center py-2 pr-4">
                               End-of-Game
                             </th>
-                            <th className="text-center py-2 pr-4">Min Lead</th>
-                            <th className="text-center py-2 pr-4">
-                              Stretch Lead
-                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1581,12 +1559,6 @@ export default function Dashboard() {
                               </td>
                               <td className="py-2 pr-4 text-center text-zinc-300">
                                 {s.final_minutes_desc}
-                              </td>
-                              <td className="py-2 pr-4 text-center text-amber-300 font-mono">
-                                {s.min_score_lead}
-                              </td>
-                              <td className="py-2 pr-4 text-center text-zinc-500 font-mono">
-                                {s.stretch_score_lead}
                               </td>
                             </tr>
                           ))}

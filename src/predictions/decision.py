@@ -29,15 +29,6 @@ def within_expiry_window(exp_str: str, now: datetime, window: timedelta = EXPIRY
         return True
 
 
-def live_trigger(min_yes_price: int, min_lead: int) -> Trigger:
-    """The live scan path's bet decision as a Trigger: price band + lead.
-
-    Timing is enforced upstream — the ESPN cache only holds final-minutes
-    games — so no min_minute here.
-    """
-    return Trigger(min_yes_price=min_yes_price, max_yes_price=99, min_lead=min_lead)
-
-
 def trigger_matches(
     trigger: Trigger,
     *,

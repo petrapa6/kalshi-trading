@@ -19,7 +19,6 @@ from predictions.db import (
     Opportunity,
     Scan,
     Trade,
-    countable_trades,
     dry_run_enabled,
     get_all_config,
     get_final_seconds_thresholds,
@@ -136,8 +135,11 @@ class ScansListResponse(BaseModel):
 
 class TriggerResponse(BaseModel):
     sport: Optional[str] = None
+    sport_path: Optional[str] = None
     min_minute: Optional[int] = None
     min_lead: Optional[int] = None
+    final_minutes: Optional[bool] = None
+    min_volume: Optional[int] = None
     min_yes_price: Optional[int] = None
     max_yes_price: Optional[int] = None
 
@@ -208,16 +210,14 @@ async def _run_scanner_loop():
     """Run the scanner in the background as a native async task."""
     from predictions.scanner import run_scanner
 
-    min_price = int(os.getenv("MIN_YES_PRICE", "88"))
     bet_percent = float(os.getenv("BET_PERCENT", "5.0"))
     interval = int(os.getenv("POLL_INTERVAL_SECONDS", "30"))
 
     log.info(
-        f"Starting scanner: min_price={min_price}c, "
-        f"bet_percent={bet_percent}%, interval={interval}s (dry-run mode via DB config)"
+        f"Starting scanner: bet_percent={bet_percent}%, "
+        f"interval={interval}s (dry-run mode via DB config)"
     )
     await run_scanner(
-        min_yes_price=min_price,
         bet_percent=bet_percent,
         poll_interval=interval,
     )
@@ -438,7 +438,7 @@ def get_strategy_analytics(strategy: str):
     """
     session = get_session()
 
-    strategy_filter = (Trade.strategy_name == strategy) & countable_trades()
+    strategy_filter = Trade.strategy_name == strategy
 
     total = session.query(Trade).filter(strategy_filter).count()
     wins = session.query(Trade).filter(strategy_filter, Trade.status == "settled_win").count()
@@ -532,7 +532,7 @@ def get_strategies_summary():
     """
     session = get_session()
 
-    filter_expr = Trade.strategy_name.isnot(None) & countable_trades()
+    filter_expr = Trade.strategy_name.isnot(None)
 
     rows = (
         session.query(
@@ -869,9 +869,8 @@ async def _get_live_games() -> list[dict]:
     )
 
     thresholds = get_final_seconds_thresholds()
-    cfg = get_all_config()
     for sport_path, _primary_series, games in espn_results:
-        min_lead = int(cfg.get(f"lead:{sport_path}") or "0")
+        min_lead = SPORT_BY_PATH[sport_path].default_lead
         for g in games:
             if g.state != "in":
                 continue
@@ -1003,8 +1002,6 @@ def get_config_endpoint():
         final_secs = int(cfg.get(f"final_seconds:{sport_path}", "0")) or (
             SPORT_BY_PATH[sport_path].default_final_seconds or 0
         )
-        lead = int(cfg.get(f"lead:{sport_path}", "0"))
-        stretch_lead = max(1, lead - (lead * 4 // 10))
 
         sports.append(
             {
@@ -1012,8 +1009,6 @@ def get_config_endpoint():
                 "name": SPORT_DISPLAY_NAMES.get(sport_path, sport_path),
                 "kalshi_series": kalshi_series,
                 "final_period": SPORT_FINAL_PERIOD.get(sport_path, 4),
-                "min_score_lead": lead,
-                "stretch_score_lead": stretch_lead,
                 "clock_direction": clock_dir,
                 "final_minutes_desc": _format_final_minutes(clock_dir, final_secs),
                 "final_minutes_seconds": (None if clock_dir == "none" else final_secs),
@@ -1022,10 +1017,8 @@ def get_config_endpoint():
 
     return {
         "trading": {
-            "min_yes_price": int(cfg.get("min_yes_price", "92")),
             "bet_percent": int(cfg.get("bet_percent", "5")),
-            "max_positions": int(cfg.get("max_positions", "20")),
-            "min_volume": int(cfg.get("min_volume", "50")),
+            "max_positions": int(cfg.get("max_positions", "30")),
             "dry_run": dry_run,
             "paused": cfg.get("trading_paused", "false") == "true",
         },

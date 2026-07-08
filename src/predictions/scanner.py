@@ -38,7 +38,7 @@ from predictions.db import (
     get_session,
     init_db,
 )
-from predictions.decision import live_trigger, trigger_matches, within_expiry_window
+from predictions.decision import trigger_matches, within_expiry_window
 from predictions.espn import (
     get_categorized_games,
     match_kalshi_to_espn,
@@ -47,7 +47,6 @@ from predictions.kalshi_client import KalshiClient, KalshiWebSocket, extract_cen
 from predictions.sports import (
     CLOCKLESS_SPORT_PATHS,
     COUNT_UP_SPORT_PATHS,
-    SPORT_BY_PATH,
     SPORT_PATH_TO_FAMILY,
     SPORT_PERIOD_LENGTH_SECS,
     SPORTS_GAME_SERIES,
@@ -168,9 +167,12 @@ async def place_bet(
     opp: MarketOpportunity,
     max_cost_cents: int,
     dry_run: bool = True,
+    strategy_name: str | None = None,
 ) -> Optional[dict]:
-    """`client` may be None only when dry_run=True (tests); the live
-    branch requires one."""
+    """The single real-money placement path (ADR-0002): the unified gate in
+    evaluate_strategies is its only caller. `client` may be None only when
+    dry_run=True (tests); the live branch requires one. `strategy_name`
+    attributes the fire to its strategy."""
     yes_price = opp.yes_ask
     count = max_cost_cents // yes_price
     if count < 1:
@@ -199,6 +201,7 @@ async def place_bet(
         cost_cents=total_cost,
         potential_profit_cents=total_profit_if_win,
         dry_run=dry_run,
+        strategy_name=strategy_name,
         espn_clock_seconds=opp.espn_clock_seconds,
     )
 
@@ -249,7 +252,7 @@ def settle_trade(trade: Trade, result: str) -> None:
     settlement discovery paths (check_settlements, on_lifecycle) call it.
     """
     fee = trade.fee_cents or 0
-    tag = "STRATEGY" if trade.strategy_name else "REAL"
+    tag = "DRY-RUN" if trade.dry_run else "REAL"
     trade.settled_at = datetime.now(timezone.utc)
     if result == trade.side:
         trade.status = "settled_win"
@@ -406,18 +409,23 @@ async def evaluate_strategies(
     session,
     espn_final_period: dict,
     max_bet_cents: int,
+    client: KalshiClient | None = None,
     strategies: list[Strategy] | None = None,
 ) -> int:
     """Per-iteration: evaluate every loaded strategy against every live market.
 
-    D-14: max_bet_cents is supplied by the caller. D-23 (supersedes D-15):
-    loop-level trading_paused early-exit. D-04 cadence: same scan tick
-    (~5s), no new asyncio loop. D-05: load strategies once per tick if
-    not provided, log+skip on parse error. D-06: markets × strategies ×
-    triggers with first-trigger-wins. D-10: per-strategy dedupe. D-11:
-    multiple strategies CAN fire on the same ticker.
+    The single order-placement path (ADR-0002). Each fire routes through one
+    gate: a real Kalshi order iff the strategy is live-enabled AND dry-run
+    mode is off AND the kill switch is inactive; otherwise a dry-run trade
+    row. Both populations (`Trade.dry_run` true/false) are capped separately
+    at `max_positions`, and one strategy holds at most one open position per
+    event (cross-strategy stacking on one event is allowed).
 
-    Returns count of new strategy fires this tick.
+    trading_paused early-exits the whole tick. Strategies load once per tick
+    if not provided. Markets × strategies × triggers, first-trigger-wins; a
+    strategy fires at most once per (strategy, market) ever.
+
+    Returns count of new fires this tick.
     """
     if get_config("trading_paused") == "true":
         log.info("evaluate_strategies: trading paused via config — skipping tick")
@@ -432,12 +440,28 @@ async def evaluate_strategies(
     if not strategies:
         return 0
 
+    dry_run_mode = dry_run_enabled()
+
+    # Fire-once: one trade per (strategy, market) ever.
     existing: set[tuple[str, str]] = {
         (sn, t)
         for sn, t in session.query(Trade.strategy_name, Trade.ticker)
         .filter(Trade.strategy_name.isnot(None))
         .all()
     }
+
+    # Open positions this fire must respect: one per (strategy, event) for
+    # dedup, plus per-population open counts for the cap.
+    open_rows = (
+        session.query(Trade.strategy_name, Trade.event_ticker, Trade.dry_run)
+        .filter(Trade.status.in_(("placed", "filled", "dry_run")))
+        .all()
+    )
+    open_positions: set[tuple[str, str]] = {(sn, ev) for sn, ev, _dr in open_rows}
+    open_count = {True: 0, False: 0}
+    for _sn, _ev, dr in open_rows:
+        open_count[bool(dr)] += 1
+    max_pos = get_config_int("max_positions") or 30
 
     thresholds = get_final_seconds_thresholds()
     fired_this_tick = 0
@@ -455,6 +479,7 @@ async def evaluate_strategies(
                 title = prices.get("title", "")
                 if not match_kalshi_to_espn(ticker, title, [game]):
                     continue
+                event_ticker = prices.get("event_ticker", "")
 
                 for strategy in strategies:
                     if (strategy.name, ticker) in existing:
@@ -472,54 +497,78 @@ async def evaluate_strategies(
                             volume=volume,
                         ):
                             continue
-                        try:
-                            place_strategy_trade(
-                                session=session,
-                                opp=MarketOpportunity(
-                                    ticker=ticker,
-                                    event_ticker=prices.get("event_ticker", ""),
-                                    title=title,
-                                    yes_ask=yes_ask,
-                                    espn_clock_seconds=int(game.clock_seconds),
-                                ),
-                                strategy_name=strategy.name,
-                                max_cost_cents=max_bet_cents,
+                        # Trigger matched — apply the placement gate.
+                        if (strategy.name, event_ticker) in open_positions:
+                            log.info(
+                                "  SKIP %s: already have an open position on %s",
+                                strategy.name,
+                                event_ticker,
                             )
-                            existing.add((strategy.name, ticker))
-                            fired_this_tick += 1
+                            break
+                        is_live = bool(strategy.live and not dry_run_mode)
+                        population = not is_live  # the Trade.dry_run this fire lands in
+                        if open_count[population] >= max_pos:
+                            log.info(
+                                "  SKIP %s: at max %d open %s positions",
+                                strategy.name,
+                                max_pos,
+                                "live" if is_live else "dry-run",
+                            )
+                            break
+                        opp = MarketOpportunity(
+                            ticker=ticker,
+                            event_ticker=event_ticker,
+                            title=title,
+                            yes_ask=yes_ask,
+                            espn_clock_seconds=int(game.clock_seconds),
+                        )
+                        try:
+                            if is_live:
+                                await place_bet(
+                                    client,
+                                    opp,
+                                    max_bet_cents,
+                                    dry_run=False,
+                                    strategy_name=strategy.name,
+                                )
+                            else:
+                                place_strategy_trade(session, opp, strategy.name, max_bet_cents)
                         except Exception as e:
                             log.warning(
-                                "place_strategy_trade failed strategy=%s ticker=%s: %s",
+                                "fire failed strategy=%s ticker=%s: %s",
                                 strategy.name,
                                 ticker,
                                 e,
                             )
-                        break  # D-12: first-trigger-wins per (strategy, market) tick
+                            break
+                        existing.add((strategy.name, ticker))
+                        open_positions.add((strategy.name, event_ticker))
+                        open_count[population] += 1
+                        fired_this_tick += 1
+                        break  # first-trigger-wins per (strategy, market) tick
 
     if fired_this_tick:
-        log.info("evaluate_strategies: fired %d strategy trades", fired_this_tick)
+        log.info("evaluate_strategies: fired %d trades", fired_this_tick)
     return fired_this_tick
 
 
 async def scan_kalshi_with_espn(
     client: KalshiClient,
     espn_final: dict,
-    min_yes_price: int,
-    max_bet_cents: int,
 ):
-    """Scan Kalshi markets against cached ESPN game state and place bets.
+    """Scan Kalshi markets against cached ESPN game state and record
+    opportunities.
 
-    D-14: max_bet_cents is computed ONCE per scan iteration by the
-    caller (kalshi_scan_loop) and passed in here. Same value is also
-    passed to evaluate_strategies. NO balance fetch inside this function.
+    Discovery + recording only: placement is the single responsibility of
+    evaluate_strategies now (ADR-0002). This path writes the Scan and
+    Opportunity rows that feed the dashboard and the backtest's observed-ask
+    lookup — every liquid, in-window market matched to a final-minutes game.
     """
     opportunities: list[MarketOpportunity] = []
 
     if not espn_final:
         log.info("No ESPN games in final minutes — skipping Kalshi scan")
         return
-
-    # max_bet_cents was computed by caller (D-14); no balance fetch here.
 
     # Scan Kalshi markets against ESPN games
     for series_ticker, espn_games in espn_final.items():
@@ -562,19 +611,6 @@ async def scan_kalshi_with_espn(
 
                         espn_game = match_kalshi_to_espn(ticker, title, espn_games)
                         if not espn_game:
-                            continue
-
-                        min_lead = (
-                            get_config_int(f"lead:{espn_game.sport_path}")
-                            or SPORT_BY_PATH[espn_game.sport_path].default_lead
-                        )
-                        if not trigger_matches(
-                            live_trigger(min_yes_price, min_lead),
-                            family=None,
-                            elapsed=None,
-                            score_diff=espn_game.score_diff,
-                            yes_ask=yes_ask,
-                        ):
                             continue
 
                         log.info(f"new opportunity: {title}")
@@ -622,21 +658,7 @@ async def scan_kalshi_with_espn(
     if not opportunities:
         log.info("No Kalshi opportunities matched ESPN games")
     else:
-        # Read the runtime mode once per tick; applies to new placements only.
-        dry_run = dry_run_enabled()
-        open_statuses = ("placed", "filled", "dry_run")
-        open_trades = (
-            session.query(Trade)
-            .filter(Trade.status.in_(open_statuses), Trade.dry_run == dry_run)
-            .all()
-        )
-        open_event_tickers = {t.event_ticker for t in open_trades}
-        open_count = len(open_trades)
-
-        log.info(
-            f"Found {len(opportunities)} opportunities on live games "
-            f"({open_count}/20 open positions):"
-        )
+        log.info(f"Found {len(opportunities)} opportunities on live games:")
         for opp in opportunities:
             log.info(
                 f"  {opp.ticker} | {opp.yes_sub_title} | "
@@ -668,24 +690,6 @@ async def scan_kalshi_with_espn(
                 espn_score_diff=opp.espn_lead,
             )
             session.add(db_opp)
-
-            if opp.event_ticker in open_event_tickers:
-                log.info(f"  SKIP: already have position on {opp.event_ticker}")
-                continue
-
-            max_pos = get_config_int("max_positions") or 20
-            if open_count >= max_pos:
-                log.info("  SKIP: at max 20 open positions")
-                continue
-
-            if get_config("trading_paused") == "true":
-                log.info("  SKIP: trading is paused via config")
-                continue
-
-            result = await place_bet(client, opp, max_cost_cents=max_bet_cents, dry_run=dry_run)
-            if result:
-                open_event_tickers.add(opp.event_ticker)
-                open_count += 1
 
     session.commit()
     session.close()
@@ -724,7 +728,6 @@ async def backup_db():
 
 
 async def run_scanner(
-    min_yes_price: int = 88,
     bet_percent: float = 5.0,
     poll_interval: int = 30,
 ):
@@ -813,10 +816,9 @@ async def run_scanner(
             try:
                 log.info("=" * 60)
                 # Re-read config each loop so changes take effect immediately
-                cur_price = get_config_int("min_yes_price") or min_yes_price
                 cur_bet_percent_str = get_config("bet_percent")
                 cur_bet_percent = float(cur_bet_percent_str) if cur_bet_percent_str else bet_percent
-                log.info(f"Kalshi: scanning for Yes >= {cur_price}c...")
+                log.info("Kalshi: scanning live markets...")
                 async with espn_lock:
                     current_espn = dict(espn_cache)
                     current_espn_fp = dict(espn_final_period_cache)
@@ -892,20 +894,19 @@ async def run_scanner(
                     available_cash = 0
                 max_bet_cents = int(available_cash * (cur_bet_percent / 100.0))
 
-                # Now evaluate using real-time prices from WS
+                # Record opportunities from live markets (no placement here).
                 await scan_kalshi_with_espn(
                     client,
                     current_espn,
-                    cur_price,
-                    max_bet_cents,
                 )
 
-                # Phase 3 D-04: per-tick strategy evaluation. Reuses
-                # max_bet_cents from above (D-14 — same value the
-                # live-trade path just used).
+                # Per-tick strategy evaluation — the single placement path.
+                # Reuses max_bet_cents from above (same value for every fire).
                 eval_session = get_session()
                 try:
-                    await evaluate_strategies(eval_session, current_espn_fp, max_bet_cents)
+                    await evaluate_strategies(
+                        eval_session, current_espn_fp, max_bet_cents, client=client
+                    )
                 finally:
                     eval_session.close()
 
@@ -938,17 +939,15 @@ async def run_scanner(
 
 
 if __name__ == "__main__":
-    min_price = int(os.getenv("MIN_YES_PRICE", "88"))
     bet_percent = float(os.getenv("BET_PERCENT", "5.0"))
     interval = int(os.getenv("POLL_INTERVAL_SECONDS", "30"))
 
     log.info(
-        f"Starting scanner: min_price={min_price}c, bet_percent={bet_percent}%, "
+        f"Starting scanner: bet_percent={bet_percent}%, "
         f"ESPN=10s, Kalshi=5s (dry-run mode via DB config)"
     )
     asyncio.run(
         run_scanner(
-            min_yes_price=min_price,
             bet_percent=bet_percent,
             poll_interval=interval,
         )
