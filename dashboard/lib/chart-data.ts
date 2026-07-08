@@ -170,6 +170,44 @@ export function pnlByTime(trades: ClockTrade[]): TimePnlBin[] {
   return bins;
 }
 
+export type StrategyTrade = {
+  strategy_name: string | null;
+  settled_at: string | null;
+  pnl_cents: number;
+};
+
+export type PnlPoint = { x: number; y: number };
+export type StrategyPnlSeries = { strategy: string; points: PnlPoint[] };
+
+// One cumulative-P&L series per strategy over settled trades. Points are
+// sorted by settle time (x = epoch ms) with a running sum of pnl_cents.
+// Rows missing a strategy or a settle time can't be placed and are dropped.
+// Series are ordered by strategy name for a stable legend; "main" is just
+// another line.
+export function cumulativePnlByStrategy(
+  trades: StrategyTrade[],
+): StrategyPnlSeries[] {
+  const byStrategy = new Map<string, { x: number; pnl: number }[]>();
+  for (const t of trades) {
+    if (!t.strategy_name || !t.settled_at) continue;
+    const list = byStrategy.get(t.strategy_name) ?? [];
+    list.push({ x: new Date(t.settled_at).getTime(), pnl: t.pnl_cents });
+    byStrategy.set(t.strategy_name, list);
+  }
+
+  return Array.from(byStrategy.keys())
+    .sort()
+    .map((strategy) => {
+      const rows = byStrategy.get(strategy)!.sort((a, b) => a.x - b.x);
+      let running = 0;
+      const points = rows.map((r) => {
+        running += r.pnl;
+        return { x: r.x, y: running };
+      });
+      return { strategy, points };
+    });
+}
+
 export function pnlByPrice(trades: SettledTrade[]): PricePnlBin[] {
   const bins: PricePnlBin[] = Array.from(
     { length: NUM_PRICE_BINS },

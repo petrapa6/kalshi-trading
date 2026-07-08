@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   accountValueSteps,
+  cumulativePnlByStrategy,
   pnlByPrice,
   pnlByTime,
   priceBins,
@@ -166,5 +167,64 @@ describe("pnlByTime", () => {
       minutesLeft: 2,
       pnl: -88,
     });
+  });
+});
+
+describe("cumulativePnlByStrategy", () => {
+  it("builds one cumulative series per strategy, sorted by settled_at", () => {
+    const series = cumulativePnlByStrategy([
+      {
+        strategy_name: "main",
+        settled_at: "2026-05-01T15:00:00",
+        pnl_cents: 30,
+      },
+      {
+        strategy_name: "alpha",
+        settled_at: "2026-05-01T13:00:00",
+        pnl_cents: 50,
+      },
+      {
+        strategy_name: "main",
+        settled_at: "2026-05-01T13:00:00",
+        pnl_cents: 10,
+      },
+      {
+        strategy_name: "alpha",
+        settled_at: "2026-05-01T14:00:00",
+        pnl_cents: -20,
+      },
+    ]);
+
+    expect(series.map((s) => s.strategy)).toEqual(["alpha", "main"]);
+    // alpha: 13:00 +50, 14:00 -20 → running 50, 30
+    expect(series[0].points.map((p) => p.y)).toEqual([50, 30]);
+    // main: 13:00 +10, 15:00 +30 → running 10, 40
+    expect(series[1].points.map((p) => p.y)).toEqual([10, 40]);
+    // x is epoch ms, ascending
+    expect(series[0].points[0].x).toBe(
+      new Date("2026-05-01T13:00:00").getTime(),
+    );
+  });
+
+  it("skips rows with no strategy or no settle time", () => {
+    const series = cumulativePnlByStrategy([
+      { strategy_name: null, settled_at: "2026-05-01T13:00:00", pnl_cents: 99 },
+      { strategy_name: "alpha", settled_at: null, pnl_cents: 99 },
+      {
+        strategy_name: "alpha",
+        settled_at: "2026-05-01T13:00:00",
+        pnl_cents: 5,
+      },
+    ]);
+
+    expect(series).toHaveLength(1);
+    expect(series[0]).toEqual({
+      strategy: "alpha",
+      points: [{ x: new Date("2026-05-01T13:00:00").getTime(), y: 5 }],
+    });
+  });
+
+  it("returns empty array for no settled trades", () => {
+    expect(cumulativePnlByStrategy([])).toEqual([]);
   });
 });

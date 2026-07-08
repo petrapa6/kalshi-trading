@@ -7,6 +7,7 @@ import {
   BarChart,
   CartesianGrid,
   ComposedChart,
+  Line,
   Rectangle,
   type RectangleProps,
   ReferenceLine,
@@ -18,9 +19,11 @@ import {
 import {
   type AccountStep,
   accountValueSteps,
+  cumulativePnlByStrategy,
   pnlByPrice,
   pnlByTime,
   priceBins,
+  type StrategyPnlSeries,
   timeBins,
   type ViewMode,
 } from "@/lib/chart-data";
@@ -29,24 +32,29 @@ import { login, checkAuth, updateConfig } from "./actions";
 // Proxied via Next.js to provide secure token headers transparently from the server
 const API = "";
 
-interface Stats {
-  total_trades: number;
-  live_trades: number;
-  dry_run_trades: number;
-  total_cost_cents: number;
-  total_potential_profit_cents: number;
-  realized_pnl_cents: number;
-  total_fees_cents: number;
+interface PopulationStats {
+  trades: number;
   wins: number;
   losses: number;
   win_rate: number;
-  total_scans: number;
-  total_opportunities: number;
-  balance_cents: number;
-  portfolio_value_cents: number;
+  realized_pnl_cents: number;
+  total_cost_cents: number;
+  total_potential_profit_cents: number;
+  total_fees_cents: number;
   open_positions: number;
   open_cost_cents: number;
   open_potential_profit_cents: number;
+}
+
+type Population = "live" | "dry_run";
+
+interface Stats {
+  live: PopulationStats;
+  dry_run: PopulationStats;
+  balance_cents: number;
+  portfolio_value_cents: number;
+  total_scans: number;
+  total_opportunities: number;
 }
 
 interface Trade {
@@ -66,6 +74,7 @@ interface Trade {
   error: string | null;
   espn_clock_seconds: number | null;
   strategy_name?: string | null;
+  settled_at?: string | null;
 }
 
 interface Opportunity {
@@ -421,20 +430,29 @@ function stepDot(props: {
 
 function PnlChart({
   trades,
+  population,
   balanceCents,
   portfolioCents,
 }: {
   trades: Trade[];
+  population: Population;
   balanceCents: number;
   portfolioCents: number;
 }) {
   const [viewMode, setViewMode] = useState<ViewMode>("trade");
 
-  const totalNow = balanceCents + portfolioCents;
-
   const settledTrades = trades.filter(
-    (t) => !t.dry_run && t.pnl_cents !== null && t.placed_at,
+    (t) =>
+      (population === "dry_run" ? t.dry_run : !t.dry_run) &&
+      t.pnl_cents !== null &&
+      t.placed_at,
   );
+
+  // Live anchors on the real account (balance + portfolio); dry-run has no
+  // real balance, so its curve is pure cumulative counterfactual P&L from 0.
+  const dryPnl = settledTrades.reduce((s, t) => s + t.pnl_cents!, 0);
+  const totalNow =
+    population === "dry_run" ? dryPnl : balanceCents + portfolioCents;
   const { steps, windowStartBalance, hiddenCount } = accountValueSteps(
     settledTrades.map((t) => ({
       placed_at: t.placed_at,
@@ -459,7 +477,9 @@ function PnlChart({
   return (
     <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
-        <h2 className="text-sm text-amber-600 font-medium">Account Value</h2>
+        <h2 className="text-sm text-amber-600 font-medium">
+          {population === "dry_run" ? "Dry-run P&L" : "Account Value"}
+        </h2>
         <div className="flex items-center gap-3 flex-wrap">
           {/* View mode toggle */}
           <div className="flex items-center gap-0.5 bg-zinc-800/70 border border-zinc-700/50 rounded-lg p-0.5">
@@ -560,6 +580,173 @@ function PnlChart({
           />
         </ComposedChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+function PopulationToggle({
+  population,
+  onChange,
+}: {
+  population: Population;
+  onChange: (p: Population) => void;
+}) {
+  const OPTIONS: { key: Population; label: string }[] = [
+    { key: "live", label: "Live" },
+    { key: "dry_run", label: "Dry-run" },
+  ];
+  return (
+    <div className="flex items-center gap-0.5 bg-zinc-800/70 border border-zinc-700/50 rounded-lg p-0.5 w-fit mb-6">
+      {OPTIONS.map(({ key, label }) => (
+        <button
+          key={key}
+          onClick={() => onChange(key)}
+          className={`px-3 py-1 text-xs rounded-md transition-all font-medium ${
+            population === key
+              ? "bg-amber-900/60 text-amber-300 border border-amber-700/50"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Categorical palette for the per-strategy chart — dark-surface steps from the
+// dataviz reference palette, validated as a set (worst adjacent ΔE 10.3, floor
+// band → identity is carried by the always-present legend, not color alone).
+const STRATEGY_COLORS = [
+  "#3987e5",
+  "#199e70",
+  "#c98500",
+  "#008300",
+  "#9085e9",
+  "#e66767",
+  "#d55181",
+  "#d95926",
+];
+
+function StrategyPnlTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { name: string; value: number; color: string }[];
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <ChartTooltipFrame>
+      {payload.map((p) => (
+        <div key={p.name} className="text-[10px]" style={{ color: p.color }}>
+          {p.name}: {p.value >= 0 ? "+" : ""}
+          {cents(p.value)}
+        </div>
+      ))}
+    </ChartTooltipFrame>
+  );
+}
+
+function StrategyPnlChart({
+  trades,
+  population,
+}: {
+  trades: Trade[];
+  population: Population;
+}) {
+  const series: StrategyPnlSeries[] = cumulativePnlByStrategy(
+    trades
+      .filter((t) => (population === "dry_run" ? t.dry_run : !t.dry_run))
+      .map((t) => ({
+        strategy_name: t.strategy_name ?? null,
+        settled_at: t.settled_at ?? null,
+        pnl_cents: t.pnl_cents ?? 0,
+      })),
+  );
+
+  // Color follows the strategy, not its rank in the filtered set: derive the
+  // index from the stable set of ALL strategies so switching population never
+  // repaints a survivor (dataviz non-negotiable).
+  const allStrategies = Array.from(
+    new Set(trades.map((t) => t.strategy_name).filter((n): n is string => !!n)),
+  ).sort();
+  const color = (strategy: string) =>
+    STRATEGY_COLORS[allStrategies.indexOf(strategy) % STRATEGY_COLORS.length];
+
+  return (
+    <div className="animate-fade-in gold-glow bg-zinc-900/80 border border-amber-900/30 rounded-xl p-5 mb-8 backdrop-blur-sm">
+      <div className="flex justify-between items-center mb-3 flex-wrap gap-3">
+        <h2 className="text-sm text-amber-600 font-medium">
+          Cumulative P&L by Strategy
+        </h2>
+        {/* Legend — always present so identity never rests on color alone */}
+        {series.length > 0 && (
+          <div className="flex items-center gap-3 flex-wrap">
+            {series.map((s) => (
+              <span
+                key={s.strategy}
+                className="flex items-center gap-1.5 text-xs text-zinc-400"
+              >
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-sm"
+                  style={{ backgroundColor: color(s.strategy) }}
+                />
+                {s.strategy}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      {series.length === 0 ? (
+        <div className="py-12 text-center text-amber-900 text-sm">
+          No settled {population === "dry_run" ? "dry-run" : "live"} trades with
+          a strategy yet.
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" aspect={4}>
+          <ComposedChart margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
+            <XAxis
+              dataKey="x"
+              type="number"
+              domain={["dataMin", "dataMax"]}
+              tick={CHART_TICK}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(x: number) => {
+                const d = new Date(x);
+                return `${d.getMonth() + 1}/${d.getDate()}`;
+              }}
+            />
+            <YAxis
+              tick={CHART_TICK}
+              tickFormatter={cents}
+              width={56}
+              axisLine={false}
+              tickLine={false}
+              domain={["auto", "auto"]}
+            />
+            <ReferenceLine y={0} stroke="#78716c" strokeDasharray="4 4" />
+            <Tooltip
+              content={<StrategyPnlTooltip />}
+              cursor={CHART_CURSOR_LINE}
+            />
+            {series.map((s) => (
+              <Line
+                key={s.strategy}
+                data={s.points}
+                dataKey="y"
+                name={s.strategy}
+                type="stepAfter"
+                stroke={color(s.strategy)}
+                strokeWidth={2}
+                dot={false}
+                isAnimationActive={false}
+              />
+            ))}
+          </ComposedChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }
@@ -1346,6 +1533,12 @@ export default function Dashboard() {
   >(null);
   const games = useLiveGames(authed);
 
+  // Population filter (issue #16): null until config loads, then defaults to
+  // the current trading mode. Once the user toggles, their choice sticks.
+  const [population, setPopulation] = useState<Population | null>(null);
+  const pop: Population =
+    population ?? (config?.trading.dry_run ? "dry_run" : "live");
+
   useEffect(() => {
     checkAuth().then(setAuthed);
   }, []);
@@ -1698,6 +1891,9 @@ export default function Dashboard() {
 
         {mainTab === "overview" && (
           <>
+            {/* Population filter: Live | Dry-run (issue #16) */}
+            <PopulationToggle population={pop} onChange={setPopulation} />
+
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
               <StatCard
@@ -1707,30 +1903,30 @@ export default function Dashboard() {
               />
               <StatCard
                 label="On the Line"
-                value={cents(stats.open_cost_cents || 0)}
-                sub={`${stats.open_positions || 0} open positions`}
+                value={cents(stats[pop].open_cost_cents || 0)}
+                sub={`${stats[pop].open_positions || 0} open positions`}
                 delay={50}
               />
               <StatCard
                 label="Win Rate"
-                value={`${stats.win_rate}%`}
-                sub={`${stats.wins}W / ${stats.losses}L`}
+                value={`${stats[pop].win_rate}%`}
+                sub={`${stats[pop].wins}W / ${stats[pop].losses}L`}
                 delay={100}
               />
               <StatCard
                 label="Realized P&L"
-                value={cents(stats.realized_pnl_cents)}
+                value={cents(stats[pop].realized_pnl_cents)}
                 delay={150}
               />
               <StatCard
                 label="Trades"
-                value={String(stats.live_trades)}
-                sub={`${cents(stats.total_cost_cents)} deployed`}
+                value={String(stats[pop].trades)}
+                sub={`${cents(stats[pop].total_cost_cents)} deployed`}
                 delay={200}
               />
               <StatCard
                 label="Fees"
-                value={cents(stats.total_fees_cents)}
+                value={cents(stats[pop].total_fees_cents)}
                 sub="Total fees"
                 delay={250}
               />
@@ -1739,9 +1935,13 @@ export default function Dashboard() {
             {/* P&L Chart */}
             <PnlChart
               trades={allTrades.some((t) => t.placed_at) ? allTrades : trades}
+              population={pop}
               balanceCents={stats.balance_cents}
               portfolioCents={stats.portfolio_value_cents}
             />
+
+            {/* Per-strategy cumulative P&L */}
+            <StrategyPnlChart trades={allTrades} population={pop} />
           </>
         )}
 

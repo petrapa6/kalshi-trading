@@ -47,24 +47,27 @@ from predictions.strategies import load_strategies, parse_strategies_text
 # --- Pydantic response models ---
 
 
-class StatsResponse(BaseModel):
-    total_trades: int
-    live_trades: int
-    dry_run_trades: int
-    total_cost_cents: int
-    total_potential_profit_cents: int
-    realized_pnl_cents: int
-    total_fees_cents: int
+class PopulationStats(BaseModel):
+    trades: int
     wins: int
     losses: int
     win_rate: float
-    total_scans: int
-    total_opportunities: int
-    balance_cents: int
-    portfolio_value_cents: int
+    realized_pnl_cents: int
+    total_cost_cents: int
+    total_potential_profit_cents: int
+    total_fees_cents: int
     open_positions: int
     open_cost_cents: int
     open_potential_profit_cents: int
+
+
+class StatsResponse(BaseModel):
+    live: PopulationStats
+    dry_run: PopulationStats
+    balance_cents: int
+    portfolio_value_cents: int
+    total_scans: int
+    total_opportunities: int
 
 
 class TradeResponse(BaseModel):
@@ -342,36 +345,65 @@ def health():
     return {"status": "ok"}
 
 
+def _population_stats(session, is_dry: bool) -> PopulationStats:
+    """Aggregate one Trade population (dry_run == is_dry). Non-error rows
+    count as trades; open positions are any non-terminal status (live sits
+    in placed/filled, dry-run in dry_run). Fees only count rows that
+    recorded a fee_cents (pre-tracking rows are NULL, not inferred).
+    """
+    pop = Trade.dry_run == is_dry
+
+    trades = session.query(Trade).filter(pop, Trade.status != "error").count()
+    wins = session.query(Trade).filter(pop, Trade.status == "settled_win").count()
+    losses = session.query(Trade).filter(pop, Trade.status == "settled_loss").count()
+    settled = wins + losses
+    win_rate = round(wins / settled * 100, 1) if settled > 0 else 0.0
+
+    realized_pnl = (
+        session.query(func.sum(Trade.pnl_cents)).filter(pop, Trade.pnl_cents.isnot(None)).scalar()
+        or 0
+    )
+    total_cost = (
+        session.query(func.sum(Trade.cost_cents)).filter(pop, Trade.status != "error").scalar() or 0
+    )
+    total_potential = (
+        session.query(func.sum(Trade.potential_profit_cents))
+        .filter(pop, Trade.status != "error")
+        .scalar()
+        or 0
+    )
+    total_fees = (
+        session.query(func.sum(Trade.fee_cents)).filter(pop, Trade.fee_cents.isnot(None)).scalar()
+        or 0
+    )
+
+    open_trades = (
+        session.query(Trade)
+        .filter(pop, Trade.status.notin_(("settled_win", "settled_loss", "error")))
+        .all()
+    )
+
+    return PopulationStats(
+        trades=trades,
+        wins=wins,
+        losses=losses,
+        win_rate=win_rate,
+        realized_pnl_cents=realized_pnl,
+        total_cost_cents=total_cost,
+        total_potential_profit_cents=total_potential,
+        total_fees_cents=total_fees,
+        open_positions=len(open_trades),
+        open_cost_cents=sum(t.cost_cents for t in open_trades),
+        open_potential_profit_cents=sum(t.potential_profit_cents for t in open_trades),
+    )
+
+
 @app.get("/api/stats", response_model=StatsResponse, dependencies=[Depends(_check_token)])
 def get_stats():
     session = get_session()
 
-    total_trades = session.query(Trade).filter(Trade.status != "error").count()
-    live_trades = (
-        session.query(Trade).filter(Trade.dry_run == False, Trade.status != "error").count()
-    )
-    dry_trades = session.query(Trade).filter(Trade.dry_run == True, Trade.status != "error").count()
-
-    total_cost = (
-        session.query(func.sum(Trade.cost_cents))
-        .filter(Trade.dry_run == False, Trade.status != "error")
-        .scalar()
-        or 0
-    )
-    total_potential_profit = (
-        session.query(func.sum(Trade.potential_profit_cents))
-        .filter(Trade.dry_run == False, Trade.status != "error")
-        .scalar()
-        or 0
-    )
-    total_pnl = (
-        session.query(func.sum(Trade.pnl_cents)).filter(Trade.pnl_cents.isnot(None)).scalar() or 0
-    )
-
-    wins = session.query(Trade).filter(Trade.status == "settled_win").count()
-    losses = session.query(Trade).filter(Trade.status == "settled_loss").count()
-    settled = wins + losses
-    win_rate = (wins / settled * 100) if settled > 0 else 0
+    live = _population_stats(session, is_dry=False)
+    dry_run = _population_stats(session, is_dry=True)
 
     total_scans = session.query(Scan).count()
     total_opportunities = session.query(func.count(func.distinct(Opportunity.ticker))).scalar() or 0
@@ -379,50 +411,16 @@ def get_stats():
     latest_balance = (
         session.query(BalanceSnapshot).order_by(desc(BalanceSnapshot.recorded_at)).first()
     )
-    balance_cents = latest_balance.balance_cents if latest_balance else 0
-
-    recorded_fees = (
-        session.query(func.sum(Trade.fee_cents))
-        .filter(Trade.fee_cents.isnot(None), Trade.dry_run == False)
-        .scalar()
-        or 0
-    )
-
-    # Trades placed before fee tracking landed have fee_cents=NULL and are
-    # not included here — total_fees reports only fees we can prove, rather
-    # than inferring them from a hardcoded starting balance.
-    total_fees = recorded_fees
-
-    # Open positions (active bets on the line)
-    open_trades = (
-        session.query(Trade)
-        .filter(Trade.status.in_(("placed", "filled")), Trade.dry_run == False)
-        .all()
-    )
-    open_positions = len(open_trades)
-    open_cost = sum(t.cost_cents for t in open_trades)
-    open_potential = sum(t.potential_profit_cents for t in open_trades)
 
     session.close()
 
     return StatsResponse(
-        total_trades=total_trades,
-        live_trades=live_trades,
-        dry_run_trades=dry_trades,
-        total_cost_cents=total_cost,
-        total_potential_profit_cents=total_potential_profit,
-        realized_pnl_cents=total_pnl,
-        total_fees_cents=total_fees,
-        wins=wins,
-        losses=losses,
-        win_rate=round(win_rate, 1),
+        live=live,
+        dry_run=dry_run,
+        balance_cents=latest_balance.balance_cents if latest_balance else 0,
+        portfolio_value_cents=latest_balance.portfolio_value_cents if latest_balance else 0,
         total_scans=total_scans,
         total_opportunities=total_opportunities,
-        balance_cents=balance_cents,
-        portfolio_value_cents=latest_balance.portfolio_value_cents if latest_balance else 0,
-        open_positions=open_positions,
-        open_cost_cents=open_cost,
-        open_potential_profit_cents=open_potential,
     )
 
 
@@ -727,13 +725,20 @@ def get_histogram_trades(limit: int = 10000):
             Trade.ticker,
             Trade.event_ticker,
             Trade.placed_at,
+            Trade.settled_at,
+            Trade.strategy_name,
         )
+        # Both populations: the dashboard filters live vs dry-run client-side
+        # (issue #16). Charts that want live-only re-filter on dry_run.
         .filter(Trade.status.in_(("settled_win", "settled_loss")))
-        .filter(Trade.dry_run == False)
         .order_by(desc(Trade.placed_at))
         .limit(limit)
         .all()
     )
+
+    def _iso(dt):
+        return dt.isoformat() if hasattr(dt, "isoformat") else str(dt) if dt else None
+
     result = [
         {
             "id": r[0],
@@ -744,11 +749,9 @@ def get_histogram_trades(limit: int = 10000):
             "espn_clock_seconds": r[5],
             "ticker": r[6],
             "event_ticker": r[7],
-            "placed_at": r[8].isoformat()
-            if hasattr(r[8], "isoformat")
-            else str(r[8])
-            if r[8]
-            else None,
+            "placed_at": _iso(r[8]),
+            "settled_at": _iso(r[9]),
+            "strategy_name": r[10],
         }
         for r in rows
     ]
