@@ -89,6 +89,64 @@ def test_one_bad_strategy_rejects_file(tmp_path):
     assert result == []  # entire file rejected, NOT just the bad strategy
 
 
+def test_accepts_new_trigger_fields_and_live_flag(tmp_path):
+    """Issue #13: sport_path + final_minutes + min_volume + live all parse."""
+    from predictions.strategies import load_strategies
+
+    f = tmp_path / "new_fields.yaml"
+    f.write_text(
+        "strategies:\n"
+        "  s:\n"
+        "    live: true\n"
+        "    triggers:\n"
+        "      - sport_path: hockey/nhl\n"
+        "        final_minutes: true\n"
+        "        min_volume: 200\n"
+    )
+    result = load_strategies(str(f))
+    assert len(result) == 1
+    strat = result[0]
+    assert strat.live is True
+    trig = strat.triggers[0]
+    assert trig.sport_path == "hockey/nhl"
+    assert trig.final_minutes is True
+    assert trig.min_volume == 200
+
+
+def test_live_defaults_false(tmp_path):
+    """Issue #13: live is opt-in — absent means false."""
+    from predictions.strategies import load_strategies
+
+    f = tmp_path / "no_live.yaml"
+    f.write_text("strategies:\n  s:\n    triggers:\n      - min_lead: 2\n")
+    result = load_strategies(str(f))
+    assert result[0].live is False
+
+
+def test_unknown_sport_path_rejected(tmp_path):
+    """Issue #13: a sport_path outside the registry rejects the file."""
+    from predictions.strategies import load_strategies
+
+    f = tmp_path / "bad_path.yaml"
+    f.write_text(
+        "strategies:\n  s:\n    triggers:\n      - sport_path: hockey/khl\n"  # not in registry
+    )
+    result = load_strategies(str(f))
+    assert result == []
+
+
+def test_non_bool_live_rejected(tmp_path):
+    """Issue #13: live must be a real bool — a string/int rejects the file."""
+    from predictions.strategies import load_strategies
+
+    f = tmp_path / "bad_live.yaml"
+    f.write_text(
+        "strategies:\n  s:\n    live: 1\n    triggers:\n      - min_lead: 2\n"  # int, not bool
+    )
+    result = load_strategies(str(f))
+    assert result == []
+
+
 def test_yaml_safe_load_rejects_python_object_tags(tmp_path):
     """T-02-03: yaml.safe_load (not yaml.load) prevents arbitrary code via !!python/object."""
     from predictions.strategies import load_strategies

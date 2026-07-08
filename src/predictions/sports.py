@@ -6,6 +6,7 @@ previously lived in espn.py, scanner.py, api.py, and db.py. Pure data:
 imports nothing from this package so even db.py can depend on it.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Literal
 
@@ -135,3 +136,21 @@ CONFIG_FINAL_SECONDS_DEFAULTS: dict[str, str] = {
     for s in SPORTS
     if s.default_final_seconds is not None
 }
+
+
+def crossed_final_clock(
+    sport_path: str, clock_seconds: float, thresholds: Mapping[str, int]
+) -> bool | None:
+    """Direction-aware end-of-game clock check.
+
+    Returns whether a clocked sport has crossed its end-of-game threshold
+    (count-down: at/under; count-up: at/over). Returns None for clockless
+    sports, which have no clock threshold — callers decide what that means.
+    thresholds maps sport_path -> final_seconds.
+    """
+    clock = SPORT_CLOCK_DIR[sport_path]
+    if clock == "none":
+        return None
+    if clock == "up":
+        return clock_seconds >= thresholds[sport_path]
+    return clock_seconds <= thresholds[sport_path]

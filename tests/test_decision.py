@@ -50,6 +50,88 @@ def test_sport_family_constraint():
     assert not decide(None)
 
 
+def test_sport_path_constraint():
+    trigger = Trigger(sport_path="hockey/nhl")
+
+    def decide(sport_path: str | None) -> bool:
+        return trigger_matches(
+            trigger, family=None, elapsed=None, score_diff=0, yes_ask=95, sport_path=sport_path
+        )
+
+    assert decide("hockey/nhl")
+    assert not decide("basketball/nba")
+    assert not decide(None)
+
+
+def test_min_volume_threshold():
+    trigger = Trigger(min_volume=200)
+
+    def decide(volume: int | None) -> bool:
+        return trigger_matches(
+            trigger, family=None, elapsed=None, score_diff=0, yes_ask=95, volume=volume
+        )
+
+    assert not decide(199)
+    assert decide(200)
+    assert not decide(None)  # no volume data can't satisfy a volume gate
+
+
+def test_final_minutes_count_down_sport():
+    trigger = Trigger(final_minutes=True)
+    thresholds = {"basketball/nba": 180}
+
+    def decide(clock_seconds: float) -> bool:
+        return trigger_matches(
+            trigger,
+            family=None,
+            elapsed=None,
+            score_diff=0,
+            yes_ask=95,
+            sport_path="basketball/nba",
+            clock_seconds=clock_seconds,
+            thresholds=thresholds,
+        )
+
+    assert decide(170)  # inside the final-minutes window
+    assert not decide(200)  # threshold not yet crossed
+
+
+def test_final_minutes_count_up_sport():
+    trigger = Trigger(final_minutes=True)
+    thresholds = {"soccer/eng.1": 4500}
+
+    def decide(clock_seconds: float) -> bool:
+        return trigger_matches(
+            trigger,
+            family=None,
+            elapsed=None,
+            score_diff=0,
+            yes_ask=95,
+            sport_path="soccer/eng.1",
+            clock_seconds=clock_seconds,
+            thresholds=thresholds,
+        )
+
+    assert decide(4600)  # past the threshold
+    assert not decide(4400)  # before the threshold
+
+
+def test_final_minutes_never_matches_clockless_sport():
+    trigger = Trigger(final_minutes=True)
+
+    matched = trigger_matches(
+        trigger,
+        family=None,
+        elapsed=None,
+        score_diff=0,
+        yes_ask=95,
+        sport_path="baseball/mlb",
+        clock_seconds=0.0,
+        thresholds={},
+    )
+    assert not matched
+
+
 def test_expiry_window_bounds():
     now = datetime(2026, 7, 7, 12, 0, tzinfo=timezone.utc)
 

@@ -438,6 +438,7 @@ async def evaluate_strategies(
         .all()
     }
 
+    thresholds = get_final_seconds_thresholds()
     fired_this_tick = 0
     for _series_ticker, espn_games in espn_final_period.items():
         for game in espn_games:
@@ -464,6 +465,10 @@ async def evaluate_strategies(
                             elapsed=elapsed,
                             score_diff=game.score_diff,
                             yes_ask=yes_ask,
+                            sport_path=sport_path,
+                            clock_seconds=game.clock_seconds,
+                            thresholds=thresholds,
+                            volume=volume,
                         ):
                             continue
                         try:

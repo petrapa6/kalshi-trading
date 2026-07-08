@@ -11,7 +11,7 @@ from typing import Optional
 
 import httpx
 
-from predictions.sports import KALSHI_TO_ESPN, SPORT_CLOCK_DIR, SPORT_FINAL_PERIOD
+from predictions.sports import KALSHI_TO_ESPN, SPORT_FINAL_PERIOD, crossed_final_clock
 from predictions.teams import espn_to_kalshi_codes
 
 ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports"
@@ -148,12 +148,9 @@ def is_in_final_minutes(game: GameState, thresholds: Mapping[str, int]) -> bool:
     """
     if not game.is_live or not game.is_final_period:
         return False
-    clock = SPORT_CLOCK_DIR[game.sport_path]
-    if clock == "none":
-        return True
-    if clock == "up":
-        return game.clock_seconds >= thresholds[game.sport_path]
-    return game.clock_seconds <= thresholds[game.sport_path]
+    # Clockless final periods (None) are tradeable in the live path.
+    crossed = crossed_final_clock(game.sport_path, game.clock_seconds, thresholds)
+    return True if crossed is None else crossed
 
 
 def match_kalshi_to_espn(

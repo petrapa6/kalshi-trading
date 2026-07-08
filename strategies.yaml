@@ -1,8 +1,14 @@
 # Strategy catalog for the Kalshi trading scanner backtest + (Phase 3) live scanner.
 #
-# Each strategy has an optional `description` and a required `triggers` list.
-# A trigger is an OR-of-AND clause: any one trigger that matches all its conditions
-# fires the strategy. Missing fields = no constraint on that dimension.
+# Each strategy has an optional `description`, an optional `live` flag, and a
+# required `triggers` list. A trigger is an OR-of-AND clause: any one trigger
+# that matches all its conditions fires the strategy. Missing fields = no
+# constraint on that dimension.
+#
+# Strategy-level fields:
+#   live           Live-enabled: opts the strategy into real-money placement.
+#                  Boolean, default false; must be a real bool (not 1/"yes").
+#                  Backtest ignores it.
 #
 # Supported trigger fields:
 #   sport          Sport family (e.g. football, baseball, tennis). UK terminology:
@@ -10,8 +16,17 @@
 #                  the dashboard backtest filters strategies and leagues by this
 #                  family; the live scanner (Phase 3) maps it to its per-league
 #                  taxonomy.
+#   sport_path     ESPN sport path (e.g. hockey/nhl, soccer/eng.1), narrower than
+#                  `sport` and implying its family. Must exist in the sport
+#                  registry. Live scanner only — info text in backtest.
 #   min_minute     Game-clock minutes elapsed since start (sport-aware)
+#   final_minutes  Bool. Match only in the sport's final-minutes window (final
+#                  period past its end-of-game clock threshold; thresholds come
+#                  from the sport registry). Never matches clockless sports
+#                  (baseball). Live scanner only — info text in backtest.
 #   min_lead       Minimum score lead in goals/points
+#   min_volume     Minimum market volume. Live scanner only — no historical
+#                  volume in backtest, so info text there.
 #   min_yes_price  Minimum YES ask in cents (live scanner only — info text in backtest)
 #   max_yes_price  Maximum YES ask in cents (live scanner only — info text in backtest)
 #

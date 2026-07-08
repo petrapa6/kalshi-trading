@@ -13,7 +13,9 @@ import os
 from typing import Annotated, Optional
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+
+from predictions.sports import SPORT_BY_PATH
 
 log = logging.getLogger(__name__)
 
@@ -22,10 +24,25 @@ class Trigger(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     sport: Optional[str] = None
+    # Sport path: ESPN's fine-grained sport/league id (e.g. hockey/nhl),
+    # narrower than `sport`. Implies its family.
+    sport_path: Optional[str] = None
     min_minute: Optional[int] = None
     min_lead: Optional[int] = None
+    # Final minutes: final period past the sport's end-of-game clock
+    # threshold. Clock semantics come from the sport registry; undefined
+    # (never matches) for clockless sports.
+    final_minutes: Optional[bool] = None
+    min_volume: Optional[int] = None
     min_yes_price: Optional[int] = None
     max_yes_price: Optional[int] = None
+
+    @field_validator("sport_path")
+    @classmethod
+    def _known_sport_path(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and v not in SPORT_BY_PATH:
+            raise ValueError(f"unknown sport path {v!r} — not in the sport registry")
+        return v
 
 
 class Strategy(BaseModel):
@@ -36,6 +53,10 @@ class Strategy(BaseModel):
     # not complain because the loader post-processes parsed strategies.
     name: str = ""
     description: Optional[str] = None
+    # Live-enabled: opts the strategy into real-money placement. Parsed
+    # here; gating lands in the unified-placement slice. Strict bool so a
+    # stray int/string is a load error, not a silent truthy coercion.
+    live: bool = Field(default=False, strict=True)
     triggers: Annotated[list[Trigger], Field(min_length=1)]
 
 

@@ -65,8 +65,9 @@ async def test_evaluate_strategies_fires_dry_run_trade(isolated_db, monkeypatch,
     assert t.count == 5  # 500 // 95 == 5
 
 
-async def test_strategy_fire_independent_of_dry_run_env(isolated_db, monkeypatch, tmp_path):
-    """D-13: strategy dry_run is hardcoded True, not driven by DRY_RUN env var."""
+async def test_strategy_fire_independent_of_live_mode(isolated_db, monkeypatch, tmp_path):
+    """D-13: strategy dry_run is hardcoded True, not driven by the runtime
+    dry-run mode — a strategy fires as a dry-run even when live mode is on."""
     import predictions.scanner as scanner_module
     from predictions.espn import GameState
     from predictions.scanner import evaluate_strategies
@@ -76,7 +77,7 @@ async def test_strategy_fire_independent_of_dry_run_env(isolated_db, monkeypatch
         "strategies:\n  s1:\n    triggers:\n      - sport: basketball\n        min_yes_price: 90\n"
     )
     monkeypatch.setenv("STRATEGIES_PATH", str(f))
-    monkeypatch.setenv("DRY_RUN", "false")
+    db_module.set_config("dry_run", "false")
     monkeypatch.setattr(
         scanner_module,
         "market_prices",
@@ -334,6 +335,119 @@ async def test_trading_paused_blocks_strategy_fire(isolated_db, monkeypatch, tmp
     trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
     session.close()
     assert len(trades) == 0
+
+
+def _nba_market_prices(volume: int) -> dict:
+    return {
+        "KXNBAGAME-20260101-SEALAL": {
+            "yes_ask": 95,
+            "volume": volume,
+            "title": "T",
+            "event_ticker": "KXNBAGAME-20260101",
+            "ticker": "KXNBAGAME-20260101-SEALAL",
+            "series_ticker": "KXNBAGAME",
+        }
+    }
+
+
+def _nba_game(clock_seconds: float):
+    from predictions.espn import GameState
+
+    return GameState(
+        espn_id="401234",
+        home_team="SEA",
+        away_team="LAL",
+        home_score=110,
+        away_score=98,
+        period=4,
+        display_clock="0:00",
+        clock_seconds=clock_seconds,
+        state="in",
+        status_name="STATUS_IN_PROGRESS",
+        sport_path="basketball/nba",
+    )
+
+
+async def test_new_fields_fire_when_conditions_hold(isolated_db, monkeypatch, tmp_path):
+    """Issue #13: a strategy gated on sport_path + final_minutes + min_volume
+    fires when the game is inside the final-minutes window and volume clears."""
+    import predictions.scanner as scanner_module
+    from predictions.scanner import evaluate_strategies
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(
+        "strategies:\n"
+        "  s1:\n"
+        "    triggers:\n"
+        "      - sport_path: basketball/nba\n"
+        "        final_minutes: true\n"
+        "        min_volume: 300\n"
+    )
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    monkeypatch.setattr(scanner_module, "market_prices", _nba_market_prices(volume=500))
+    # NBA final-seconds threshold is 180; 60s left in P4 is inside the window.
+    espn_final_period = {"KXNBAGAME": [_nba_game(clock_seconds=60.0)]}
+
+    session = db_module.get_session()
+    await evaluate_strategies(session, espn_final_period, max_bet_cents=500)
+    session.close()
+
+    session = db_module.get_session()
+    trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
+    session.close()
+    assert len(trades) == 1
+
+
+async def test_final_minutes_skips_outside_window(isolated_db, monkeypatch, tmp_path):
+    """Issue #13: same strategy does NOT fire before the clock threshold."""
+    import predictions.scanner as scanner_module
+    from predictions.scanner import evaluate_strategies
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(
+        "strategies:\n"
+        "  s1:\n"
+        "    triggers:\n"
+        "      - sport_path: basketball/nba\n"
+        "        final_minutes: true\n"
+    )
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    monkeypatch.setattr(scanner_module, "market_prices", _nba_market_prices(volume=500))
+    # 300s left in P4 is still outside the 180s NBA final-minutes threshold.
+    espn_final_period = {"KXNBAGAME": [_nba_game(clock_seconds=300.0)]}
+
+    session = db_module.get_session()
+    await evaluate_strategies(session, espn_final_period, max_bet_cents=500)
+    session.close()
+
+    session = db_module.get_session()
+    trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
+    session.close()
+    assert trades == []
+
+
+async def test_min_volume_skips_thin_market(isolated_db, monkeypatch, tmp_path):
+    """Issue #13: a per-strategy min_volume above market volume blocks the fire."""
+    import predictions.scanner as scanner_module
+    from predictions.scanner import evaluate_strategies
+
+    f = tmp_path / "strats.yaml"
+    f.write_text(
+        "strategies:\n  s1:\n    triggers:\n      - sport: basketball\n        min_volume: 1000\n"
+    )
+    monkeypatch.setenv("STRATEGIES_PATH", str(f))
+    # 500 clears the global MIN_VOLUME gate but not the strategy's min_volume=1000.
+    monkeypatch.setattr(scanner_module, "market_prices", _nba_market_prices(volume=500))
+    espn_final_period = {"KXNBAGAME": [_nba_game(clock_seconds=60.0)]}
+
+    session = db_module.get_session()
+    await evaluate_strategies(session, espn_final_period, max_bet_cents=500)
+    session.close()
+
+    session = db_module.get_session()
+    trades = session.query(Trade).filter(Trade.strategy_name == "s1").all()
+    session.close()
+    assert trades == []
 
 
 def test_elapsed_minutes_per_sport():
