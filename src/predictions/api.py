@@ -20,6 +20,7 @@ from predictions.db import (
     Scan,
     Trade,
     countable_trades,
+    dry_run_enabled,
     get_all_config,
     get_final_seconds_thresholds,
     get_session,
@@ -210,17 +211,15 @@ async def _run_scanner_loop():
     min_price = int(os.getenv("MIN_YES_PRICE", "88"))
     bet_percent = float(os.getenv("BET_PERCENT", "5.0"))
     interval = int(os.getenv("POLL_INTERVAL_SECONDS", "30"))
-    dry = os.getenv("DRY_RUN", "true").lower() == "true"
 
     log.info(
         f"Starting scanner: min_price={min_price}c, "
-        f"bet_percent={bet_percent}%, interval={interval}s, dry_run={dry}"
+        f"bet_percent={bet_percent}%, interval={interval}s (dry-run mode via DB config)"
     )
     await run_scanner(
         min_yes_price=min_price,
         bet_percent=bet_percent,
         poll_interval=interval,
-        dry_run=dry,
     )
 
 
@@ -996,7 +995,7 @@ def _format_final_minutes(clock_dir: str, secs: int) -> str:
 @app.get("/api/config", dependencies=[Depends(_check_token)])
 def get_config_endpoint():
     cfg = get_all_config()
-    dry_run = os.getenv("DRY_RUN", "true").lower() == "true"
+    dry_run = dry_run_enabled()
 
     sports = []
     for sport_path, kalshi_series in sorted([(v, k) for k, v in KALSHI_TO_ESPN.items()]):

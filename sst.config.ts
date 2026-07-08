@@ -58,7 +58,6 @@ export default $config({
           MIN_YES_PRICE: "92",
           BET_PERCENT: "5.0",
           POLL_INTERVAL_SECONDS: "10",
-          DRY_RUN: $dev ? "true" : "false",
           API_TOKEN: apiToken.value,
           DB_BACKUP_BUCKET: backupBucket.name,
           API_FOOTBALL_KEY: apiFootballKey.value,

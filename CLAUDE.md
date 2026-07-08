@@ -11,7 +11,7 @@ Session rules. Project facts (architecture, conventions, invariants) live in
 | Current phase / progress (what's in flight)                                                                                       | `.planning/STATE.md`                 |
 | Phase plans, summaries, reviews, UAT                                                                                              | `.planning/phases/<NN-slug>/`        |
 | Stack, dependencies, package managers                                                                                             | `.planning/codebase/STACK.md`        |
-| Architecture, scanner loops, settlement duality, **critical invariants** (integer cents, `trading_paused` kill switch, `DRY_RUN`) | `.planning/codebase/ARCHITECTURE.md` |
+| Architecture, scanner loops, settlement duality, **critical invariants** (integer cents, `trading_paused` kill switch, runtime `dry_run` toggle) | `.planning/codebase/ARCHITECTURE.md` |
 | Directory layout + "where to put what"                                                                                            | `.planning/codebase/STRUCTURE.md`    |
 | Coding style, async patterns, pre-commit, **Don't-do list**                                                                       | `.planning/codebase/CONVENTIONS.md`  |
 | External integrations + auth surfaces                                                                                             | `.planning/codebase/INTEGRATIONS.md` |

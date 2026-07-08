@@ -1368,42 +1368,87 @@ export default function Dashboard() {
               </a>
             </div>
             {config && (
-              <button
-                onClick={async () => {
-                  try {
-                    const newVal = !config.trading.paused;
-                    setIsTradingTransition(newVal ? "pausing" : "resuming");
-                    await new Promise((r) => setTimeout(r, 1000)); // Brief delay to ensure overlay is visible
-                    const res = await updateConfig(
-                      "trading_paused",
-                      newVal ? "true" : "false",
-                    );
-                    if (res.success) {
-                      setConfig({
-                        ...config,
-                        trading: { ...config.trading, paused: newVal },
-                      });
-                    } else {
-                      console.error("updateConfig failed:", res);
-                      alert(
-                        `Failed to update config. Debug info: ${res.error}`,
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={async () => {
+                    try {
+                      const newVal = !config.trading.paused;
+                      setIsTradingTransition(newVal ? "pausing" : "resuming");
+                      await new Promise((r) => setTimeout(r, 1000)); // Brief delay to ensure overlay is visible
+                      const res = await updateConfig(
+                        "trading_paused",
+                        newVal ? "true" : "false",
                       );
+                      if (res.success) {
+                        setConfig({
+                          ...config,
+                          trading: { ...config.trading, paused: newVal },
+                        });
+                      } else {
+                        console.error("updateConfig failed:", res);
+                        alert(
+                          `Failed to update config. Debug info: ${res.error}`,
+                        );
+                      }
+                    } catch (e) {
+                      console.error("Error updating config:", e);
+                      alert("Error while updating config.");
+                    } finally {
+                      setIsTradingTransition(null);
                     }
-                  } catch (e) {
-                    console.error("Error updating config:", e);
-                    alert("Error while updating config.");
-                  } finally {
-                    setIsTradingTransition(null);
-                  }
-                }}
-                className={`px-6 py-2 rounded-lg font-bold transition-all shadow-lg cursor-pointer relative z-10 pointer-events-auto ${
-                  config.trading.paused
-                    ? "bg-amber-600 text-black hover:bg-amber-500 shadow-amber-900/30"
-                    : "bg-red-900/40 text-red-500 border border-red-900 hover:bg-red-900/60"
-                }`}
-              >
-                {config.trading.paused ? "Resume Trading" : "Pause Trading"}
-              </button>
+                  }}
+                  className={`px-6 py-2 rounded-lg font-bold transition-all shadow-lg cursor-pointer relative z-10 pointer-events-auto ${
+                    config.trading.paused
+                      ? "bg-amber-600 text-black hover:bg-amber-500 shadow-amber-900/30"
+                      : "bg-red-900/40 text-red-500 border border-red-900 hover:bg-red-900/60"
+                  }`}
+                >
+                  {config.trading.paused ? "Resume Trading" : "Pause Trading"}
+                </button>
+                <button
+                  onClick={async () => {
+                    // Disabling dry-run starts real-money trading (still
+                    // subject to the kill switch) — confirm first.
+                    const goingLive = config.trading.dry_run;
+                    if (
+                      goingLive &&
+                      !window.confirm(
+                        "Disable dry-run mode? The scanner will place REAL orders on the next scan tick (still subject to the pause kill switch).",
+                      )
+                    ) {
+                      return;
+                    }
+                    const newVal = !config.trading.dry_run;
+                    try {
+                      const res = await updateConfig(
+                        "dry_run",
+                        newVal ? "true" : "false",
+                      );
+                      if (res.success) {
+                        setConfig({
+                          ...config,
+                          trading: { ...config.trading, dry_run: newVal },
+                        });
+                      } else {
+                        console.error("updateConfig failed:", res);
+                        alert(
+                          `Failed to update config. Debug info: ${res.error}`,
+                        );
+                      }
+                    } catch (e) {
+                      console.error("Error updating config:", e);
+                      alert("Error while updating config.");
+                    }
+                  }}
+                  className={`px-6 py-2 rounded-lg font-bold transition-all shadow-lg cursor-pointer relative z-10 pointer-events-auto ${
+                    config.trading.dry_run
+                      ? "bg-green-900/40 text-green-400 border border-green-900 hover:bg-green-900/60"
+                      : "bg-yellow-600 text-black hover:bg-yellow-500 shadow-yellow-900/30"
+                  }`}
+                >
+                  {config.trading.dry_run ? "Go Live" : "Enable Dry Run"}
+                </button>
+              </div>
             )}
           </div>
 

@@ -31,6 +31,7 @@ from predictions.db import (
     Opportunity,
     Scan,
     Trade,
+    dry_run_enabled,
     get_config,
     get_config_int,
     get_final_seconds_thresholds,
@@ -357,8 +358,8 @@ def place_strategy_trade(
 ) -> None:
     """Write a dry-run Trade row from a strategy fire (D-13).
 
-    NEVER calls Kalshi REST. Distinct from place_bet's process-level
-    DRY_RUN branch — see 03-CONTEXT.md D-13 specifics. yes_price is
+    NEVER calls Kalshi REST. Distinct from place_bet's runtime dry-run
+    branch — see 03-CONTEXT.md D-13 specifics. yes_price is
     sourced from market_prices cache (Kalshi yes_ask, integer cents).
     """
     yes_price = opp.yes_ask
@@ -505,7 +506,6 @@ async def scan_kalshi_with_espn(
     espn_final: dict,
     min_yes_price: int,
     max_bet_cents: int,
-    dry_run: bool,
 ):
     """Scan Kalshi markets against cached ESPN game state and place bets.
 
@@ -622,6 +622,8 @@ async def scan_kalshi_with_espn(
     if not opportunities:
         log.info("No Kalshi opportunities matched ESPN games")
     else:
+        # Read the runtime mode once per tick; applies to new placements only.
+        dry_run = dry_run_enabled()
         open_statuses = ("placed", "filled", "dry_run")
         open_trades = (
             session.query(Trade)
@@ -725,7 +727,6 @@ async def run_scanner(
     min_yes_price: int = 88,
     bet_percent: float = 5.0,
     poll_interval: int = 30,
-    dry_run: bool = True,
 ):
     init_db()
     client = load_client()
@@ -897,7 +898,6 @@ async def run_scanner(
                     current_espn,
                     cur_price,
                     max_bet_cents,
-                    dry_run,
                 )
 
                 # Phase 3 D-04: per-tick strategy evaluation. Reuses
@@ -941,17 +941,15 @@ if __name__ == "__main__":
     min_price = int(os.getenv("MIN_YES_PRICE", "88"))
     bet_percent = float(os.getenv("BET_PERCENT", "5.0"))
     interval = int(os.getenv("POLL_INTERVAL_SECONDS", "30"))
-    dry = os.getenv("DRY_RUN", "true").lower() == "true"
 
     log.info(
         f"Starting scanner: min_price={min_price}c, bet_percent={bet_percent}%, "
-        f"ESPN=10s, Kalshi=5s, dry_run={dry}"
+        f"ESPN=10s, Kalshi=5s (dry-run mode via DB config)"
     )
     asyncio.run(
         run_scanner(
             min_yes_price=min_price,
             bet_percent=bet_percent,
             poll_interval=interval,
-            dry_run=dry,
         )
     )

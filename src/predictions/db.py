@@ -90,7 +90,7 @@ class Trade(Base):
     )  # seconds remaining (or elapsed for count-up sports)
     fee_cents = Column(Integer, nullable=True)  # trading fees charged by Kalshi
     # Strategy attribution: NULL for legacy real trades + legacy
-    # process-level dry-runs (DRY_RUN env). Set to a strategy.name
+    # process-level dry-runs (pre-runtime-toggle). Set to a strategy.name
     # string for dry-run strategy fires (D-13).
     strategy_name = Column(String, nullable=True, index=True)
 
@@ -246,6 +246,16 @@ def get_config(key: str) -> str:
 
 def get_config_int(key: str) -> int:
     return int(get_config(key) or "0")
+
+
+def dry_run_enabled() -> bool:
+    """Runtime dry-run mode, read per scan tick.
+
+    Absence or any value other than the literal "false" means dry-run is
+    ON — absence is the safe default (no first-boot seed needed). Only an
+    explicit "false" starts real-money placement.
+    """
+    return get_config("dry_run") != "false"
 
 
 def get_final_seconds_thresholds() -> dict[str, int]:

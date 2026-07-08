@@ -2,7 +2,7 @@
 
 Automated scanner that watches live sports games across multiple leagues, cross-references ESPN scores with Kalshi YES contract prices, and buys YES at 88–99¢ on games that are already effectively decided. Settled contracts pay $1; the edge comes from Kalshi's market lag behind live game state.
 
-**Disclaimer.** This software is provided as-is. Prediction markets involve real financial risk and regulatory constraints that vary by jurisdiction. Run with `DRY_RUN=true` first (see [How to dry-run](#how-to-dry-run)), review every trade placed, and do not deploy with real funds unless you understand the strategy, the risks, and your local regulations.
+**Disclaimer.** This software is provided as-is. Prediction markets involve real financial risk and regulatory constraints that vary by jurisdiction. Run in dry-run mode first (the default — see [How to dry-run](#how-to-dry-run)), review every trade placed, and do not deploy with real funds unless you understand the strategy, the risks, and your local regulations.
 
 ---
 
@@ -129,9 +129,11 @@ logic — but skips the final order placement. Instead of sending an order to
 Kalshi, the scanner writes the would-be trade to SQLite with status
 `dry_run` and logs `[DRY RUN] Order not placed`.
 
-Dry-run is controlled by the `DRY_RUN` environment variable. It defaults to
-`true` everywhere except production (`sst.config.ts` sets `DRY_RUN=false` on
-the deployed ECS service; `sst dev` keeps it `true`).
+Dry-run is a **runtime DB config value** (`dry_run`), toggled from the
+dashboard — flipping it changes scanner behavior on the next scan tick, no
+restart. A missing row or any value other than `"false"` means dry-run is ON;
+only `"false"` enables live trading. Absence is the safe default, so a fresh
+deploy always starts in dry-run until you explicitly go live.
 
 > **Note:** dry-run still requires real Kalshi API credentials. Market
 > discovery, prices, and the balance snapshot are all live reads — only
@@ -148,8 +150,9 @@ Edit `.env` and set at minimum:
 ```bash
 KALSHI_API_KEY=your-key-id
 KALSHI_PRIVATE_KEY_PATH=./secrets/kalshi.pem   # or inline KALSHI_PRIVATE_KEY
-DRY_RUN=true                                    # already the default
 ```
+
+Dry-run is ON by default (no `dry_run` DB row) — no env var needed.
 
 ### 2. Run
 
@@ -157,7 +160,8 @@ DRY_RUN=true                                    # already the default
 pnpm dev:api
 ```
 
-Startup logs confirm the mode: `Starting scanner: … dry_run=True`.
+The current mode shows in the dashboard header badge (DRY RUN / LIVE / PAUSED),
+sourced from the `dry_run` DB config value.
 
 Dry-run only produces trades while games are live **and** near their end
 (high YES price + big score lead). Run it during an active game window for
@@ -182,15 +186,19 @@ they never pollute live accounting.
 
 ### Going live
 
-Set `DRY_RUN=false` in `.env` and restart. Two further locks apply on top of
-`DRY_RUN`:
+Click **Go Live** on the dashboard (or `PUT /api/config` with
+`{"key": "dry_run", "value": "false"}`). The change takes effect on the next
+scan tick — no restart. Disabling dry-run from the dashboard requires a
+confirmation dialog, since it starts real-money trading. Two further locks
+apply on top of `dry_run`:
 
 - the `trading_paused` runtime config key (set via `pnpm cli config set
-  trading_paused true`) stops real order placement without a restart;
+  trading_paused true`, or the dashboard Pause button) stops real order
+  placement without a restart;
 - `max_positions` caps concurrent exposure.
 
-The [Home Assistant add-on](#run-as-a-home-assistant-add-on-dry-run-only)
-hardcodes `DRY_RUN=true` in `run.sh` and cannot go live.
+Open positions placed under the previous mode keep their placement-time tag —
+flipping the mode only affects new placements.
 
 ---
 
@@ -323,9 +331,10 @@ The pre-commit hook (installed by `install.sh` or manually symlinked to `.git/ho
 This repo ships as a HA add-on alongside the SST/AWS deploy. The add-on
 runs the scanner and dashboard in a single container, exposes the
 dashboard on port 8000, and stores SQLite + strategies under `/data`
-(included in HA backups). `DRY_RUN=true` is hardcoded in `run.sh` and
-`trading_paused=true` is seeded on first boot — three independent
-locks prevent live orders.
+(included in HA backups). Dry-run mode is ON by default (no `dry_run` config
+row) and `trading_paused=true` is seeded on first boot — both are the safety
+floor, and going live takes two deliberate dashboard actions (Go Live, then
+Resume Trading).
 
 ### One-time setup
 

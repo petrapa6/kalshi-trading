@@ -63,7 +63,6 @@ async def test_scan_records_opportunity_and_places_dry_run_bet():
         espn_final={"KXNBAGAME": [game]},
         min_yes_price=91,
         max_bet_cents=1000,
-        dry_run=True,
     )
 
     session = db_module.get_session()
@@ -133,7 +132,6 @@ async def test_falsy_lead_config_falls_back_to_registry_default():
         espn_final={"KXNBAGAME": [game]},
         min_yes_price=91,
         max_bet_cents=1000,
-        dry_run=True,
     )
 
     session = db_module.get_session()

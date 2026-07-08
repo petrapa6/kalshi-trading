@@ -23,8 +23,10 @@ else
     echo "[kalshi] No $CONFIG_PATH — using existing environment variables"
 fi
 
-# ─── 2. Hardcoded environment (NOT user-toggleable) ───
-export DRY_RUN=true
+# ─── 2. Hardcoded environment (paths + ports; NOT user-toggleable) ───
+# Dry-run mode is a runtime DB config value (`dry_run`), toggled from the
+# dashboard — not an env var. Absence defaults to dry-run ON. The
+# trading_paused=true first-boot seed below remains the safety floor.
 export DATABASE_URL="sqlite:////data/predictions.db"
 export SOCCER_CACHE_DB_PATH="/data/soccer-cache.db"
 export STRATEGIES_PATH="/data/strategies.yaml"
