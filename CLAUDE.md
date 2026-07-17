@@ -28,7 +28,7 @@ Session rules. Project facts (architecture, conventions, invariants) live in
 pnpm dev:api                   # API + scanner on :8000
 pnpm dev:dashboard             # Dashboard on :3777
 pnpm cli config                # TUI (needs API_TOKEN env)
-pnpm sst:deploy                # Production deploy
+docker build -t kalshi-trading .   # HAOS add-on image (production deploy)
 ```
 
 ## Trading data flow (happy path)
@@ -93,7 +93,8 @@ checking.
 - Act without asking when the change is reversible, contained to existing
   files, no external side effects, and clearly within the current task.
 - Ask before: creating new files, adding/removing dependencies, changing
-  shared interfaces, touching CI or infra (`sst.config.ts`, `Dockerfile`).
+  shared interfaces, touching CI or infra (`Dockerfile`, `config.yaml`,
+  `run.sh`).
 - When unsure, state the action + intent in one line before doing it.
 
 ## Git + commits
@@ -104,7 +105,7 @@ checking.
 - Never amend pushed commits. Never `--no-verify` hooks unless explicitly
   asked.
 - Never commit `.env`, `.env.local`, `predictions.db`, `scanner.log`, or
-  anything under `__pycache__/` / `node_modules/` / `.next/` / `.sst/`.
+  anything under `__pycache__/` / `node_modules/` / `.next/`.
 - **Manual secret scan before every commit.** The pre-commit hook
   (`scripts/pre-commit-check.sh`) handles format + type-check only — it
   does NOT scan for secrets (API tokens, Kalshi keys, Cloudflare tokens,

@@ -39,7 +39,7 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 - Uvicorn 0.41.0 - ASGI server (0.0.0.0:8000 in containers)
 
 **Frontend:**
-- Next.js 16.1.6 - Dashboard SPA via OpenNext (Lambda/CloudFront on SST)
+- Next.js 16.1.6 - Dashboard SPA, `output: "standalone"` (served by `node server.js` in the add-on container)
 - React 19.2.3 (dashboard) / 19.0.0 (CLI) - Component library
 - React-ink 6.8.0 - Terminal UI toolkit for CLI
 - Tailwind CSS 4 - Utility-first CSS (dashboard)
@@ -48,9 +48,6 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 - pytest 8.0 - Python test runner
 - pytest-asyncio 0.24 - Async test mode for `asyncio` tests
 
-**Build/Dev Tools:**
-- SST v4.2.2 - Infrastructure as code for AWS ECS, S3, Cloudflare DNS
-
 ## Key Dependencies
 
 **Critical Backend:**
@@ -58,7 +55,6 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 - `websockets` 16.0 - WebSocket client for Kalshi market lifecycle events (v2 protocol)
 - `cryptography` 46.0.5 - RSA signature generation for Kalshi API auth (PSS + SHA256)
 - `python-dotenv` 1.2.2 - `.env` file loading for local development
-- `boto3` 1.42.63 - AWS S3 client for database snapshots and recovery
 
 **Frontend:**
 - `recharts` 3.8.1 - React charting library for dashboard visualizations
@@ -88,9 +84,12 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
   - Bearer token for API/dashboard auth
   - Dashboard password (hashed server-side)
   - Tuning parameters (min price, bet %, poll interval)
-  - S3 bucket for DB backups
   - ESPN/API-Football API keys
   - Database URL override (default: repo-root SQLite)
+
+In the Home Assistant add-on these come from the add-on options UI instead:
+Supervisor writes `/data/options.json`, and `run.sh` reads it with `jq` and
+exports the same env vars.
 
 **Runtime Config:**
 - SQLite `config` table in `predictions.db` — holds tunables read every scan loop (~5s)
@@ -102,7 +101,8 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 - `tsconfig.json` (CLI: ES2022, dashboard: ES2017 + Next.js paths)
 - `oxfmt.json` (dashboard) - 4-space indent, 100-char line width
 - `oxlint.json` (dashboard) - warns on unused vars, allows console
-- `sst.config.ts` - AWS VPC, ECS Fargate service, S3 bucket, Cloudflare DNS, secrets injection
+- `config.yaml` - HA add-on manifest: `options`/`schema` (secrets), `ports` (8000), `map: data:rw`
+- `build.yaml` / `repository.yaml` - add-on base images per arch; add-on repository descriptor
 
 ## Platform Requirements
 
@@ -113,16 +113,19 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 - `.env` file with Kalshi API credentials
 
 **Production:**
-- AWS account (ECS Fargate container in us-east-2)
-- Cloudflare DNS for domain delegation
-- S3 bucket (DB backup durability)
-- SST v4 CLI for deployment
-- IAM roles/policies for ECS task (S3 read/write)
+- Home Assistant OS host (aarch64 or amd64); Supervisor builds the image on-device
+- Secrets set in the add-on Configuration tab (no cloud account required)
+- Persistence + backups handled by HA: everything under `/data` is in HA snapshots
 
 **Container:**
-- Multi-layer Docker build: (1) uv + Python deps, (2) src code copy + package install, (3) uvicorn startup
-- Base image: `python:3.13.3-slim-bookworm@sha256:…`
-- Entry: `uvicorn predictions.api:app --host 0.0.0.0 --port 8000`
+- Single image runs both processes, supervised by `run.sh` under `tini` (PID 1)
+- Multi-stage Docker build: (1) `node:20-alpine` builds the Next.js standalone bundle,
+  (2) `python:3.13-slim-bookworm` + `uv sync --frozen --no-dev` builds the venv,
+  (3) runner (`python:3.13-slim-bookworm` + Node 20 + `tini`/`jq`) assembles both
+- Entry: `tini` → `/run.sh` → uvicorn on `127.0.0.1:8001` + `node server.js` on `0.0.0.0:8000`
+- Only port 8000 is exposed; the dashboard proxies `/api/*` to the loopback API server-side
+- `run.sh` seeds `trading_paused=true` on first boot and falls back to env vars when
+  `/data/options.json` is absent (which is what makes local `docker run --env-file` work)
 
 ---
 
