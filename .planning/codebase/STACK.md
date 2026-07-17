@@ -20,7 +20,7 @@ last_mapped_commit: d010a403e3997670cdce46c100b8d39438c4783d
 ## Runtime
 
 **Environment:**
-- Python 3.13.3 slim (Debian Bookworm) - Docker container runtime
+- Python 3.13 Alpine - Docker container runtime
 - Node.js 20+ - Dashboard and CLI runtime (via pnpm)
 
 **Package Manager:**
@@ -120,8 +120,8 @@ exports the same env vars.
 **Container:**
 - Single image runs both processes, supervised by `run.sh` under `tini` (PID 1)
 - Multi-stage Docker build: (1) `node:20-alpine` builds the Next.js standalone bundle,
-  (2) `python:3.13-slim-bookworm` + `uv sync --frozen --no-dev` builds the venv,
-  (3) runner (`python:3.13-slim-bookworm` + Node 20 + `tini`/`jq`) assembles both
+  (2) `python:3.13-alpine` + `uv sync --frozen --no-dev` builds the venv,
+  (3) runner (`python:3.13-alpine` + copied `node` binary + `tini`/`jq`/`bash`) assembles both
 - Entry: `tini` → `/run.sh` → uvicorn on `127.0.0.1:8001` + `node server.js` on `0.0.0.0:8000`
 - Only port 8000 is exposed; the dashboard proxies `/api/*` to the loopback API server-side
 - `run.sh` seeds `trading_paused=true` on first boot and falls back to env vars when

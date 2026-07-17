@@ -30,9 +30,9 @@ COPY resources/ ./resources/
 RUN pnpm --filter dashboard build
 
 # ──────────────────────────────────────────────────────────────────
-# Stage 2: Install Python deps + project via uv
+# Stage 2: Install Python deps + project via uv (musl wheels)
 # ──────────────────────────────────────────────────────────────────
-FROM python:3.13-slim-bookworm AS python-build
+FROM python:3.13-alpine AS python-build
 
 COPY --from=ghcr.io/astral-sh/uv:0.5.13 /uv /usr/local/bin/uv
 
@@ -47,18 +47,21 @@ COPY src/ ./src/
 RUN uv sync --frozen --no-dev
 
 # ──────────────────────────────────────────────────────────────────
-# Stage 3: Runtime — Python 3.13 + Node 20 + tini + jq
+# Stage 3: Runtime — Alpine + Python 3.13 + copied Node 20 binary
 # ──────────────────────────────────────────────────────────────────
-FROM python:3.13-slim-bookworm AS runner
+FROM python:3.13-alpine AS runner
 
-# Node 20 from NodeSource (Debian bookworm default is Node 18; Next 16 wants 20+)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        ca-certificates curl gnupg tini jq \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Runtime deps only:
+#   bash      — run.sh needs bash 5.1+ for `wait -n PID...` (alpine default is ash)
+#   jq        — run.sh parses /data/options.json
+#   tini      — PID 1 signal reaper (/sbin/tini on alpine)
+#   libstdc++ — the copied node binary links against libstdc++/libgcc
+RUN apk add --no-cache bash jq tini libstdc++
+
+# Node runtime: copy just the binary from the official alpine node image.
+# Next.js standalone output vendors its JS deps into node_modules, so the
+# runtime needs the interpreter only — no npm, no corepack, no toolchain.
+COPY --from=node:20-alpine /usr/local/bin/node /usr/local/bin/node
 
 # Python app (venv + src)
 WORKDIR /app
@@ -91,5 +94,5 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 EXPOSE 8000
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/run.sh"]
