@@ -3,7 +3,7 @@ import { COOKIE_NAME, COOKIE_VALUE } from "../../auth";
 
 // API_URL (no NEXT_PUBLIC_ prefix) is read at runtime so run.sh can point the
 // proxy at the loopback API in the HAOS container. NEXT_PUBLIC_API_URL is baked
-// at build time (SST/local-dev set it); the runtime API_URL takes precedence.
+// at build time (local dev sets it); the runtime API_URL takes precedence.
 const apiUrl = (
   process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||

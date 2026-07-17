@@ -247,54 +247,14 @@ async def _run_scanner_loop():
     )
 
 
-def _download_db():
-    bucket = os.getenv("DB_BACKUP_BUCKET")
-    db_url = os.getenv("DATABASE_URL", "")
-    if not bucket or not db_url.startswith("sqlite:///"):
-        return
-    db_path = db_url.replace("sqlite:///", "")
-    import boto3
-
-    s3 = boto3.client("s3")
-    try:
-        s3.download_file(bucket, "backups/latest.db", db_path)
-        log.info(f"Downloaded latest DB backup from S3 to {db_path}")
-    except Exception as e:
-        log.warning(f"Could not download DB from S3: {e}")
-
-
-def _backup_db_sync():
-    bucket = os.getenv("DB_BACKUP_BUCKET")
-    db_url = os.getenv("DATABASE_URL", "")
-    if not bucket or not db_url.startswith("sqlite:///"):
-        return
-    db_path = db_url.replace("sqlite:///", "")
-    if not os.path.exists(db_path):
-        return
-    from datetime import datetime, timezone
-
-    import boto3
-
-    s3 = boto3.client("s3")
-    try:
-        now = datetime.now(timezone.utc)
-        key = f"backups/{now.strftime('%Y-%m-%d/%H%M')}-predictions.db"
-        s3.upload_file(db_path, bucket, key)
-        s3.upload_file(db_path, bucket, "backups/latest.db")
-        log.info(f"Final DB backup uploaded to S3 ({key})")
-    except Exception as e:
-        log.warning(f"Final DB backup failed: {e}")
-
-
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     global _kalshi_client
-    _download_db()
     init_db()
-    # Soccer cache is independent: own engine + DB, no S3 backup. The cache
-    # is ephemeral (rebuilds on each container start) per the spec's deferred
-    # "Persistent cache" follow-up. Without this init, /api/backtest/soccer
-    # crashes on first request.
+    # Soccer cache is independent: own engine + DB. The cache is ephemeral
+    # (rebuilds on each container start) per the spec's deferred "Persistent
+    # cache" follow-up. Without this init, /api/backtest/soccer crashes on
+    # first request.
     from predictions.soccer_cache import init_soccer_db
 
     init_soccer_db()
@@ -309,10 +269,7 @@ async def lifespan(_app: FastAPI):
             _kalshi_client = KalshiClient.from_key_file(key_id, key_path)
 
         asyncio.create_task(_run_scanner_loop())
-    try:
-        yield
-    finally:
-        _backup_db_sync()
+    yield
 
 
 app = FastAPI(title="Predictions Dashboard API", lifespan=lifespan)
@@ -1149,7 +1106,6 @@ def get_config_endpoint():
             "espn_interval_s": 10,
             "kalshi_scan_interval_s": 5,
             "kalshi_ws": True,
-            "db_backup_interval_s": 1800,
         },
         "sports": sports,
     }

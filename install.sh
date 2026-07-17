@@ -43,7 +43,7 @@ log "installing Python deps via uv…"
 uv sync
 
 # ─── 3. JS install ──────────────────────────────────────────────────────────
-log "installing root JS deps (SST)…"
+log "installing root JS deps…"
 pnpm install --silent
 
 log "installing dashboard deps…"
@@ -93,6 +93,7 @@ Next steps:
   4. Use the CLI (once API is running):
          pnpm cli config
          pnpm cli stats
-  5. Deploy with SST (requires AWS + Cloudflare creds):
-         pnpm sst:deploy
+
+To deploy for real, install this repo as a Home Assistant add-on —
+see the "Deploy" section of README.md.
 EOF

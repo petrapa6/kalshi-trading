@@ -20,11 +20,6 @@ dist/
 build/
 *.tsbuildinfo
 dashboard/.next/
-dashboard/.open-next/
-
-# --- SST ---
-.sst/
-sst-env.d.ts.backup
 
 # --- Local database & logs ---
 *.db

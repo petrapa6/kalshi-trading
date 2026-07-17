@@ -6,11 +6,7 @@ settings:
 
 importers:
 
-  .:
-    dependencies:
-      sst:
-        specifier: ^4.2.2
-        version: 4.2.2
+  .: {}
 
   cli:
     dependencies:
@@ -871,9 +867,6 @@ packages:
     resolution: {integrity: sha512-ooviqdwwgfIfNmDwo94wlshcdzfO64XV0Cg6oDsDYBJfITDz1EngD2z7DkbvCWn+XIMsIqW27sEVF6qcpJrRcg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  aws4fetch@1.0.18:
-    resolution: {integrity: sha512-3Cf+YaUl07p24MoQ46rFwulAmiyCwH2+1zw1ZyPAX5OtJ34Hh185DwB8y/qRLb6cYYYtSFJ9pthyLc0MD4e8sQ==}
-
   baseline-browser-mapping@2.10.0:
     resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
     engines: {node: '>=6.0.0'}
@@ -1124,12 +1117,6 @@ packages:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
-  jose@4.15.9:
-    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
-
-  jose@5.2.3:
-    resolution: {integrity: sha512-KUXdbctm1uHVL8BYhnyHkgp3zDX5KW8ZhAKVFEfUbU2P8Alpzjb+48hHvjOdQIyPshoblhzsuqOwEEAbtHVirA==}
-
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -1281,10 +1268,6 @@ packages:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
 
-  lru-cache@6.0.0:
-    resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
-    engines: {node: '>=10'}
-
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -1331,24 +1314,13 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
-  object-hash@2.2.0:
-    resolution: {integrity: sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==}
-    engines: {node: '>= 6'}
-
   obug@2.1.3:
     resolution: {integrity: sha512-9miFgM2OFba7hB+pRgvtV84pYTBaoTHohvmIgiRt6dRIzbwEOIaNaP+dIlGs2fNFoB0SeISs0Jz5WFVRid6Xyg==}
     engines: {node: '>=12.20.0'}
 
-  oidc-token-hash@5.2.0:
-    resolution: {integrity: sha512-6gj2m8cJZ+iSW8bm0FXdGF0YhIQbKrfP4yWTNzxc31U6MOjfEmB1rHvlYvxI1B7t7BCi1F2vYTT6YhtQRG4hxw==}
-    engines: {node: ^10.13.0 || >=12.0.0}
-
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
-
-  openid-client@5.6.4:
-    resolution: {integrity: sha512-T1h3B10BRPKfcObdBklX639tVz+xh34O7GjofqrqiAQdm7eHsQ00ih18x6wuJ/E6FxdtS2u3FmUGPDeEcMwzNA==}
 
   oxfmt@0.7.0:
     resolution: {integrity: sha512-f9e9EO6iA93hNog2EDUlxqguYSzO+Y0axgu9JJTGgt1ocE8Bp6shdZ8PuI+ePepSOYmYO9UPvZLGKcvzz8BBow==}
@@ -1481,50 +1453,6 @@ packages:
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
-
-  sst-darwin-arm64@4.2.2:
-    resolution: {integrity: sha512-LDZsaHA5gZ1jTb5MBnZ9hjZD3FWDcQoXHUHXL4VABMbY4gwXgSuieev02Lc4dubqRXDB9h9I7oF5NuzjVctM5A==}
-    cpu: [arm64]
-    os: [darwin]
-
-  sst-darwin-x64@4.2.2:
-    resolution: {integrity: sha512-KGIjkYI3WDRNq+z3AGKYe69IvZP8prMm3mbI5ali5cl1hxiq10CAza+N+qpRXCtxt6vgbwdvmIoWTPYoKBtCIA==}
-    cpu: [x64]
-    os: [darwin]
-
-  sst-linux-arm64@4.2.2:
-    resolution: {integrity: sha512-G9VOE4YkafdH1qhjJGloS6n1zZ9IcmRKZfgWhARs8mELMkWLpLaen1rWxnyTmVRs0LEPR9IqB3owyE19AeYBXQ==}
-    cpu: [arm64]
-    os: [linux]
-
-  sst-linux-x64@4.2.2:
-    resolution: {integrity: sha512-1wwjpX0Qxo6OFkF6Q8NM8BT9oQvkZpKDMrUqce86rMuqHEzVo7GTXuqku6ouapjeMN+ZDC2vW2ReiR6W4Eh2Hw==}
-    cpu: [x64]
-    os: [linux]
-
-  sst-linux-x86@4.2.2:
-    resolution: {integrity: sha512-+LSwFRfAex8lN7F+Rk8ENsg2nhS6ZSW+za11u8Ec/5jYgDJACT3Oznw0UDjhNCGKGxTk7IgqICbVaudfVcy5Jw==}
-    cpu: [x86]
-    os: [linux]
-
-  sst-win32-arm64@4.2.2:
-    resolution: {integrity: sha512-AV9njoZ20SCyCXdcdRrZk9o06o0iOzzb7jAMcAP4EG6SfP/cyTNYoeMW7vEl/8cVWL0SBaTs0tyIzLWT9f84mg==}
-    cpu: [arm64]
-    os: [win32]
-
-  sst-win32-x64@4.2.2:
-    resolution: {integrity: sha512-skS7vxj9sXay9sxXxMi4pyTA884T7Doff+m/JT5LYHVBaxtBfqdlL4LtkaCMGNGAhzj8Vu80zz1WZyIx3Rh3cw==}
-    cpu: [x64]
-    os: [win32]
-
-  sst-win32-x86@4.2.2:
-    resolution: {integrity: sha512-JBREFAzf8NFdh5zB22WGoIeQ24iRxZ1MPF7EvV9zcqLobBFuFWqVwIFkmFkHOT/cP2JhAAniyFnD32O6b1cePw==}
-    cpu: [x86]
-    os: [win32]
-
-  sst@4.2.2:
-    resolution: {integrity: sha512-l/Vy78te8l6Typ/oFCL947WBSShljy3S9ugRSnG3zZAvRI9AC5KZJKHBkt+CT/WSK0eromSOO2FBvG2ErCbaxw==}
-    hasBin: true
 
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
@@ -1744,9 +1672,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-
-  yallist@4.0.0:
-    resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
   yoga-layout@3.2.1:
     resolution: {integrity: sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==}
@@ -2310,8 +2235,6 @@ snapshots:
 
   auto-bind@5.0.1: {}
 
-  aws4fetch@1.0.18: {}
-
   baseline-browser-mapping@2.10.0: {}
 
   caniuse-lite@1.0.30001777: {}
@@ -2549,10 +2472,6 @@ snapshots:
 
   jiti@2.6.1: {}
 
-  jose@4.15.9: {}
-
-  jose@5.2.3: {}
-
   js-tokens@4.0.0: {}
 
   kind-of@3.2.2:
@@ -2661,10 +2580,6 @@ snapshots:
     dependencies:
       js-tokens: 4.0.0
 
-  lru-cache@6.0.0:
-    dependencies:
-      yallist: 4.0.0
-
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -2703,22 +2618,11 @@ snapshots:
 
   object-assign@4.1.1: {}
 
-  object-hash@2.2.0: {}
-
   obug@2.1.3: {}
-
-  oidc-token-hash@5.2.0: {}
 
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
-
-  openid-client@5.6.4:
-    dependencies:
-      jose: 4.15.9
-      lru-cache: 6.0.0
-      object-hash: 2.2.0
-      oidc-token-hash: 5.2.0
 
   oxfmt@0.7.0:
     optionalDependencies:
@@ -2909,45 +2813,6 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  sst-darwin-arm64@4.2.2:
-    optional: true
-
-  sst-darwin-x64@4.2.2:
-    optional: true
-
-  sst-linux-arm64@4.2.2:
-    optional: true
-
-  sst-linux-x64@4.2.2:
-    optional: true
-
-  sst-linux-x86@4.2.2:
-    optional: true
-
-  sst-win32-arm64@4.2.2:
-    optional: true
-
-  sst-win32-x64@4.2.2:
-    optional: true
-
-  sst-win32-x86@4.2.2:
-    optional: true
-
-  sst@4.2.2:
-    dependencies:
-      aws4fetch: 1.0.18
-      jose: 5.2.3
-      openid-client: 5.6.4
-    optionalDependencies:
-      sst-darwin-arm64: 4.2.2
-      sst-darwin-x64: 4.2.2
-      sst-linux-arm64: 4.2.2
-      sst-linux-x64: 4.2.2
-      sst-linux-x86: 4.2.2
-      sst-win32-arm64: 4.2.2
-      sst-win32-x64: 4.2.2
-      sst-win32-x86: 4.2.2
-
   stack-utils@2.0.6:
     dependencies:
       escape-string-regexp: 2.0.0
@@ -3107,8 +2972,6 @@ snapshots:
       strip-ansi: 7.2.0
 
   ws@8.19.0: {}
-
-  yallist@4.0.0: {}
 
   yoga-layout@3.2.1: {}
 
