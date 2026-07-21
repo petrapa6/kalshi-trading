@@ -1,5 +1,10 @@
 # syntax=docker/dockerfile:1.7
 
+# Base image for the Python stages. The HAOS supervisor injects this from
+# build.yaml's `build_from` (per-arch); the default keeps plain
+# `docker build` / `docker buildx build` working unchanged.
+ARG BUILD_FROM=python:3.13-alpine
+
 # ──────────────────────────────────────────────────────────────────
 # Stage 1: Build Next.js dashboard → .next/standalone
 # ──────────────────────────────────────────────────────────────────
@@ -32,7 +37,7 @@ RUN pnpm --filter dashboard build
 # ──────────────────────────────────────────────────────────────────
 # Stage 2: Install Python deps + project via uv (musl wheels)
 # ──────────────────────────────────────────────────────────────────
-FROM python:3.13-alpine AS python-build
+FROM ${BUILD_FROM} AS python-build
 
 COPY --from=ghcr.io/astral-sh/uv:0.5.13 /uv /usr/local/bin/uv
 
@@ -49,7 +54,7 @@ RUN uv sync --frozen --no-dev
 # ──────────────────────────────────────────────────────────────────
 # Stage 3: Runtime — Alpine + Python 3.13 + copied Node 20 binary
 # ──────────────────────────────────────────────────────────────────
-FROM python:3.13-alpine AS runner
+FROM ${BUILD_FROM} AS runner
 
 # Runtime deps only:
 #   bash      — run.sh needs bash 5.1+ for `wait -n PID...` (alpine default is ash)
