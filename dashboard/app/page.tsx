@@ -1555,8 +1555,11 @@ export default function Dashboard() {
           fetch(`${API}/api/opportunities?limit=50`),
         ]);
         if (statsRes.status === 401 || statsRes.status === 403) {
+          const body = await statsRes.json().catch(() => null);
           setError(
-            `API auth failed (${statsRes.status}): check API_TOKEN in .env and restart the dashboard`,
+            body?.error === "session_invalid"
+              ? "Session invalid or expired: log in again"
+              : `Backend rejected API token (${statsRes.status}): check API_TOKEN and restart the dashboard`,
           );
           return;
         }

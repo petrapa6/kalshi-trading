@@ -17,7 +17,7 @@ async function proxyRequest(
   // Read the session cookie from the request directly. Calling the "use server"
   // checkAuth() here returns false in Next 16 standalone (no cookie context).
   if (req.cookies.get(COOKIE_NAME)?.value !== COOKIE_VALUE) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "session_invalid" }, { status: 401 });
   }
 
   const targetUrl = new URL(req.url);

@@ -11,7 +11,8 @@ export async function login(password: string): Promise<{ success: boolean }> {
     const cookieStore = await cookies();
     cookieStore.set(COOKIE_NAME, COOKIE_VALUE, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      // No `secure`: HAOS serves the dashboard over plain http, where the
+      // browser silently drops Secure cookies and login appears to fail.
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: "/",
