@@ -102,7 +102,7 @@ exports the same env vars.
 - `oxfmt.json` (dashboard) - 4-space indent, 100-char line width
 - `oxlint.json` (dashboard) - warns on unused vars, allows console
 - `config.yaml` - HA add-on manifest: `options`/`schema` (secrets), `ports` (8000), `map: data:rw`
-- `build.yaml` / `repository.yaml` - add-on base images per arch; add-on repository descriptor
+- `repository.yaml` - add-on repository descriptor (base images pinned directly in `Dockerfile`)
 
 ## Platform Requirements
 
