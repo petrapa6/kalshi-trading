@@ -36,13 +36,15 @@ from predictions.espn import (
 from predictions.kalshi_client import KalshiClient, extract_cents, extract_volume
 from predictions.sports import (
     KALSHI_TO_ESPN,
+    SERIES,
     SPORT_BY_PATH,
     SPORT_CLOCK_DIR,
     SPORT_DISPLAY_NAMES,
+    SPORT_FAMILY_TO_PATHS,
     SPORT_FINAL_PERIOD,
     TICKER_PREFIX_LABELS,
 )
-from predictions.strategies import load_strategies, parse_strategies_text
+from predictions.strategies import Strategy, Trigger, load_strategies, parse_strategies_text
 
 # --- Pydantic response models ---
 
@@ -1068,35 +1070,69 @@ def _format_final_minutes(clock_dir: str, secs: int) -> str:
     return f"{mins}:{remainder:02d} remaining"
 
 
-@app.get("/api/config", dependencies=[Depends(_check_token)])
-def get_config_endpoint():
-    cfg = get_all_config()
-    dry_run = dry_run_enabled()
+def _series_for_path(sport_path: str) -> list[str]:
+    return [s.prefix for s in SERIES if s.matchable and s.sport_path == sport_path]
 
-    sports = []
-    for sport_path, kalshi_series in sorted([(v, k) for k, v in KALSHI_TO_ESPN.items()]):
+
+def _strategy_row(
+    strat: Strategy, trig: Trigger, sport_path: str | None, cfg: dict[str, str]
+) -> dict:
+    """One catalog row: a strategy trigger resolved against a single sport."""
+    desc = None
+    if sport_path is not None and trig.final_minutes:
         clock_dir = SPORT_CLOCK_DIR.get(sport_path, "down")
         final_secs = int(cfg.get(f"final_seconds:{sport_path}", "0")) or (
             SPORT_BY_PATH[sport_path].default_final_seconds or 0
         )
+        desc = _format_final_minutes(clock_dir, final_secs)
 
-        sports.append(
-            {
-                "sport_path": sport_path,
-                "name": SPORT_DISPLAY_NAMES.get(sport_path, sport_path),
-                "kalshi_series": kalshi_series,
-                "final_period": SPORT_FINAL_PERIOD.get(sport_path, 4),
-                "clock_direction": clock_dir,
-                "final_minutes_desc": _format_final_minutes(clock_dir, final_secs),
-                "final_minutes_seconds": (None if clock_dir == "none" else final_secs),
-            }
-        )
+    return {
+        "strategy": strat.name,
+        "live": strat.live,
+        "sport_path": sport_path,
+        "name": SPORT_DISPLAY_NAMES.get(sport_path, sport_path) if sport_path else "any",
+        "kalshi_series": _series_for_path(sport_path) if sport_path else [],
+        "final_period": SPORT_FINAL_PERIOD.get(sport_path, 4) if sport_path else None,
+        "min_minute": trig.min_minute,
+        "min_lead": trig.min_lead,
+        "min_volume": trig.min_volume,
+        "min_yes_price": trig.min_yes_price,
+        "max_yes_price": trig.max_yes_price,
+        "final_minutes": trig.final_minutes,
+        "final_minutes_desc": desc,
+    }
+
+
+def _strategy_rows(cfg: dict[str, str]) -> list[dict]:
+    """Flatten the YAML catalog into one row per (strategy, trigger, sport).
+
+    Family triggers (`sport: football`) expand to every sport path in the
+    family; a trigger with neither `sport` nor `sport_path` yields one
+    sport-less row.
+    """
+    rows = []
+    for strat in load_strategies():
+        for trig in strat.triggers:
+            if trig.sport_path:
+                paths: list[str | None] = [trig.sport_path]
+            elif trig.sport:
+                paths = sorted(SPORT_FAMILY_TO_PATHS.get(trig.sport, frozenset()))
+            else:
+                paths = [None]
+            for path in paths:
+                rows.append(_strategy_row(strat, trig, path, cfg))
+    return rows
+
+
+@app.get("/api/config", dependencies=[Depends(_check_token)])
+def get_config_endpoint():
+    cfg = get_all_config()
 
     return {
         "trading": {
             "bet_percent": int(cfg.get("bet_percent", "5")),
             "max_positions": int(cfg.get("max_positions", "30")),
-            "dry_run": dry_run,
+            "dry_run": dry_run_enabled(),
             "paused": cfg.get("trading_paused", "false") == "true",
         },
         "stretch": {
@@ -1107,7 +1143,7 @@ def get_config_endpoint():
             "kalshi_scan_interval_s": 5,
             "kalshi_ws": True,
         },
-        "sports": sports,
+        "strategies": _strategy_rows(cfg),
     }
 
 

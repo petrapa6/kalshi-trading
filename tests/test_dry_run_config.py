@@ -251,6 +251,6 @@ def test_api_config_omits_retired_knobs(api_client):
     cfg = _get_config(api_client)
     assert "min_yes_price" not in cfg["trading"]
     assert "min_volume" not in cfg["trading"]
-    for sport in cfg["sports"]:
-        assert "min_score_lead" not in sport
-        assert "stretch_score_lead" not in sport
+    for row in cfg["strategies"]:
+        assert "min_score_lead" not in row
+        assert "stretch_score_lead" not in row

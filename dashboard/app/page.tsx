@@ -121,14 +121,20 @@ interface LiveGame {
   kalshi_markets: KalshiMarket[];
 }
 
-interface SportConfig {
-  sport_path: string;
+interface StrategyRow {
+  strategy: string;
+  live: boolean;
+  sport_path: string | null;
   name: string;
-  kalshi_series: string;
-  final_period: number;
-  clock_direction: "down" | "up" | "none";
-  final_minutes_desc: string;
-  final_minutes_seconds: number | null;
+  kalshi_series: string[];
+  final_period: number | null;
+  min_minute: number | null;
+  min_lead: number | null;
+  min_volume: number | null;
+  min_yes_price: number | null;
+  max_yes_price: number | null;
+  final_minutes: boolean | null;
+  final_minutes_desc: string | null;
 }
 
 interface AppConfig {
@@ -145,9 +151,24 @@ interface AppConfig {
     espn_interval_s: number;
     kalshi_scan_interval_s: number;
     kalshi_ws: boolean;
-    db_backup_interval_s: number;
   };
-  sports: SportConfig[];
+  strategies: StrategyRow[];
+}
+
+function formatPriceBand(s: StrategyRow): string {
+  const lo = s.min_yes_price;
+  const hi = s.max_yes_price;
+  if (lo === null && hi === null) return "—";
+  if (hi === null) return `${lo}¢+`;
+  if (lo === null) return `≤${hi}¢`;
+  return `${lo}–${hi}¢`;
+}
+
+function formatTiming(s: StrategyRow): string {
+  const parts: string[] = [];
+  if (s.min_minute !== null) parts.push(`min ${s.min_minute}'`);
+  if (s.final_minutes) parts.push(s.final_minutes_desc ?? "final minutes");
+  return parts.join(" · ") || "—";
 }
 
 function cents(c: number): string {
@@ -1653,8 +1674,8 @@ export default function Dashboard() {
             <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
             <h2 className="text-2xl font-black gold-shimmer tracking-tight">
               {isTradingTransition === "pausing"
-                ? "Pausing trading..."
-                : "Resuming trading..."}
+                ? "Stopping trading..."
+                : "Starting trading..."}
             </h2>
           </div>
         </div>
@@ -1718,7 +1739,9 @@ export default function Dashboard() {
                       : "bg-red-900/40 text-red-500 border border-red-900 hover:bg-red-900/60"
                   }`}
                 >
-                  {config.trading.paused ? "Resume Trading" : "Pause Trading"}
+                  {config.trading.paused
+                    ? "Trading Stopped \u2014 Start"
+                    : "Trading Running \u2014 Stop"}
                 </button>
                 <button
                   onClick={async () => {
@@ -1761,7 +1784,9 @@ export default function Dashboard() {
                       : "bg-yellow-600 text-black hover:bg-yellow-500 shadow-yellow-900/30"
                   }`}
                 >
-                  {config.trading.dry_run ? "Go Live" : "Enable Dry Run"}
+                  {config.trading.dry_run
+                    ? "Practice Mode \u2014 Go Real Money"
+                    : "REAL MONEY \u2014 Back to Practice"}
                 </button>
               </div>
             )}
@@ -1822,10 +1847,10 @@ export default function Dashboard() {
                           className={`text-lg font-bold ${config.trading.paused ? "text-red-500" : config.trading.dry_run ? "text-yellow-400" : "text-green-400"}`}
                         >
                           {config.trading.paused
-                            ? "PAUSED"
+                            ? "STOPPED"
                             : config.trading.dry_run
-                              ? "DRY RUN"
-                              : "LIVE"}
+                              ? "PRACTICE"
+                              : "REAL MONEY"}
                         </div>
                       </div>
                     </div>
@@ -1839,48 +1864,68 @@ export default function Dashboard() {
                         {config.polling.kalshi_ws ? "✓ real-time" : "off"}
                       </span>
                       <span>Stretch min: {config.stretch.price_min}¢</span>
-                      <span>
-                        DB backup: {config.polling.db_backup_interval_s / 60}m
-                      </span>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="text-zinc-500 border-b border-zinc-800">
+                            <th className="text-left py-2 pr-4">Strategy</th>
+                            <th className="text-center py-2 pr-4">Live</th>
                             <th className="text-left py-2 pr-4">Sport</th>
                             <th className="text-left py-2 pr-4">
                               Kalshi Series
                             </th>
-                            <th className="text-center py-2 pr-4">
-                              Final Period
-                            </th>
-                            <th className="text-center py-2 pr-4">
-                              End-of-Game
-                            </th>
+                            <th className="text-center py-2 pr-4">Lead</th>
+                            <th className="text-center py-2 pr-4">Price</th>
+                            <th className="text-center py-2 pr-4">Volume</th>
+                            <th className="text-left py-2 pr-4">Timing</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {config.sports.map((s) => (
+                          {config.strategies.map((s, i) => (
                             <tr
-                              key={s.sport_path}
+                              key={`${s.strategy}-${s.sport_path ?? "any"}-${i}`}
                               className="border-b border-zinc-800/50 hover:bg-zinc-800/30"
                             >
+                              <td className="py-2 pr-4 text-zinc-300">
+                                {s.strategy}
+                              </td>
+                              <td
+                                className={`py-2 pr-4 text-center ${s.live ? "text-green-400" : "text-zinc-600"}`}
+                              >
+                                {s.live ? "live" : "—"}
+                              </td>
                               <td className="py-2 pr-4 text-amber-200 font-medium">
                                 {s.name}
                               </td>
                               <td className="py-2 pr-4 text-zinc-400 font-mono">
-                                {s.kalshi_series}
+                                {s.kalshi_series.join(", ") || "—"}
                               </td>
                               <td className="py-2 pr-4 text-center text-zinc-300">
-                                {s.clock_direction === "none"
-                                  ? `Inning ${s.final_period}`
-                                  : `P${s.final_period}`}
+                                {s.min_lead === null ? "—" : `+${s.min_lead}`}
                               </td>
                               <td className="py-2 pr-4 text-center text-zinc-300">
-                                {s.final_minutes_desc}
+                                {formatPriceBand(s)}
+                              </td>
+                              <td className="py-2 pr-4 text-center text-zinc-300">
+                                {s.min_volume === null ? "—" : s.min_volume}
+                              </td>
+                              <td className="py-2 pr-4 text-zinc-300">
+                                {formatTiming(s)}
                               </td>
                             </tr>
                           ))}
+                          {config.strategies.length === 0 && (
+                            <tr>
+                              <td
+                                colSpan={8}
+                                className="py-3 text-zinc-500 text-center"
+                              >
+                                No strategies loaded — strategies.yaml missing
+                                or invalid.
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
